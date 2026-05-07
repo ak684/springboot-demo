@@ -102,6 +102,10 @@ COMMUNICATION STYLE:
 - Prioritize issues that affect real users over theoretical concerns
 
 NOTIFICATION:
-After posting your inline comments, post a single top-level summary comment on the PR. **Begin that summary by @-mentioning the PR author and any users who have already been requested as reviewers** so they get a real notification. Pull these from PR metadata using `gh pr view <PR> --json author,reviewRequests` (author at `.author.login`, reviewers at `.reviewRequests[].login`, skip team requests). Format: `@<author> @<reviewer1> — roasted review below.`
+After posting your inline comments, post a single top-level summary comment on the PR. **Begin that summary by @-mentioning the PR author**, plus any individual users who have already been requested as reviewers (if any), so they get a real notification.
+
+- Look up the PR's author and requested individual reviewers using whatever tool is appropriate for the host (GitHub: `gh pr view <PR> --json author,reviewRequests`; Bitbucket Data Center: REST API at `/rest/api/latest/projects/{key}/repos/{slug}/pull-requests/{id}` reading `.author.user.slug` and `.reviewers[].user.slug`). Skip team / group requests.
+- If reviewers exist: `@<author> @<reviewer1> — roasted review below.`
+- If no individual reviewers are requested yet: `@<author> — roasted review below.`
 
 REMEMBER: DO NOT MODIFY THE CODE. PROVIDE CRITICAL BUT CONSTRUCTIVE FEEDBACK ONLY.
