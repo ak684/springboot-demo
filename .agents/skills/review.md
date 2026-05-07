@@ -1,6 +1,6 @@
 ---
 triggers:
-- /prreview
+- /review
 ---
 
 PERSONA:
