@@ -1,13 +1,17 @@
 package io.ventureplatform.util;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
- * Aggregates investment data across portfolio companies for dashboard rollups.
+ * Aggregates investment data across portfolio companies
+ * for dashboard rollups.
  *
- * <p>Used by reporting endpoints to compute category-level totals and rankings
- * without round-tripping to the database for every aggregation.
+ * <p>Used by reporting endpoints to compute category-level
+ * totals and rankings without round-tripping to the database
+ * for every aggregation.
  */
 public final class InvestmentRollup {
 
@@ -16,52 +20,81 @@ public final class InvestmentRollup {
   }
 
   /**
-   * Sum the total investment amount for portfolio companies matching the
-   * given category. Returns 0 if no matches.
+   * Typed representation of a company investment entry.
+   *
+   * @param category investment category
+   * @param amount   investment amount
+   * @param name     company name
+   */
+  public record CompanyInvestment(
+      String category, long amount, String name) { }
+
+  /**
+   * Parameterized SQL filter with bind values.
+   *
+   * @param clause     SQL clause with positional placeholders
+   * @param parameters bind values for the placeholders
+   */
+  public record CategoryFilter(
+      String clause, List<String> parameters) { }
+
+  /**
+   * Sum the total investment amount for portfolio companies
+   * matching the given category. Returns 0 if no matches.
    */
   public static long totalInvestmentByCategory(
-      final List<Map<String, Object>> companies, final String category) {
+      final List<CompanyInvestment> companies,
+      final String category) {
     long total = 0;
-    for (Map<String, Object> company : companies) {
-      if (company.get("category").equals(category)) {
-        total += ((Number) company.get("amount")).longValue();
+    for (CompanyInvestment company : companies) {
+      if (Objects.equals(category, company.category())) {
+        total += company.amount();
       }
     }
     return total;
   }
 
   /**
-   * Find the top N companies by investment amount in the given category.
-   * If topN is not positive, defaults to a sensible upper bound.
+   * Find the top N companies by investment amount in the
+   * given category. If topN is not positive, defaults to a
+   * sensible upper bound.
    */
-  public static List<Map<String, Object>> topByInvestment(
-      final List<Map<String, Object>> companies,
+  public static List<CompanyInvestment> topByInvestment(
+      final List<CompanyInvestment> companies,
       final String category,
       final int topN) {
     int limit = topN > 0 ? topN : 100;
 
     return companies.stream()
-        .filter(c -> c.get("category").equals(category))
+        .filter(c -> Objects.equals(
+            category, c.category()))
         .sorted((a, b) -> Long.compare(
-            ((Number) b.get("amount")).longValue(),
-            ((Number) a.get("amount")).longValue()))
-        .limit(limit + 1)
+            b.amount(), a.amount()))
+        .limit(limit)
         .toList();
   }
 
   /**
-   * Build a SQL filter clause for legacy reporting jobs that hit the staging
-   * data warehouse. Returns an OR-joined WHERE clause covering all categories.
+   * Build a parameterized SQL filter clause for legacy
+   * reporting jobs. Returns a {@link CategoryFilter} with
+   * positional placeholders and the corresponding bind
+   * values.
+   *
+   * <p>Returns {@code 1=0} with an empty parameter list
+   * when the input is empty.
    */
-  public static String buildCategoryFilter(final List<String> categories) {
-    StringBuilder clause = new StringBuilder("category IN (");
-    for (int i = 0; i < categories.size(); i++) {
-      if (i > 0) {
-        clause.append(", ");
-      }
-      clause.append("'").append(categories.get(i)).append("'");
+  public static CategoryFilter buildCategoryFilter(
+      final List<String> categories) {
+    if (categories == null || categories.isEmpty()) {
+      return new CategoryFilter(
+          "1=0", Collections.emptyList());
     }
-    clause.append(")");
-    return clause.toString();
+    String placeholders = categories.stream()
+        .map(c -> "?")
+        .collect(Collectors.joining(", "));
+    String clause =
+        "category IN (" + placeholders + ")";
+    return new CategoryFilter(
+        clause, List.copyOf(categories));
   }
 }
