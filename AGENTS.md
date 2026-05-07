@@ -409,46 +409,6 @@ Just like a human engineer, for any code change that touches frontend/** code, y
 
 **Env notes for Claude Code Web**: Chromium 141 is pre-installed at `/opt/pw-browsers`, ffmpeg is pre-installed, Playwright is wired as a root devDependency. The harness auto-scrubs `HTTPS_PROXY` env vars for localhost targets so the sandbox proxy doesn't intercept local traffic. The `PostToolUse` hook only sees local `git push` commands; it does not see sysadmin pushes directly.
 
-## Map Server (map.impactforesight.io)
-
-The map application runs on a **separate production server** from the main app.
-
-### Server Details
-- **Server IP**: `134.122.112.217`
-- **Domain**: `map.impactforesight.io`
-- **SSH Access** (Local Claude Code only): `ssh root@134.122.112.217`
-
-### Sysadmin Endpoints (Claude Code Web)
-The map server has the same sysadmin endpoints as the main app server, accessible via standard HTTPS:
-
-**Execute shell commands on map server:**
-```bash
-curl -s -X POST "https://map.impactforesight.io/sysadmin/exec" \
-  -H "Content-Type: application/json" \
-  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
-  -d '{"command": "systemctl status impactforesight"}'
-```
-
-**View map server logs:**
-```bash
-curl -s -X POST "https://map.impactforesight.io/sysadmin/exec" \
-  -H "Content-Type: application/json" \
-  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
-  -d '{"command": "journalctl -u impactforesight -n 100 --no-pager"}'
-```
-
-**Check service status:**
-```bash
-curl -s -X POST "https://map.impactforesight.io/sysadmin/exec" \
-  -H "Content-Type: application/json" \
-  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
-  -d '{"command": "systemctl status nginx impactforesight sysadmin"}'
-```
-
-### GitHub PR Labels
-If the user ever tells you to add these to PRs, these are the exact label names (hyphenated, not spaces):
-- `auto-merge` - Auto-merge PR when checks pass
-
 ## Architecture Overview
 
 ### Backend Architecture (Spring Boot + JPA)
