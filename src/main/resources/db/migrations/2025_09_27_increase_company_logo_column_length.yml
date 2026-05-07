@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_27_increase_company_logo_column_length
+      author: alona
+      comment: "Increase company_logo column length to accommodate longer Cloudinary URLs with transformations"
+      changes:
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: company_logo
+            newDataType: TEXT
+      rollback:
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: company_logo
+            newDataType: VARCHAR(1000)

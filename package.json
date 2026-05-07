@@ -1,0 +1,13 @@
+{
+  "name": "frontend",
+  "private": true,
+  "workspaces": [
+    "frontend/*"
+  ],
+  "dependencies": {
+    "@mui/x-data-grid": "^8.2.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.1"
+  }
+}

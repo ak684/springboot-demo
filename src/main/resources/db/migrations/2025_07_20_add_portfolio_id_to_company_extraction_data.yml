@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: add_portfolio_id_to_company_extraction_data
+      author: alona
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: portfolio_id
+                  type: bigint
+        - update:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: portfolio_id
+                  value: 1
+            where: portfolio_id IS NULL

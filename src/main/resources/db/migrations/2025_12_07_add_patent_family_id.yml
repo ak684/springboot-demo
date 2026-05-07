@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_12_07_add_patent_family_id
+      author: alona
+      comment: "Add patent_family_id column to group patents into families"
+      changes:
+        - addColumn:
+            tableName: company_patents
+            columns:
+              - column:
+                  name: patent_family_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+        - createIndex:
+            indexName: idx_company_patents_family_id
+            tableName: company_patents
+            columns:
+              - column:
+                  name: patent_family_id

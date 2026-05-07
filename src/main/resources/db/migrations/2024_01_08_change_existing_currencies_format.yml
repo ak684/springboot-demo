@@ -1,0 +1,61 @@
+databaseChangeLog:
+- changeSet:
+    id: 1704741488900-1
+    author: andrewkoziulia
+    changes:
+    - update:
+        tableName: ventures
+        columns:
+        - column:
+            name: currency
+            value: "CANADIAN_DOLLAR"
+        where: "currency = 'CAD'"
+    - update:
+        tableName: ventures
+        columns:
+        - column:
+            name: currency
+            value: "BRAZILIAN_REAL"
+        where: "currency = 'BRL'"
+    - update:
+        tableName: ventures
+        columns:
+        - column:
+            name: currency
+            value: "CHINESE_YUAN_RENMINBI"
+        where: "currency = 'CNY'"
+    - update:
+        tableName: ventures
+        columns:
+        - column:
+            name: currency
+            value: "EURO"
+        where: "currency = 'EUR'"
+    - update:
+        tableName: ventures
+        columns:
+        - column:
+            name: currency
+            value: "SINGAPORE_DOLLAR"
+        where: "currency = 'SGD'"
+    - update:
+        tableName: ventures
+        columns:
+        - column:
+            name: currency
+            value: "UNITED_STATES_DOLLAR"
+        where: "currency = 'USD'"
+    - update:
+        tableName: ventures
+        columns:
+        - column:
+            name: currency
+            value: "GREAT_BRITAIN_POUND"
+        where: "currency = 'GBP'"
+    - update:
+        tableName: ventures
+        columns:
+        - column:
+            name: currency
+            value: "POLISH_ZLOTY"
+        where: "currency = 'PLN'"

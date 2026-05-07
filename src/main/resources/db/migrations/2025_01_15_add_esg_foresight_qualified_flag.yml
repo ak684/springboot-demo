@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_01_15_add_esg_foresight_qualified_flag
+      author: alona
+      comment: "Add boolean flag to indicate if company qualifies for ESG Foresight analysis"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: esg_foresight_qualified
+                  type: BOOLEAN
+                  defaultValueBoolean: false

@@ -1,0 +1,22 @@
+databaseChangeLog:
+- changeSet:
+    id: 1702301644554-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: lat
+            type: float8
+        tableName: ventures
+- changeSet:
+    id: 1702301644554-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: lng
+            type: float8
+        tableName: ventures
+

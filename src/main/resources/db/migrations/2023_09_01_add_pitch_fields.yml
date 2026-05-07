@@ -1,0 +1,32 @@
+databaseChangeLog:
+- changeSet:
+    id: 1695208644724-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: pitch_description
+            type: text
+        tableName: impacts
+- changeSet:
+    id: 1695208644724-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: pitch_inspiration
+            type: text
+        tableName: impacts
+- changeSet:
+    id: 1695208644724-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: pitch_description
+            type: text
+        tableName: ventures
+

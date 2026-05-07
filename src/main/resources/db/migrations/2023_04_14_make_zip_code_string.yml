@@ -1,0 +1,9 @@
+databaseChangeLog:
+- changeSet:
+   id: change-zip-code-to-string
+   author: akoziulia
+   changes:
+   - modifyDataType:
+       columnName: zip_code
+       newDataType: VARCHAR(255)
+       tableName: ventures

@@ -1,0 +1,36 @@
+<div>
+  <p style="margin-bottom: 30px; font-size: 28px; line-height: normal;">
+    <span th:text="${portfolio.name}"></span> invites you to join
+    <span th:text="${brand.domainDisplay}"></span>
+  </p>
+  <p>
+    Measure and plan your impact using <span th:text="${brand.companyName}"></span>. Follow the link to learn more:
+  </p>
+  <p th:if="${not #strings.isEmpty(brand.marketingSiteUrl)}">
+    <a th:href="${brand.marketingSiteUrl}" th:text="${brand.marketingSiteUrl}"></a>
+  </p>
+  <p>
+    If you already have an <span th:text="${brand.companyName}"></span> account you can link your venture to
+    <span th:text="${portfolio.name}"></span>
+    using the following link:
+  </p>
+  <p>
+    <a th:href="${link}" th:text="${link}"></a>
+  </p>
+  <div th:if="${message != null && #strings.length(message) > 0}">
+    <p>
+      Note from <span th:text="${portfolio.name}"></span>:
+    </p>
+    <p>
+      <span th:text="${message}"></span>
+    </p>
+  </div>
+  <div th:if="${promo != null && #strings.length(promo) > 0}">
+    <p>
+      You can use the following promo code during the registration:
+    </p>
+    <p>
+      <span th:text="${promo}" style="font-size: 24px;"></span>
+    </p>
+  </div>
+</div>

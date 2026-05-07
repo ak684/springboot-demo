@@ -1,0 +1,136 @@
+databaseChangeLog:
+- changeSet:
+    id: 1704205299317-1
+    author: andrewkoziulia
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: venture_public_settings_pkey
+            name: venture_id
+            type: BIGINT
+        - column:
+            defaultValueBoolean: false
+            name: shared
+            type: BOOLEAN
+        - column:
+            defaultValueBoolean: true
+            name: show_summary
+            type: BOOLEAN
+        - column:
+            defaultValueBoolean: true
+            name: show_financials
+            type: BOOLEAN
+        - column:
+            defaultValueBoolean: true
+            name: show_impacts
+            type: BOOLEAN
+        - column:
+            defaultValueBoolean: true
+            name: show_team
+            type: BOOLEAN
+        tableName: venture_public_settings
+- changeSet:
+    id: 1704205299317-2
+    author: andrewkoziulia
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: venture_public_settings
+        constraintName: fk2ixwoyqpb81704205299317
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+
+- changeSet:
+    id: 1704205299317-3
+    author: andrewkoziulia
+    comment: "Create a record for each venture"
+    changes:
+    - sql:
+        sql: |
+          INSERT INTO venture_public_settings (venture_id, shared, show_summary, show_financials, show_impacts, show_team)
+          SELECT id, false, true, true, true, true FROM ventures
+
+- changeSet:
+    id: 1704205299317-4
+    author: andrewkoziulia
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            defaultValueBoolean: true
+            name: public_enabled
+            type: bool
+        tableName: impacts
+- changeSet:
+    id: 1704205299317-5
+    author: andrewkoziulia
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: public_order
+            type: float8
+        tableName: impacts
+- changeSet:
+    id: 1704205299317-6
+    author: andrewkoziulia
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            defaultValueBoolean: true
+            name: public_enabled
+            type: bool
+        tableName: impact_indicators
+- changeSet:
+    id: 1704205299317-7
+    author: andrewkoziulia
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: public_order
+            type: float8
+        tableName: impact_indicators
+
+- changeSet:
+    id: 1704205299317-8
+    author: andrewkoziulia
+    changes:
+    - sql:
+        sql: |
+          WITH numbered_impacts AS (
+            SELECT
+              id,
+              row_number() OVER (PARTITION BY venture_id ORDER BY created_at) - 1 AS new_public_order
+            FROM impacts
+          )
+          UPDATE impacts
+          SET public_order = numbered_impacts.new_public_order
+          FROM numbered_impacts
+          WHERE impacts.id = numbered_impacts.id;
+- changeSet:
+    id: 1704205299317-9
+    author: andrewkoziulia
+    changes:
+    - sql:
+        sql: |
+          WITH numbered_indicators AS (
+            SELECT
+              id,
+              row_number() OVER (PARTITION BY impact_id ORDER BY id) - 1 AS new_public_order
+            FROM impact_indicators
+          )
+          UPDATE impact_indicators
+          SET public_order = numbered_indicators.new_public_order
+          FROM numbered_indicators
+          WHERE impact_indicators.id = numbered_indicators.id;

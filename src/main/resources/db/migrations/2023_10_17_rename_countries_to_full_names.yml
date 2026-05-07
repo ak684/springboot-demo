@@ -1,0 +1,111 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: akoziulia
+    comment: "Update country codes in users table to full names"
+    changes:
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: ZAMBIA
+        where: country = 'ZM'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: GERMANY
+        where: country = 'DE'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: AZERBAIJAN
+        where: country = 'AZ'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: IRELAND
+        where: country = 'IE'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: BRAZIL
+        where: country = 'BR'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: PERU
+        where: country = 'PE'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: UKRAINE
+        where: country = 'UA'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: SINGAPORE
+        where: country = 'SG'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: UNITED_STATES_OF_AMERICA
+        where: country = 'US'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: NIGERIA
+        where: country = 'NG'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: UGANDA
+        where: country = 'UG'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: UNITED_KINGDOM
+        where: country = 'GB'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: CHINA
+        where: country = 'CN'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: COLOMBIA
+        where: country = 'CO'
+    - update:
+        tableName: users
+        columns:
+        - column:
+            name: country
+            value: PHILIPPINES
+        where: country = 'PH'

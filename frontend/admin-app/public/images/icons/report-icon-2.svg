@@ -1,0 +1,71 @@
+<svg width="88" height="109" viewBox="0 0 88 109" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g filter="url(#filter0_d_13766_17061)">
+<g clip-path="url(#clip0_13766_17061)">
+<rect x="10" y="5" width="68" height="89" rx="4" fill="white"/>
+<rect width="68" height="11" transform="translate(10 5)" fill="#F2F2F2"/>
+<circle cx="15.5" cy="10.5" r="1.5" fill="#DADADA"/>
+<circle cx="20.5" cy="10.5" r="1.5" fill="#DADADA"/>
+<circle cx="25.5" cy="10.5" r="1.5" fill="#DADADA"/>
+<g clip-path="url(#clip1_13766_17061)">
+<rect x="24" y="28" width="4" height="32" rx="1" fill="#F2F2F2"/>
+<rect x="24" y="28" width="4" height="29" fill="#F2F2F2"/>
+<rect x="24" y="57" width="4" height="3" rx="1" fill="#DADADA"/>
+</g>
+<g clip-path="url(#clip2_13766_17061)">
+<rect x="33" y="28" width="4" height="32" rx="1" fill="#F2F2F2"/>
+<rect x="33" y="28" width="4" height="29" fill="#F2F2F2"/>
+<rect x="33" y="57" width="4" height="3" rx="1" fill="#DADADA"/>
+</g>
+<g clip-path="url(#clip3_13766_17061)">
+<rect x="42" y="28" width="4" height="32" rx="1" fill="#F2F2F2"/>
+<rect x="42" y="28" width="4" height="29" fill="#F2F2F2"/>
+<rect x="42" y="57" width="4" height="3" rx="1" fill="#DADADA"/>
+</g>
+<g clip-path="url(#clip4_13766_17061)">
+<rect x="51" y="28" width="4" height="32" rx="1" fill="#F2F2F2"/>
+<rect x="51" y="28" width="4" height="29" fill="#F2F2F2"/>
+<rect x="51" y="57" width="4" height="3" rx="1" fill="#DADADA"/>
+</g>
+<g clip-path="url(#clip5_13766_17061)">
+<rect x="60" y="28" width="4" height="32" rx="1" fill="#F2F2F2"/>
+<rect x="60" y="28" width="4" height="29" fill="#F2F2F2"/>
+<rect x="60" y="57" width="4" height="3" rx="1" fill="#DADADA"/>
+</g>
+<rect x="24" y="68" width="40" height="2" rx="1" fill="#DADADA"/>
+<rect x="24" y="72" width="37" height="2" rx="1" fill="#DADADA"/>
+<rect x="24" y="76" width="40" height="2" rx="1" fill="#DADADA"/>
+<rect x="24" y="80" width="22" height="2" rx="1" fill="#DADADA"/>
+</g>
+<rect x="10.5" y="5.5" width="67" height="88" rx="3.5" stroke="white"/>
+</g>
+<defs>
+<filter id="filter0_d_13766_17061" x="0" y="0" width="88" height="109" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feOffset dy="5"/>
+<feGaussianBlur stdDeviation="5"/>
+<feComposite in2="hardAlpha" operator="out"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0.541176 0 0 0 0 0.219608 0 0 0 0 0.960784 0 0 0 0.1 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_13766_17061"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_13766_17061" result="shape"/>
+</filter>
+<clipPath id="clip0_13766_17061">
+<rect x="10" y="5" width="68" height="89" rx="4" fill="white"/>
+</clipPath>
+<clipPath id="clip1_13766_17061">
+<rect x="24" y="28" width="4" height="32" rx="1" fill="white"/>
+</clipPath>
+<clipPath id="clip2_13766_17061">
+<rect x="33" y="28" width="4" height="32" rx="1" fill="white"/>
+</clipPath>
+<clipPath id="clip3_13766_17061">
+<rect x="42" y="28" width="4" height="32" rx="1" fill="white"/>
+</clipPath>
+<clipPath id="clip4_13766_17061">
+<rect x="51" y="28" width="4" height="32" rx="1" fill="white"/>
+</clipPath>
+<clipPath id="clip5_13766_17061">
+<rect x="60" y="28" width="4" height="32" rx="1" fill="white"/>
+</clipPath>
+</defs>
+</svg>

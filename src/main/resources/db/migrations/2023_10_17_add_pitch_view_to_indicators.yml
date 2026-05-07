@@ -1,0 +1,18 @@
+databaseChangeLog:
+- changeSet:
+    id: 1697548610150-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: pitch_view
+            type: VARCHAR(255)
+        tableName: impact_indicators
+
+    - update:
+        tableName: impact_indicators
+        columns:
+        - column:
+            name: pitch_view
+            value: "NET_IMPACT"

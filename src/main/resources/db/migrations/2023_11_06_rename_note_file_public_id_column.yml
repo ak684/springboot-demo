@@ -1,0 +1,10 @@
+databaseChangeLog:
+- changeSet:
+    id: rename_note_file_public_id_column
+    author: akoziulia
+    comment: "Rename NoteFile publicId column to key"
+    changes:
+    - renameColumn:
+        tableName: note_files
+        oldColumnName: public_id
+        newColumnName: key

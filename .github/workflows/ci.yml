@@ -1,0 +1,115 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened, ready_for_review]
+
+jobs:
+  javascript-ci-checks:
+    if: github.event.pull_request.draft == false
+    name: Automated Javascript CI checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Setup Node.js 16.8.0
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.8.0
+
+      - name: Install root dependencies
+        run: npm install
+
+      - name: Run build
+        run: npm run build --prefix frontend/admin-app
+
+  spring-boot-smoke-test:
+    if: github.event.pull_request.draft == false
+    name: Automated Startup Check
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: impact_user
+          POSTGRES_PASSWORD: testpass123
+          POSTGRES_DB: ventureplatform_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 17
+          cache: 'maven'
+
+      - name: Run tests
+        run: mvn test -Dskip.npm
+
+      - name: Start Spring Boot and verify startup
+        env:
+          SPRING_PROFILES_ACTIVE: local
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/ventureplatform_ci
+          SPRING_DATASOURCE_USERNAME: impact_user
+          SPRING_DATASOURCE_PASSWORD: testpass123
+          db.password: testpass123  # For the ${db.password} reference in application-local.yml
+        run: |
+          echo "Starting Spring Boot application..."
+
+          # Start app in background, redirect output to file
+          timeout 120s mvn spring-boot:run -Dskip.npm > startup.log 2>&1 &
+          APP_PID=$!
+
+          echo "Waiting for application startup (PID: $APP_PID)..."
+
+          # Wait for "Started Application" or failure (max 120 seconds)
+          for i in {1..120}; do
+            if grep -q "Started Application" startup.log; then
+              echo "✅ Spring Boot started successfully after $i seconds"
+              kill $APP_PID 2>/dev/null || true
+              exit 0
+            fi
+
+            # Check if process died
+            if ! kill -0 $APP_PID 2>/dev/null; then
+              echo "❌ Spring Boot process died unexpectedly"
+              echo "===== Last 100 lines of startup log ====="
+              tail -n 100 startup.log
+              exit 1
+            fi
+
+            sleep 1
+          done
+
+          echo "❌ Timeout waiting for Spring Boot to start"
+          echo "===== Last 100 lines of startup log ====="
+          tail -n 100 startup.log
+          kill $APP_PID 2>/dev/null || true
+          exit 1

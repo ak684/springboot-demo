@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <property name="LOGS" value="./src/main/resources/logs"/>
+  <property name="MAX_FILE_SIZE" value="50MB"/>
+  <property name="CLASS_NAME_LENGTH" value="30"/>
+
+  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <Pattern>
+        %black(%d{ISO8601}) %highlight(%-5level) [%green(%t)] %yellow(%C{1.}): %msg%n%throwable
+      </Pattern>
+    </layout>
+  </appender>
+
+  <appender name="ApplicationLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOGS}/application.log</file>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>INFO</level>
+    </filter>
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <Pattern>%d %thread %level %c{${CLASS_NAME_LENGTH}} %msg%n</Pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>
+        ${LOGS}/archived/application/%d{yyyy/MM}/%d{yyyy-MM-dd, aux}_%i.log.gz
+      </fileNamePattern>
+      <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+    </rollingPolicy>
+  </appender>
+
+  <appender name="ErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOGS}/errors.log</file>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+      <level>ERROR</level>
+    </filter>
+
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <Pattern>%d %thread %level %c{${CLASS_NAME_LENGTH}} %msg%n%ex{full}%n</Pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>
+        ${LOGS}/archived/errors/%d{yyyy/MM}/%d{yyyy-MM-dd, aux}_%i.log.gz
+      </fileNamePattern>
+      <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+    </rollingPolicy>
+  </appender>
+
+  <appender name="WarningLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOGS}/warnings.log</file>
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+      <level>WARN</level>
+      <onMatch>ACCEPT</onMatch>
+      <onMismatch>DENY</onMismatch>
+    </filter>
+
+    <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+      <Pattern>%d %thread %level %c{${CLASS_NAME_LENGTH}} %msg%n%ex{short}%n</Pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>
+        ${LOGS}/archived/warnings/%d{yyyy/MM}/%d{yyyy-MM-dd, aux}_%i.log.gz
+      </fileNamePattern>
+      <maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+    </rollingPolicy>
+  </appender>
+
+  <root level="info">
+    <appender-ref ref="Console"/>
+    <appender-ref ref="ApplicationLog"/>
+    <appender-ref ref="WarningLog"/>
+    <appender-ref ref="ErrorLog"/>
+  </root>
+</configuration>

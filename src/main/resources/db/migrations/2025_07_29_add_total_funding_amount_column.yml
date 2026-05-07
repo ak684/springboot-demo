@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_29_add_total_funding_amount_column
+      author: alona
+      comment: Add total_funding_amount and related columns to company_extraction_data table
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: total_funding_amount
+                  type: DECIMAL(15,2)
+                  constraints:
+                    nullable: true
+                  remarks: "Total funding amount extracted by AI from company data"
+              - column:
+                  name: funding_currency
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: true
+                  remarks: "Currency for the total funding amount"
+              - column:
+                  name: total_funding_amount_type
+                  type: VARCHAR(10)
+                  constraints:
+                    nullable: true
+                  remarks: "Type of funding data (actual, estimate, or n.a.)"
+
+      rollback:
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: total_funding_amount
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: funding_currency
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: total_funding_amount_type

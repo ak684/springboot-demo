@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_12_23_add_stakeholder_geography_summary
+      author: alona
+      comment: "Add stakeholder_geography_summary field for AI-generated map claims"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: stakeholder_geography_summary
+                  type: TEXT
+                  remarks: "AI-generated 3-point summary describing where/who/what for stakeholder impact geography"

@@ -1,0 +1,12 @@
+databaseChangeLog:
+- changeSet:
+    id: 1718539959412-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: geography
+            type: text
+        tableName: ventures
+

@@ -1,0 +1,21 @@
+databaseChangeLog:
+- changeSet:
+    id: 1683841388217-1
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: google_refresh_token
+            type: varchar(255)
+        tableName: users
+- changeSet:
+    id: 1683841388217-2
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: google_token
+            type: varchar(255)
+        tableName: users

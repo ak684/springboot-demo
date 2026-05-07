@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta content="text/html; charset=UTF-8" name="Content-Type" />
+  <meta charset="UTF-8">
+  <title th:text="${title}"></title>
+  <meta name="og:title" th:content="${title}">
+  <meta name="og:type" content="article">
+  <meta name="og:image" th:content="${imageUrl}">
+  <meta name="og:url" th:content="${url}">
+  <meta name="og:site_name" content="ImpactForesight">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" th:content="${url}">
+  <meta name="twitter:title" th:content="${title}">
+  <meta name="twitter:image" th:content="${imageUrl}">
+  <meta name="twitter:image:alt" th:content="${title}">
+</head>
+<body>
+  <img th:src="${imageUrl}" th:alt="${title}"/>
+  <div>
+    <a target='_blank' href="https://www.impactforesight.io/">Learn more</a>
+  </div>
+</body>
+</html>

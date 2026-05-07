@@ -1,0 +1,12 @@
+databaseChangeLog:
+- changeSet:
+    id: 1702430169527-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: logo
+            type: varchar(255)
+        tableName: ventures
+

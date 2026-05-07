@@ -1,0 +1,11 @@
+databaseChangeLog:
+- changeSet:
+    id: 1711396680391-1
+    author: andrewkoziulia
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: subscription_type
+            type: varchar(255)
+        tableName: ventures

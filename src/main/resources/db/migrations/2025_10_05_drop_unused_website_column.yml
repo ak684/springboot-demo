@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_10_05_drop_unused_website_column
+      author: alona
+      comment: "Drop unused website column from company_extraction_data table. This field was never populated (0 out of 11 records) and company_url serves the same purpose."
+      changes:
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: website

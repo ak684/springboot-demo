@@ -1,0 +1,283 @@
+databaseChangeLog:
+- changeSet:
+    id: 1707149386885-2
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: portfolio_id
+            type: BIGINT
+        - column:
+            name: hashtags
+            type: VARCHAR(255)
+        tableName: portfolio_hashtags
+- changeSet:
+    id: 1707149386885-3
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: portfolio_invitations_pkey
+            name: portfolio_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: portfolio_invitations_pkey
+            name: user_id
+            type: BIGINT
+        tableName: portfolio_invitations
+- changeSet:
+    id: 1707149386885-4
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: portfolio_members_pkey
+            name: portfolio_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: portfolio_members_pkey
+            name: user_id
+            type: BIGINT
+        tableName: portfolio_members
+- changeSet:
+    id: 1707149386885-5
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: portfolios_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: address
+            type: VARCHAR(255)
+        - column:
+            name: city
+            type: VARCHAR(255)
+        - column:
+            name: country
+            type: VARCHAR(255)
+        - column:
+            name: currency
+            type: VARCHAR(255)
+        - column:
+            name: description
+            type: VARCHAR(255)
+        - column:
+            name: employees
+            type: INTEGER
+        - column:
+            name: facebook
+            type: VARCHAR(255)
+        - column:
+            name: formation_date
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: instagram
+            type: VARCHAR(255)
+        - column:
+            name: lat
+            type: FLOAT8
+        - column:
+            name: legal_form
+            type: VARCHAR(255)
+        - column:
+            name: linkedin
+            type: VARCHAR(255)
+        - column:
+            name: lng
+            type: FLOAT8
+        - column:
+            name: logo
+            type: VARCHAR(255)
+        - column:
+            name: mission
+            type: VARCHAR(255)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: phone
+            type: VARCHAR(255)
+        - column:
+            name: profit_orientation
+            type: VARCHAR(255)
+        - column:
+            name: region
+            type: VARCHAR(255)
+        - column:
+            name: reporting_period
+            type: VARCHAR(255)
+        - column:
+            name: street_image
+            type: VARCHAR(255)
+        - column:
+            name: twitter
+            type: VARCHAR(255)
+        - column:
+            name: volunteers
+            type: INTEGER
+        - column:
+            name: website
+            type: VARCHAR(255)
+        - column:
+            name: youtube
+            type: VARCHAR(255)
+        - column:
+            name: zip_code
+            type: VARCHAR(255)
+        - column:
+            name: organization_id
+            type: BIGINT
+        tableName: portfolios
+- changeSet:
+    id: 1707149386885-6
+    author: andrewkoziulia (generated)
+    changes:
+    - renameTable:
+        oldTableName: venture_team_members
+        newTableName: team_members
+- changeSet:
+    id: 1707149386885-7
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: portfolio_id
+        baseTableName: portfolio_hashtags
+        constraintName: fkblhi1hueb6fgbidxpvcaye77k
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: portfolios
+        validate: true
+- changeSet:
+    id: 1707149386885-9
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: portfolio_id
+        baseTableName: portfolio_members
+        constraintName: fkkc6re7lgw862yb0y5ad1f4949
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: portfolios
+        validate: true
+- changeSet:
+    id: 1707149386885-10
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: portfolio_id
+        baseTableName: portfolio_invitations
+        constraintName: fklkidbyd9cpprb7lxwram9iye0
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: portfolios
+        validate: true
+- changeSet:
+    id: 1707149386885-11
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: organization_id
+        baseTableName: portfolios
+        constraintName: fklrla38htpl450antb6v5sprxh
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: organizations
+        validate: true
+- changeSet:
+    id: 1707149386885-12
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: portfolio_invitations
+        constraintName: fkooornwh02l4w7q80qcn39snsh
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+# Commented out: This changeset references a non-existent table 'team_members'
+# The actual table in migrations is 'venture_team_members'
+# This was likely auto-generated from a database with manual changes
+#- changeSet:
+#    id: 1707149386885-13
+#    author: andrewkoziulia (generated)
+#    changes:
+#    - addForeignKeyConstraint:
+#        baseColumnNames: portfolio_id
+#        baseTableName: team_members
+#        constraintName: fksywvdw1b6qr2kaviipqf5fujx
+#        deferrable: false
+#        initiallyDeferred: false
+#        onDelete: NO ACTION
+#        onUpdate: NO ACTION
+#        referencedColumnNames: id
+#        referencedTableName: portfolios
+#        validate: true
+- changeSet:
+    id: 1707149386885-14
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: portfolio_members
+        constraintName: fkt5q8t6k556mjl7uuj1pv0bnmb
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true

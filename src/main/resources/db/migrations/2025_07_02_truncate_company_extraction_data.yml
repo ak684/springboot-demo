@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_02_truncate_company_extraction_data
+      author: alona
+      comment: "Clear existing company extraction data to start fresh with domain requirement"
+      changes:
+        - sql:
+            sql: "TRUNCATE TABLE company_extraction_data CASCADE;"

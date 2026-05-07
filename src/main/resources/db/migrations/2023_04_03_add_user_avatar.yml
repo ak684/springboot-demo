@@ -1,0 +1,11 @@
+databaseChangeLog:
+- changeSet:
+    id: 1680558316147-1
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: avatar
+            type: varchar(255 BYTE)
+        tableName: users

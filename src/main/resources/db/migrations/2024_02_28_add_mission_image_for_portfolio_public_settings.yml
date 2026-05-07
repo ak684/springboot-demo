@@ -1,0 +1,12 @@
+databaseChangeLog:
+- changeSet:
+    id: 1709162922826-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: mission_image
+            type: varchar(255)
+        tableName: portfolio_public_settings
+

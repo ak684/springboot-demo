@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-08-05-convert-patents-to-integer
+      author: alona
+      changes:
+        # First, update any non-numeric values to NULL or 0
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET number_of_patents = NULL 
+              WHERE number_of_patents IS NOT NULL 
+              AND number_of_patents NOT SIMILAR TO '[0-9]+';
+        
+        # Convert the column type from VARCHAR to INTEGER
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: number_of_patents
+            newDataType: integer
+            
+        # Add a comment to document the change
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: temp_patents_migration_marker
+                  type: boolean
+                  defaultValue: true
+                  remarks: "Temporary marker for patents migration - can be removed later"
+        
+        # Remove the temporary marker immediately (just for documentation)
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: temp_patents_migration_marker
+      
+      rollback:
+        # Rollback: convert back to VARCHAR
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: number_of_patents
+            newDataType: varchar(50)

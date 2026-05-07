@@ -1,0 +1,12 @@
+databaseChangeLog:
+- changeSet:
+    id: 1693584128186-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: certification
+            type: int4
+            defaultValue: 0
+        tableName: ventures

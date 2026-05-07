@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_10_09_enable_news_tracking_by_default
+      author: alona
+      comment: "Change track_news default to true and backfill existing companies"
+      changes:
+        - dropDefaultValue:
+            tableName: company_extraction_data
+            columnName: track_news
+        - addDefaultValue:
+            tableName: company_extraction_data
+            columnName: track_news
+            defaultValueBoolean: true
+        - sql:
+            sql: "UPDATE company_extraction_data SET track_news = true WHERE track_news = false OR track_news IS NULL;"
+            comment: "Enable news tracking for all existing companies"

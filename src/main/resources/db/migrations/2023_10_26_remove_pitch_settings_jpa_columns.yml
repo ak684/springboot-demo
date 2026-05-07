@@ -1,0 +1,18 @@
+databaseChangeLog:
+- changeSet:
+    id: remove_audit_columns_from_pitch_settings
+    author: akoziulia
+    comment: "Remove JPA audit columns from pitch settings"
+    changes:
+    - dropColumn:
+        tableName: venture_pitch_settings
+        columnName: created_at
+    - dropColumn:
+        tableName: venture_pitch_settings
+        columnName: created_by
+    - dropColumn:
+        tableName: venture_pitch_settings
+        columnName: last_modified_at
+    - dropColumn:
+        tableName: venture_pitch_settings
+        columnName: last_modified_by

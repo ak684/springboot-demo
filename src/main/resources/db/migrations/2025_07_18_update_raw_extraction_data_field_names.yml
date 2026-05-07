@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_18_update_raw_extraction_data_field_names
+      author: alona
+      comment: Update raw_extraction_data JSON to use headquarter_address instead of headquarters_location
+      changes:
+        - sql:
+            sql: |
+              UPDATE company_extraction_data
+              SET raw_extraction_data = 
+                jsonb_set(
+                  raw_extraction_data::jsonb - 'headquarters_location',
+                  '{headquarter_address}',
+                  COALESCE(raw_extraction_data::jsonb->'headquarters_location', 'null'::jsonb)
+                )
+              WHERE raw_extraction_data IS NOT NULL 
+                AND raw_extraction_data::jsonb->>'headquarters_location' IS NOT NULL;

@@ -1,0 +1,131 @@
+databaseChangeLog:
+- changeSet:
+    id: 1697028826132-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: venture_pitch_settings_pkey
+            name: venture_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: color
+            type: VARCHAR(255)
+        - column:
+            name: intro_image
+            type: VARCHAR(255)
+        - column:
+            name: mission_image
+            type: VARCHAR(255)
+        - column:
+            name: description_image
+            type: VARCHAR(255)
+        - column:
+            name: intro_subtitle
+            type: VARCHAR(1000)
+        - column:
+            name: description
+            type: TEXT
+        - column:
+            name: pitch_id
+            type: VARCHAR(255)
+        - column:
+            defaultValueBoolean: false
+            name: shared
+            type: BOOLEAN
+        - column:
+            name: theme
+            type: VARCHAR(255)
+        - column:
+            defaultValueBoolean: true
+            name: show_facebook
+            type: BOOLEAN
+        - column:
+            defaultValueBoolean: true
+            name: show_instagram
+            type: BOOLEAN
+        - column:
+            defaultValueBoolean: true
+            name: show_linkedin
+            type: BOOLEAN
+        - column:
+            defaultValueBoolean: true
+            name: show_twitter
+            type: BOOLEAN
+        - column:
+            defaultValueBoolean: true
+            name: show_youtube
+            type: BOOLEAN
+        - column:
+              defaultValueBoolean: true
+              name: show_certification
+              type: BOOLEAN
+        - column:
+              defaultValueBoolean: true
+              name: show_website
+              type: BOOLEAN
+        tableName: venture_pitch_settings
+- changeSet:
+    id: 1697028826132-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: venture_pitch_settings
+        constraintName: fk2ixwoyqpb8agot0c7mijhjgdq
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+
+- changeSet:
+    id: 1697028826132-3
+    author: andrewkoziulia
+    comment: "Copy values to venture_pitch_settings and create a record for each venture"
+    changes:
+    - sql:
+        sql: |
+          INSERT INTO venture_pitch_settings (venture_id, description, pitch_id, theme, color, shared, created_at)
+          SELECT id, pitch_description, pitch_id, pitch_theme, pitch_color, pitch_shared, CURRENT_TIMESTAMP FROM ventures
+
+- changeSet:
+    id: 1697028826132-4
+    author: andrewkoziulia
+    comment: "Remove pitch columns from ventures"
+    changes:
+    - dropColumn:
+        tableName: ventures
+        columnName: pitch_description
+    - dropColumn:
+        tableName: ventures
+        columnName: pitch_id
+    - dropColumn:
+        tableName: ventures
+        columnName: pitch_theme
+    - dropColumn:
+        tableName: ventures
+        columnName: pitch_color
+    - dropColumn:
+        tableName: ventures
+        columnName: pitch_shared

@@ -1,0 +1,24 @@
+# Base image with pre-cached Maven and npm dependencies
+# Built by GitHub Actions and pushed to GHCR
+# Rebuild triggers: pom.xml or package.json changes, or weekly schedule
+
+FROM maven:3.9-eclipse-temurin-21
+WORKDIR /workspace
+
+# Copy dependency-defining files
+COPY pom.xml .
+COPY checkstyle_config.xml .
+COPY package.json package-lock.json ./
+
+# Download all Maven dependencies (plugins + project deps)
+RUN mvn dependency:go-offline -B -q && \
+    mvn dependency:resolve-plugins -B -q
+
+# Install Node/npm and download npm dependencies
+# Create minimal structure needed for frontend plugin to run
+RUN mkdir -p src/main/java frontend/admin-app frontend/shared-components && \
+    touch src/main/java/Dummy.java && \
+    mvn validate initialize -q 2>/dev/null || true && \
+    rm -rf src
+
+# Cache is now populated in /root/.m2 and node_modules/

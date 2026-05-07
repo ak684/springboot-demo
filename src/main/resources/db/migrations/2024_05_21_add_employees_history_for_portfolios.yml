@@ -1,0 +1,61 @@
+databaseChangeLog:
+- changeSet:
+    id: create-portfolio-employee-history-table
+    author: akoziulia
+    comment: "Create portfolio_employees_records table"
+    changes:
+    - createTable:
+        tableName: portfolio_employees_records
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: portfolio_employees_records_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: portfolio_id
+            type: bigint
+            constraints:
+              nullable: false
+              foreignKeyName: fk_portfolio_employees_records_portfolio
+              referencedTableName: portfolios
+              referencedColumnNames: id
+        - column:
+            name: count
+            type: integer
+
+- changeSet:
+    id: migrate-existing-employee-data
+    author: akoziulia
+    comment: "Migrate existing employee data to portfolio_employees_records"
+    changes:
+    - sql:
+        sql: |
+          INSERT INTO portfolio_employees_records (portfolio_id, count, created_at)
+          SELECT id, employees, CURRENT_TIMESTAMP FROM portfolios WHERE employees IS NOT NULL;
+
+- changeSet:
+    id: drop-employees-column-from-portfolios
+    author: akoziulia
+    comment: "Remove employees column from portfolios table"
+    changes:
+    - dropColumn:
+        tableName: portfolios
+        columnName: employees

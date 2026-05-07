@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_10_28_add_portfolio_narrative_columns
+      author: alona
+      comment: "Add portfolio narrative text fields to company extraction data"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: portfolio_strengths_text
+                  type: TEXT
+              - column:
+                  name: portfolio_weaknesses_text
+                  type: TEXT
+              - column:
+                  name: portfolio_impact_text
+                  type: TEXT
+              - column:
+                  name: portfolio_potential_needs_text
+                  type: TEXT
+              - column:
+                  name: portfolio_narrative_generated_at
+                  type: timestamp without time zone

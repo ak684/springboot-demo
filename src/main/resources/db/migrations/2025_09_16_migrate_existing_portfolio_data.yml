@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_16_migrate_existing_portfolio_data
+      author: alona
+      comment: "Migrate existing portfolio-company relationships to junction table"
+      changes:
+        - sql:
+            sql: >
+              INSERT INTO portfolio_company_extraction_access
+              (company_extraction_data_id, portfolio_id, created_by, last_modified_by, created_at, last_modified_at)
+              SELECT
+                ced.id AS company_extraction_data_id,
+                ced.portfolio_id,
+                ced.created_by,
+                ced.last_modified_by,
+                CURRENT_TIMESTAMP AS created_at,
+                CURRENT_TIMESTAMP AS last_modified_at
+              FROM company_extraction_data ced
+              WHERE ced.portfolio_id IS NOT NULL
+              AND NOT EXISTS (
+                SELECT 1
+                FROM portfolio_company_extraction_access pcea
+                WHERE pcea.company_extraction_data_id = ced.id
+                AND pcea.portfolio_id = ced.portfolio_id
+              );
+            comment: "Create junction table records for all existing portfolio-company relationships"

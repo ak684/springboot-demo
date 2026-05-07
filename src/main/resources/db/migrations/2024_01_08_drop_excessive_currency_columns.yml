@@ -1,0 +1,11 @@
+databaseChangeLog:
+- changeSet:
+    id: 1704738274198-1
+    author: andrewkoziulia
+    changes:
+    - dropColumn:
+        tableName: accelerations
+        columnName: currency
+    - dropColumn:
+        tableName: funding_round_investors
+        columnName: currency

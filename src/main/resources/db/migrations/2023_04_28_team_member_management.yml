@@ -1,0 +1,59 @@
+databaseChangeLog:
+- changeSet:
+    id: 1682689693685-2
+    author: akoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: user_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: venture_id
+            type: BIGINT
+        tableName: venture_members
+- changeSet:
+    id: 1682689693685-3
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: last_seen
+            type: timestamp
+        tableName: users
+- changeSet:
+    id: 1682689693685-6
+    author: akoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: venture_members
+        constraintName: fkk6wt78qd6b15xy1rttcwborr0
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1682689693685-7
+    author: akoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: venture_members
+        constraintName: fkmfpgk2kdia6mwclvjm3rc7rlg
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+

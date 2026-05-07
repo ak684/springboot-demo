@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_10_14_add_last_news_scraped_at
+      author: alona
+      comment: "Add last_news_scraped_at column to track when news was last scraped for each company"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: last_news_scraped_at
+                  type: timestamp
+                  remarks: "Timestamp of when news was last scraped for this company"
+        - sql:
+            sql: "UPDATE company_extraction_data SET last_news_scraped_at = CURRENT_TIMESTAMP WHERE id IN (SELECT DISTINCT company_extraction_data_id FROM news_events)"
+            comment: "Set initial timestamp for companies that have existing news events"

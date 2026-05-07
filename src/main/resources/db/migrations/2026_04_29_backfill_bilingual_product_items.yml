@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026_04_29_backfill_bilingual_product_items
+      author: alona
+      comment: "Backfill _en variants on existing core_products_services items
+                so the bilingual editor (#524) sees populated EN values even
+                before the next save. Mirrors the company_description backfill
+                from #517/#518. Idempotent via COALESCE."
+      changes:
+        - sql:
+            sql: |
+              UPDATE company_extraction_data
+              SET raw_extraction_data = jsonb_set(
+                raw_extraction_data,
+                '{core_products_services,items}',
+                (
+                  SELECT jsonb_agg(
+                    item || jsonb_build_object(
+                      'title_en',
+                      COALESCE(item->'title_en', item->'title'),
+                      'description_en',
+                      COALESCE(item->'description_en', item->'description')
+                    )
+                  )
+                  FROM jsonb_array_elements(
+                    raw_extraction_data->'core_products_services'->'items'
+                  ) AS item
+                )
+              )
+              WHERE raw_extraction_data IS NOT NULL
+                AND jsonb_typeof(
+                  raw_extraction_data->'core_products_services'->'items'
+                ) = 'array';

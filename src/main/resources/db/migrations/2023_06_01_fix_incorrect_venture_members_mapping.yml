@@ -1,0 +1,60 @@
+databaseChangeLog:
+- changeSet:
+    id: remove_venture_members_constraint1
+    author: akoziulia
+    changes:
+    - dropForeignKeyConstraint:
+        baseTableName: venture_members
+        constraintName: fkk6wt78qd6b15xy1rttcwborr0
+- changeSet:
+    id: remove_venture_members_constraint2
+    author: akoziulia
+    changes:
+    - dropForeignKeyConstraint:
+        baseTableName: venture_members
+        constraintName: fkmfpgk2kdia6mwclvjm3rc7rlg
+- changeSet:
+    id: flip_user_id_and_venture_id_columns1
+    author: akoziulia
+    changes:
+    - renameColumn:
+        newColumnName: temp
+        oldColumnName: user_id
+        tableName: venture_members
+- changeSet:
+    id: flip_user_id_and_venture_id_columns2
+    author: akoziulia
+    changes:
+    - renameColumn:
+        newColumnName: user_id
+        oldColumnName: venture_id
+        tableName: venture_members
+- changeSet:
+    id: flip_user_id_and_venture_id_columns3
+    author: akoziulia
+    changes:
+    - renameColumn:
+        newColumnName: venture_id
+        oldColumnName: temp
+        tableName: venture_members
+
+- changeSet:
+    id: add_constraint_fk_venture_members_users
+    author: akoziulia
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: venture_members
+        constraintName: fk_venture_members_users
+        referencedColumnNames: id
+        referencedTableName: users
+- changeSet:
+    id: add_constraint_fk_venture_members_ventures
+    author: akoziulia
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: venture_members
+        constraintName: fk_venture_members_ventures
+        referencedColumnNames: id
+        referencedTableName: ventures

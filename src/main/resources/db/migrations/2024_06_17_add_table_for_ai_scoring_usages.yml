@@ -1,0 +1,33 @@
+databaseChangeLog:
+- changeSet:
+    id: 1718631285201-1
+    author: andrewkoziulia
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: ai_scoring_usages_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: result
+            type: TEXT
+        tableName: ai_scoring_usages

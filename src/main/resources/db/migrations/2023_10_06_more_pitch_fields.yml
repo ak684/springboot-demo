@@ -1,0 +1,105 @@
+databaseChangeLog:
+- changeSet:
+    id: 1696577586213-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            defaultValueBoolean: true
+            name: pitch_enabled
+            type: bool
+        tableName: impacts
+- changeSet:
+    id: 1696577586213-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: pitch_order
+            type: int4
+        tableName: impacts
+- changeSet:
+    id: 1696577586213-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            defaultValueBoolean: true
+            name: pitch_enabled
+            type: bool
+        tableName: impact_indicators
+- changeSet:
+    id: 1696577586213-4
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: pitch_order
+            type: int4
+        tableName: impact_indicators
+- changeSet:
+    id: 1696577586213-5
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: pitch_id
+            type: varchar(255 BYTE)
+        tableName: ventures
+- changeSet:
+    id: 1696577586213-6
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: pitch_color
+            type: varchar(255)
+        tableName: ventures
+- changeSet:
+    id: 1696577586213-7
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: pitch_theme
+            type: varchar(255)
+        tableName: ventures
+- changeSet:
+    id: update-impacts-pitchOrder
+    author: andrewkoziulia
+    changes:
+    - sql:
+        sql: |
+          WITH numbered_impacts AS (
+            SELECT
+              id,
+              row_number() OVER (PARTITION BY venture_id ORDER BY created_at) - 1 AS new_pitch_order
+            FROM impacts
+          )
+          UPDATE impacts
+          SET pitch_order = numbered_impacts.new_pitch_order
+          FROM numbered_impacts
+          WHERE impacts.id = numbered_impacts.id;
+- changeSet:
+    id: update-impact-indicators-pitchOrder
+    author: andrewkoziulia
+    changes:
+    - sql:
+        sql: |
+          WITH numbered_indicators AS (
+            SELECT
+              id,
+              row_number() OVER (PARTITION BY impact_id ORDER BY id) - 1 AS new_pitch_order
+            FROM impact_indicators
+          )
+          UPDATE impact_indicators
+          SET pitch_order = numbered_indicators.new_pitch_order
+          FROM numbered_indicators
+          WHERE impact_indicators.id = numbered_indicators.id;

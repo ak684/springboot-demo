@@ -1,0 +1,8 @@
+sh ~/liquibase-4.18.0/liquibase \
+--driver=org.postgresql.Driver \
+--url=jdbc:postgresql://localhost:5432/ventureplatform_dev \
+--username=impact_user \
+--password=your_password \
+--snapshotFormat=json \
+--outputFile=snapshot.json \
+snapshot

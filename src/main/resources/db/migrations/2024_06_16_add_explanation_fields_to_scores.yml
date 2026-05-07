@@ -1,0 +1,102 @@
+databaseChangeLog:
+- changeSet:
+    id: 1718545370687-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: noisiness_explanation
+            type: text
+        tableName: indicator_scores
+- changeSet:
+    id: 1718545370687-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: validation_explanation
+            type: text
+        tableName: indicator_scores
+- changeSet:
+    id: 1718545370687-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: contribution_explanation
+            type: text
+        tableName: impact_scores
+- changeSet:
+    id: 1718545370687-4
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: degree_of_change_explanation
+            type: text
+        tableName: impact_scores
+- changeSet:
+    id: 1718545370687-5
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: duration_explanation
+            type: text
+        tableName: impact_scores
+- changeSet:
+    id: 1718545370687-6
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: previous_evidence_explanation
+            type: text
+        tableName: impact_scores
+- changeSet:
+    id: 1718545370687-7
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: problem_importance_explanation
+            type: text
+        tableName: impact_scores
+- changeSet:
+    id: 1718545370687-8
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: proximity_explanation
+            type: text
+        tableName: impact_scores
+- changeSet:
+    id: 1718545370687-9
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: size_of_stakeholders_explanation
+            type: text
+        tableName: impact_scores
+- changeSet:
+    id: 1718545370687-10
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: stakeholder_situation_explanation
+            type: text
+        tableName: impact_scores
+

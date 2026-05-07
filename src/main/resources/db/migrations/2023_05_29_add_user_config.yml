@@ -1,0 +1,49 @@
+databaseChangeLog:
+- changeSet:
+    id: 1685363249652-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: user_config_pkey
+            name: user_id
+            type: BIGINT
+        - column:
+            defaultValueBoolean: false
+            name: hide_impact_wizard
+            type: BOOLEAN
+        - column:
+            defaultValueBoolean: false
+            name: hide_scoring_wizard
+            type: BOOLEAN
+        - column:
+            defaultValueBoolean: false
+            name: hide_team_management_wizard
+            type: BOOLEAN
+        tableName: user_config
+- changeSet:
+    id: 1685363249652-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: user_config
+        constraintName: fkl8juqglanlq5r8qxkaiftldqh
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: "create-user-configs"
+    author: andrewkoziulia
+    changes:
+    - sql:
+        sql: "INSERT INTO user_config (user_id) SELECT id FROM users"
+        comment: "Creating UserConfig entries for existing User entries"

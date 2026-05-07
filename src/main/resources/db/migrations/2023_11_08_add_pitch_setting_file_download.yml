@@ -1,0 +1,13 @@
+databaseChangeLog:
+- changeSet:
+    id: 1699404482055-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            defaultValueBoolean: false
+            name: allow_download_files
+            type: bool
+        tableName: venture_pitch_settings
+

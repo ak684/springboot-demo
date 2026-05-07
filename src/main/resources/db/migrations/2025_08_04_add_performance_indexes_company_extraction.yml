@@ -1,0 +1,86 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_04_add_performance_indexes_company_extraction
+      author: alona
+      comment: "Add performance indexes for company extraction data to improve loading and search speed"
+      changes:
+        # Index for sorting by last_modified_at (most common sort)
+        - createIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_last_modified_desc
+            columns:
+              - column:
+                  name: last_modified_at
+                  descending: true
+        
+        # Index for sorting by created_at
+        - createIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_created_at_desc
+            columns:
+              - column:
+                  name: created_at
+                  descending: true
+        
+        # Index for company name search (case-insensitive)
+        - sql:
+            sql: "CREATE INDEX idx_company_extraction_name_lower ON company_extraction_data(LOWER(company_name));"
+        
+        # Index for domain search (case-insensitive) 
+        - sql:
+            sql: "CREATE INDEX idx_company_extraction_domain_lower ON company_extraction_data(LOWER(domain));"
+        
+        # Index for company URL search (case-insensitive)
+        - sql:
+            sql: "CREATE INDEX idx_company_extraction_url_lower ON company_extraction_data(LOWER(company_url));"
+        
+        # Composite index for portfolio filtering
+        - createIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_portfolio_modified
+            columns:
+              - column:
+                  name: portfolio_id
+              - column:
+                  name: last_modified_at
+                  descending: true
+        
+        # Index for numeric sorting columns that are commonly sorted
+        - sql:
+            sql: "CREATE INDEX idx_company_extraction_employees_numeric ON company_extraction_data(CAST(NULLIF(REGEXP_REPLACE(number_of_employees, '[^0-9]', '', 'g'), '') AS numeric)) WHERE number_of_employees IS NOT NULL;"
+        
+        # Index for annual sales sorting (2023 - most recent)
+        - createIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_sales_2023
+            columns:
+              - column:
+                  name: annual_sales_2023
+                  descending: true
+        
+        # Index for annual sales sorting (2022)
+        - createIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_sales_2022
+            columns:
+              - column:
+                  name: annual_sales_2022
+                  descending: true
+        
+        # Index for total funding amount sorting
+        - createIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_funding
+            columns:
+              - column:
+                  name: total_funding_amount
+                  descending: true
+        
+        # Index for SBMO total score sorting
+        - createIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_sbmo_total
+            columns:
+              - column:
+                  name: sbmo_total_score
+                  descending: true

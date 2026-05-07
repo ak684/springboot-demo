@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-11-29-make-aggregated-indicators-fk-deferrable
+      author: alonaking
+      comment: "Make self-referential FK deferrable to allow seed data loading"
+      changes:
+        - dropForeignKeyConstraint:
+            baseTableName: aggregated_indicators
+            constraintName: fk_aggregated_indicators_parent
+        - sql:
+            sql: >
+              ALTER TABLE aggregated_indicators
+              ADD CONSTRAINT fk_aggregated_indicators_parent
+              FOREIGN KEY (parent_indicator_id)
+              REFERENCES aggregated_indicators(id)
+              DEFERRABLE INITIALLY DEFERRED;

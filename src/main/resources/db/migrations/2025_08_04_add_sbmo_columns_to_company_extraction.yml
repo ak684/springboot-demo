@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_04_add_sbmo_columns_to_company_extraction
+      author: alona
+      comment: "Add Sustainability Business Model Orientation (SBMO) score columns to company extraction data"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: sbmo_criteria_a_score
+                  type: decimal(3,1)
+                  remarks: "Distinctive Sustainability Problem Addressed (0-5)"
+              - column:
+                  name: sbmo_criteria_b_score
+                  type: decimal(3,1)
+                  remarks: "Depth of Impact (0-5)"
+              - column:
+                  name: sbmo_criteria_c_score
+                  type: decimal(3,1)
+                  remarks: "Business Model Leverage (0-5)"
+              - column:
+                  name: sbmo_criteria_d_score
+                  type: decimal(3,1)
+                  remarks: "Multi-Problem Solutions (0-5)"
+              - column:
+                  name: sbmo_total_score
+                  type: decimal(5,2)
+                  remarks: "Total SBMO score (0-100)"
+              - column:
+                  name: sbmo_criteria_a_explanation
+                  type: text
+                  remarks: "Explanation for Distinctive Sustainability Problem Addressed score"
+              - column:
+                  name: sbmo_criteria_b_explanation
+                  type: text
+                  remarks: "Explanation for Depth of Impact score"
+              - column:
+                  name: sbmo_criteria_c_explanation
+                  type: text
+                  remarks: "Explanation for Business Model Leverage score"
+              - column:
+                  name: sbmo_criteria_d_explanation
+                  type: text
+                  remarks: "Explanation for Multi-Problem Solutions score"

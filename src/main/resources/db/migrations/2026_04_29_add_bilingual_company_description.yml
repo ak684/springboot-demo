@@ -1,0 +1,34 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026_04_29_add_bilingual_company_description
+      author: alona
+      comment: "Bilingual storage and auto-translation flags for public profile company_description (#517, #518)"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: company_description_en
+                  type: TEXT
+                  remarks: "English variant of company_description for public profile"
+              - column:
+                  name: company_description_de
+                  type: TEXT
+                  remarks: "German variant of company_description for public profile"
+              - column:
+                  name: company_description_en_auto_translated
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "True when company_description_en was written by auto-translation, false when written by a user save"
+              - column:
+                  name: company_description_de_auto_translated
+                  type: boolean
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
+                  remarks: "True when company_description_de was written by auto-translation, false when written by a user save"
+        - sql:
+            comment: "Backfill _en column from existing legacy company_description"
+            sql: "UPDATE company_extraction_data SET company_description_en = company_description WHERE company_description IS NOT NULL AND company_description_en IS NULL"

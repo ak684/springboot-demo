@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-07-21-add-carbon-emissions-columns
+      author: alona
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: total_carbon_emissions
+                  type: varchar(50)
+                  remarks: Total carbon emissions in tCO2e
+              - column:
+                  name: scope1_emissions
+                  type: varchar(50)
+                  remarks: Scope 1 (direct) emissions in tCO2e
+              - column:
+                  name: scope2_emissions
+                  type: varchar(50)
+                  remarks: Scope 2 (purchased energy) emissions in tCO2e
+              - column:
+                  name: scope3_emissions
+                  type: varchar(50)
+                  remarks: Scope 3 (indirect) emissions in tCO2e

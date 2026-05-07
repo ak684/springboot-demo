@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_22_fix_decimal_precision_growth_columns
+      author: alona
+      comment: "Fix DECIMAL precision for growth and score columns that are causing overflow errors"
+      changes:
+        # Fix growth trend columns
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: monthly_growth_trend
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: three_month_growth_trend
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: six_month_growth_trend
+            newDataType: DECIMAL(10,2)
+            
+        # Fix SBMO score columns
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: sbmo_total_score
+            newDataType: DECIMAL(10,2)
+            
+        # Fix other score columns that might have issues
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: cluster_confidence_score
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: overall_impact_potential_score
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: sustainability_total_score
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: impact_magnitude_5_year
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: impact_likelihood
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: sustainability_problem_addressed_score
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: sustainability_sdg_alignment_score
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: sustainability_operational_score
+            newDataType: DECIMAL(10,2)

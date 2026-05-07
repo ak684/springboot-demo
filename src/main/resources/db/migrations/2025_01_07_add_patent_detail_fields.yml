@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_01_07_add_patent_detail_fields
+      author: alona
+      comment: "Add patent detail fields for tracking citations, status, and CPC codes"
+      changes:
+        - addColumn:
+            tableName: company_patents
+            columns:
+              - column:
+                  name: cited_by_count
+                  type: INTEGER
+                  constraints:
+                    nullable: true
+        - addColumn:
+            tableName: company_patents
+            columns:
+              - column:
+                  name: citations_count
+                  type: INTEGER
+                  constraints:
+                    nullable: true
+        - addColumn:
+            tableName: company_patents
+            columns:
+              - column:
+                  name: patent_status
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: true
+        - addColumn:
+            tableName: company_patents
+            columns:
+              - column:
+                  name: primary_cpc_code
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: true
+        - addColumn:
+            tableName: company_patents
+            columns:
+              - column:
+                  name: details_scraped_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: true
+        - createIndex:
+            tableName: company_patents
+            indexName: idx_company_patents_details_scraped_at
+            columns:
+              - column:
+                  name: details_scraped_at
+        - createIndex:
+            tableName: company_patents
+            indexName: idx_company_patents_cited_by_count
+            columns:
+              - column:
+                  name: cited_by_count

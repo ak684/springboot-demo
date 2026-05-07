@@ -1,0 +1,297 @@
+databaseChangeLog:
+- changeSet:
+    id: 1688149997391-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: impact_indicator_id
+            type: BIGINT
+        - column:
+            name: dropoff
+            type: INTEGER
+        tableName: impact_indicator_dropoff
+- changeSet:
+    id: 1688149997391-2
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: indicator_quantification_data_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: value
+            type: FLOAT8
+        - column:
+            name: year
+            type: INTEGER
+        - column:
+            name: indicator_id
+            type: BIGINT
+        - column:
+            name: type
+            type: VARCHAR(255)
+        tableName: indicator_quantification_data
+- changeSet:
+    id: 1688149997391-3
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: quantification_data_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: apr
+            type: INTEGER
+        - column:
+            name: aug
+            type: INTEGER
+        - column:
+            name: dec
+            type: INTEGER
+        - column:
+            name: feb
+            type: INTEGER
+        - column:
+            name: jan
+            type: INTEGER
+        - column:
+            name: jul
+            type: INTEGER
+        - column:
+            name: jun
+            type: INTEGER
+        - column:
+            name: mar
+            type: INTEGER
+        - column:
+            name: may
+            type: INTEGER
+        - column:
+            name: nov
+            type: INTEGER
+        - column:
+            name: oct
+            type: INTEGER
+        - column:
+            name: sep
+            type: INTEGER
+        - column:
+            name: year
+            type: INTEGER
+        - column:
+            name: impact_id
+            type: BIGINT
+        - column:
+            name: type
+            type: VARCHAR(255)
+        tableName: quantification_data
+- changeSet:
+    id: 1688149997391-4
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: attribution
+            type: int4
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-5
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: attribution_comment
+            type: varchar(255)
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-6
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: deadweight
+            type: int4
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-7
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: deadweight_comment
+            type: varchar(255)
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-8
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: displacement
+            type: int4
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-9
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: displacement_comment
+            type: varchar(255)
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-10
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: quantification_type
+            type: int4
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-11
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: post_initial
+            type: float8
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-12
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: pre_initial
+            type: float8
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-13
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: dropoff_comment
+            type: varchar(255)
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-14
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: duration
+            type: int4
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-15
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            defaultValueBoolean: true
+            name: stable
+            type: bool
+        tableName: impact_indicators
+- changeSet:
+    id: 1688149997391-16
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: impact_id
+        baseTableName: quantification_data
+        constraintName: fkb0j042hlq41wx2pbaq3jlyhkl
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: impacts
+        validate: true
+- changeSet:
+    id: 1688149997391-17
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: impact_indicator_id
+        baseTableName: impact_indicator_dropoff
+        constraintName: fkel2jw9j171iecdvwo8h9a4eoc
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: impact_indicators
+        validate: true
+- changeSet:
+    id: 1688149997391-18
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: indicator_id
+        baseTableName: indicator_quantification_data
+        constraintName: fktafc4gmipex1xlrg0rq4cbfnp
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: impact_indicators
+        validate: true

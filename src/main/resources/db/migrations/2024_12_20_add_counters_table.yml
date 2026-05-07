@@ -1,0 +1,63 @@
+databaseChangeLog:
+- changeSet:
+    id: create-counters-table
+    author: alona
+    comment: "Create counters table for SSE real-time counter feature"
+    changes:
+    - createTable:
+        tableName: counters
+        columns:
+        - column:
+            name: id
+            type: VARCHAR(36)
+            constraints:
+              primaryKey: true
+              nullable: false
+        - column:
+            name: name
+            type: VARCHAR(255)
+            constraints:
+              nullable: false
+        - column:
+            name: type
+            type: VARCHAR(50)
+            constraints:
+              nullable: false
+        - column:
+            name: start_value
+            type: BIGINT
+            constraints:
+              nullable: false
+        - column:
+            name: target_value
+            type: BIGINT
+            constraints:
+              nullable: true
+        - column:
+            name: target_date
+            type: TIMESTAMP
+            constraints:
+              nullable: true
+        - column:
+            name: rate_per_second
+            type: DOUBLE PRECISION
+            constraints:
+              nullable: true
+        - column:
+            name: is_active
+            type: BOOLEAN
+            defaultValueBoolean: true
+            constraints:
+              nullable: false
+        - column:
+            name: created_at
+            type: TIMESTAMP
+            defaultValueComputed: CURRENT_TIMESTAMP
+            constraints:
+              nullable: false
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP
+            defaultValueComputed: CURRENT_TIMESTAMP
+            constraints:
+              nullable: false

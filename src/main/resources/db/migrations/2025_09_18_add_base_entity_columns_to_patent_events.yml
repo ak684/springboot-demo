@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_18_add_base_entity_columns_to_patent_events
+      author: alona
+      comment: "Add BaseEntity columns to patent_events table for consistency and auditing"
+      changes:
+        - addColumn:
+            tableName: patent_events
+            columns:
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+        - sql:
+            sql: |
+              -- Update existing records to have last_modified_at = created_at
+              UPDATE patent_events
+              SET last_modified_at = created_at
+              WHERE last_modified_at IS NULL;

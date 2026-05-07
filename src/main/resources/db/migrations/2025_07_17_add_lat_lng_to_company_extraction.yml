@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_17_add_lat_lng_to_company_extraction
+      author: alona
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: latitude
+                  type: double precision
+              - column:
+                  name: longitude
+                  type: double precision

@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: change-description-column-type
+      author: akoziulia
+      changes:
+        - modifyDataType:
+            columnName: description
+            newDataType: text
+            tableName: ventures

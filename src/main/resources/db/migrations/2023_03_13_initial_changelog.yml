@@ -1,0 +1,535 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1678722403002-1
+      author: akoziulia (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: impacts_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: change
+                  type: VARCHAR(255)
+              - column:
+                  defaultValueBoolean: false
+                  name: draft
+                  type: BOOLEAN
+              - column:
+                  name: innovation
+                  type: VARCHAR(255)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: output_units
+                  type: VARCHAR(255)
+              - column:
+                  defaultValueBoolean: true
+                  name: positive
+                  type: BOOLEAN
+              - column:
+                  name: sort_order
+                  type: INTEGER
+              - column:
+                  name: stakeholders
+                  type: VARCHAR(255)
+              - column:
+                  name: status_quo
+                  type: VARCHAR(255)
+              - column:
+                  name: venture_id
+                  type: BIGINT
+            tableName: impacts
+  - changeSet:
+      id: 1678722403002-2
+      author: akoziulia (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: ventures_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  defaultValue: score
+                  name: sort_impacts_by
+                  type: VARCHAR(20)
+              - column:
+                  name: organization_id
+                  type: BIGINT
+            tableName: ventures
+  - changeSet:
+      id: 1678722403002-3
+      author: akoziulia (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: users_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: active
+                  type: BOOLEAN
+              - column:
+                  name: country
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+              - column:
+                  name: password_reset_token
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: role
+                  type: VARCHAR(255)
+              - column:
+                  name: stripe_id
+                  type: VARCHAR(255)
+              - column:
+                  name: token_expiry_date
+                  type: BIGINT
+              - column:
+                  name: organization_id
+                  type: BIGINT
+            tableName: users
+  - changeSet:
+      id: 1678722403002-4
+      author: akoziulia (generated)
+      changes:
+        - addUniqueConstraint:
+            columnNames: email
+            constraintName: uk_6dotkott2kjsp8vw4d0m25fb7
+            tableName: users
+  - changeSet:
+      id: 1678722403002-5
+      author: akoziulia (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: feedbacks_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: entry
+                  type: JSONB
+            tableName: feedbacks
+  - changeSet:
+      id: 1678722403002-6
+      author: akoziulia (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: impact_goals_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: goal
+                  type: VARCHAR(255)
+              - column:
+                  name: rate
+                  type: INTEGER
+              - column:
+                  name: impact_id
+                  type: BIGINT
+            tableName: impact_goals
+  - changeSet:
+      id: 1678722403002-7
+      author: akoziulia (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: impact_indicators_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: year
+                  type: INTEGER
+              - column:
+                  name: impact_id
+                  type: BIGINT
+            tableName: impact_indicators
+  - changeSet:
+      id: 1678722403002-8
+      author: akoziulia (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: impact_scores_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: contribution
+                  type: INTEGER
+              - column:
+                  name: degree_of_change
+                  type: INTEGER
+              - column:
+                  name: duration
+                  type: VARCHAR(255)
+              - column:
+                  name: duration_negative
+                  type: VARCHAR(255)
+              - column:
+                  name: previous_evidence
+                  type: VARCHAR(255)
+              - column:
+                  name: previous_evidence_negative
+                  type: VARCHAR(255)
+              - column:
+                  name: problem_importance
+                  type: VARCHAR(255)
+              - column:
+                  name: proximity
+                  type: VARCHAR(255)
+              - column:
+                  name: size_of_stakeholders
+                  type: VARCHAR(255)
+              - column:
+                  name: stakeholder_situation
+                  type: VARCHAR(255)
+              - column:
+                  name: impact_id
+                  type: BIGINT
+            tableName: impact_scores
+  - changeSet:
+      id: 1678722403002-9
+      author: akoziulia (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: indicator_scores_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: noisiness
+                  type: VARCHAR(255)
+              - column:
+                  name: validation
+                  type: VARCHAR(255)
+              - column:
+                  name: impact_score_id
+                  type: BIGINT
+              - column:
+                  name: impact_indicator_id
+                  type: BIGINT
+            tableName: indicator_scores
+  - changeSet:
+      id: 1678722403002-10
+      author: akoziulia (generated)
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: organizations_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+            tableName: organizations
+  - changeSet:
+      id: 1678722403002-11
+      author: akoziulia (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: organization_id
+            baseTableName: ventures
+            constraintName: fk3w90jvb41h3d7fd9q61vf1t7q
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: organizations
+            validate: true
+  - changeSet:
+      id: 1678722403002-12
+      author: akoziulia (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: impact_indicator_id
+            baseTableName: indicator_scores
+            constraintName: fk9d20agi6o72udd1xsnkftlnu4
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: impact_indicators
+            validate: true
+  - changeSet:
+      id: 1678722403002-13
+      author: akoziulia (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: impact_id
+            baseTableName: impact_indicators
+            constraintName: fkfyujb395q17u5j1qsb97jcy1e
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: impacts
+            validate: true
+  - changeSet:
+      id: 1678722403002-14
+      author: akoziulia (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: impact_id
+            baseTableName: impact_goals
+            constraintName: fkg4umq2bit5uldlgkdil0rsspf
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: impacts
+            validate: true
+  - changeSet:
+      id: 1678722403002-15
+      author: akoziulia (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: impact_id
+            baseTableName: impact_scores
+            constraintName: fkks9moha57guqjqm8c76hf9a9o
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: impacts
+            validate: true
+  - changeSet:
+      id: 1678722403002-16
+      author: akoziulia (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: venture_id
+            baseTableName: impacts
+            constraintName: fkpt24tl1qgmtjcans2oy1t2hbd
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: ventures
+            validate: true
+  - changeSet:
+      id: 1678722403002-17
+      author: akoziulia (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: organization_id
+            baseTableName: users
+            constraintName: fkqpugllwvyv37klq7ft9m8aqxk
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: organizations
+            validate: true
+  - changeSet:
+      id: 1678722403002-18
+      author: akoziulia (generated)
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: impact_score_id
+            baseTableName: indicator_scores
+            constraintName: fksy9qxyqmaoy7tb8syfbwq2rw6
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: impact_scores
+            validate: true

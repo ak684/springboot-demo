@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_12_08_add_impact_magnitude_negative_net_columns
+      author: claude
+      comment: "Add negative and net 5-year impact magnitude columns, drop likelihood gross/net columns"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: impact_magnitude_5_year_negative
+                  type: DECIMAL(5,2)
+              - column:
+                  name: impact_magnitude_5_year_net
+                  type: DECIMAL(10,2)
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: impact_likelihood_5_year_net
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: impact_likelihood_5_year_gross

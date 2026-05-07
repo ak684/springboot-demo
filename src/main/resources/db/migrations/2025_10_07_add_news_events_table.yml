@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_10_07_add_news_events_table
+      author: alona
+      comment: "Add news_events table for company news notifications"
+      changes:
+        - createTable:
+            tableName: news_events
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: company_extraction_data_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(500)
+              - column:
+                  name: source
+                  type: VARCHAR(255)
+              - column:
+                  name: source_url
+                  type: VARCHAR(1000)
+              - column:
+                  name: published_date
+                  type: TIMESTAMP
+              - column:
+                  name: summary
+                  type: TEXT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+        - addForeignKeyConstraint:
+            baseTableName: news_events
+            baseColumnNames: company_extraction_data_id
+            referencedTableName: company_extraction_data
+            referencedColumnNames: id
+            constraintName: fk_news_events_company
+        - createIndex:
+            tableName: news_events
+            indexName: idx_news_events_company_id
+            columns:
+              - column:
+                  name: company_extraction_data_id
+        - createIndex:
+            tableName: news_events
+            indexName: idx_news_events_published_date
+            columns:
+              - column:
+                  name: published_date

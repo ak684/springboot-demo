@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_02_increase_patent_jurisdictions_column_size
+      author: alona
+      comment: "Increase patent_jurisdictions column size from VARCHAR(500) to TEXT to handle patents with many jurisdictions"
+      changes:
+        - modifyDataType:
+            tableName: company_patents
+            columnName: patent_jurisdictions
+            newDataType: TEXT

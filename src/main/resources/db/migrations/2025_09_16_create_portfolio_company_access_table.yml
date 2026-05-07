@@ -1,0 +1,77 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_16_create_portfolio_company_access_table
+      author: alona
+      comment: "Create junction table for many-to-many relationship between portfolios and companies"
+      changes:
+        - createTable:
+            tableName: portfolio_company_extraction_access
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: company_extraction_data_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: portfolio_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: bigint
+              - column:
+                  name: last_modified_by
+                  type: bigint
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+
+        - addForeignKeyConstraint:
+            baseColumnNames: company_extraction_data_id
+            baseTableName: portfolio_company_extraction_access
+            constraintName: fk_portfolio_company_access_company
+            referencedColumnNames: id
+            referencedTableName: company_extraction_data
+            onDelete: CASCADE
+
+        - addForeignKeyConstraint:
+            baseColumnNames: portfolio_id
+            baseTableName: portfolio_company_extraction_access
+            constraintName: fk_portfolio_company_access_portfolio
+            referencedColumnNames: id
+            referencedTableName: portfolios
+            onDelete: CASCADE
+
+        - addUniqueConstraint:
+            tableName: portfolio_company_extraction_access
+            columnNames: company_extraction_data_id, portfolio_id
+            constraintName: uk_portfolio_company_extraction
+
+        - createIndex:
+            tableName: portfolio_company_extraction_access
+            indexName: idx_portfolio_company_access_portfolio
+            columns:
+              - column:
+                  name: portfolio_id
+
+        - createIndex:
+            tableName: portfolio_company_extraction_access
+            indexName: idx_portfolio_company_access_company
+            columns:
+              - column:
+                  name: company_extraction_data_id

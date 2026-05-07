@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <style>
+    @page {
+      size: A4 landscape;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .table {
+      width: 100%;
+      /*height: 1px;*/
+      text-align: left;
+      color: rgb(18, 18, 18);
+      font-size: 14px;
+      border-collapse: collapse;
+    }
+
+    tr {
+      page-break-inside: avoid;
+    }
+
+    tr:nth-child(2n + 1) {
+      background-color: #F5F5F5;
+    }
+
+    td, th {
+      padding: 8px;
+      border: 1px solid rgb(212, 212, 212);
+    }
+
+    th {
+      background-color: #EFF2F6;
+    }
+
+    .header-row {;
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 15px;
+      text-transform: uppercase;
+    }
+
+    .draft-label {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 8px;
+      font-size: 12px;
+      line-height: 15px;
+      font-weight: bold;
+      color: #ADBCD0;
+      background: #F2F2F2;
+      text-transform: uppercase;
+      border: 1px solid #ADBCD0;
+      border-radius: 4px;
+    }
+
+    .indicator-margin {
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <table class="table">
+    <tr class="header-row">
+      <th colspan="2" style="width: 15%;">Impact</th>
+      <th th:if="${not #arrays.contains(hide, 'statusQuo')}">Status quo solution</th>
+      <th th:if="${not #arrays.contains(hide, 'innovation')}">What we do differently</th>
+      <th th:if="${not #arrays.contains(hide, 'stakeholders')}">We affect</th>
+      <th th:if="${not #arrays.contains(hide, 'change')}">
+        We improve <span th:if="${hasNegativeImpact}">/ worsen</span>
+      </th>
+      <th th:if="${not #arrays.contains(hide, 'outputUnits')}">Products/services/activities</th>
+      <th th:if="${not #arrays.contains(hide, 'indicators')}" style="width: 30%;">Measured by indicators</th>
+    </tr>
+    <tr th:each="impact : ${impacts}">
+      <td
+        th:style="'padding:0;border-right: none;width:6px;background-color: ' + (${impact.positive} ? '#4D9951' : '#E84747')"
+      >
+      </td>
+      <td style="border-left: none;">
+        <div style="margin-bottom: 8px;" th:if="${impact.aux.paramValue != null}">
+          <span th:text="${impact.aux.paramName}" style="text-transform: capitalize"></span>:
+          <span style="font-weight: bold" th:text="${impact.aux.paramValue}"></span>
+        </div>
+        <div style="font-weight: bold" th:text="${impact.name}"></div>
+        <span th:if="${impact.draft}" class="draft-label">DRAFT</span>
+      </td>
+      <td th:if="${not #arrays.contains(hide, 'statusQuo')}" th:text="${impact.statusQuo}"></td>
+      <td th:if="${not #arrays.contains(hide, 'innovation')}" th:text="${impact.innovation}"></td>
+      <td th:if="${not #arrays.contains(hide, 'stakeholders')}" th:text="${impact.stakeholders}"></td>
+      <td th:if="${not #arrays.contains(hide, 'change')}" th:text="${impact.change}"></td>
+      <td th:if="${not #arrays.contains(hide, 'outputUnits')}" th:text="${impact.outputUnits}"></td>
+      <td th:if="${not #arrays.contains(hide, 'indicators')}">
+        <div
+          th:each="indicator, iterStat : ${impact.indicators}"
+          th:classappend="${iterStat.count > 0} ? 'indicator-margin' : ''"
+        >
+          <span style="font-weight: bold" th:text="${iterStat.index + 1}"></span><span>:</span>
+          <span th:text="${indicator.name}"></span>
+        </div>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

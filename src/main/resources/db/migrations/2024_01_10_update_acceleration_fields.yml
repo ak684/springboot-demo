@@ -1,0 +1,19 @@
+databaseChangeLog:
+- changeSet:
+    id: 1704841501217
+    author: akoziulia
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: start
+            type: date
+        - column:
+            name: finish
+            type: date
+        tableName: accelerations
+    - dropColumn:
+        columnName: price
+        tableName: accelerations
+
+

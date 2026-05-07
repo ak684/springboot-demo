@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_14_add_company_tags
+      author: alonaking
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          columnExists:
+            tableName: company_extraction_data
+            columnName: tags
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: tags
+                  type: jsonb
+                  defaultValue: '[]'
+      rollback:
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: tags

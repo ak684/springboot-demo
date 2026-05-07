@@ -1,0 +1,116 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_05_add_missing_columns_for_lite_performance
+      author: alona
+      comment: "Add missing columns to eliminate raw_extraction_data access in lite endpoint for performance"
+      changes:
+        # Basic company info fields
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: legal_form
+                  type: varchar(255)
+              - column:
+                  name: legal_entity_formation_date
+                  type: varchar(100)
+              - column:
+                  name: ceo_name
+                  type: varchar(255)
+              - column:
+                  name: company_logo
+                  type: varchar(1000)
+        
+        # Scoring fields (critical for sorting and display)
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: cluster_confidence_score
+                  type: decimal(5,2)
+              - column:
+                  name: overall_impact_potential_score
+                  type: decimal(5,2)
+              - column:
+                  name: sustainability_total_score
+                  type: decimal(5,2)
+              - column:
+                  name: impact_magnitude_5_year
+                  type: decimal(5,2)
+              - column:
+                  name: impact_likelihood
+                  type: decimal(5,2)
+        
+        # Individual sustainability scores
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: sustainability_problem_addressed_score
+                  type: decimal(5,2)
+              - column:
+                  name: sustainability_sdg_alignment_score
+                  type: decimal(5,2)
+              - column:
+                  name: sustainability_operational_score
+                  type: decimal(5,2)
+        
+        # Evidence/certification fields
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: certification_name
+                  type: varchar(500)
+              - column:
+                  name: certification_link
+                  type: varchar(1000)
+              - column:
+                  name: esg_impact_report
+                  type: boolean
+              - column:
+                  name: esg_report_year
+                  type: varchar(10)
+              - column:
+                  name: esg_report_link
+                  type: varchar(1000)
+              - column:
+                  name: prize_award_name_1
+                  type: varchar(500)
+              - column:
+                  name: prize_award_link_1
+                  type: varchar(1000)
+              - column:
+                  name: prize_award_name_2
+                  type: varchar(500)
+              - column:
+                  name: prize_award_link_2
+                  type: varchar(1000)
+        
+        # Industry/geographic fields
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: primary_industry_standard
+                  type: varchar(255)
+              - column:
+                  name: secondary_industry_standard
+                  type: varchar(255)
+              - column:
+                  name: geographic_scope_estimated
+                  type: varchar(255)
+        
+        # Text explanation fields (truncated for lite endpoint)
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: sustainability_problem_addressed_justification
+                  type: text
+              - column:
+                  name: sustainability_sdg_alignment_justification
+                  type: text
+              - column:
+                  name: sustainability_operational_justification
+                  type: text

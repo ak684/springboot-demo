@@ -1,0 +1,32 @@
+databaseChangeLog:
+- changeSet:
+    id: 1699626957199-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: facebook_company_id
+            type: varchar(255)
+        tableName: ventures
+- changeSet:
+    id: 1699626957199-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: facebook_token
+            type: varchar(1000)
+        tableName: ventures
+- changeSet:
+    id: 1699626957199-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: instagram_company_id
+            type: varchar(255)
+        tableName: ventures
+

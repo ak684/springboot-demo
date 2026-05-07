@@ -1,0 +1,12 @@
+<div>
+  <h5 style="font-size: 18px;">Received a new feedback</h5>
+  <div th:if="${user != null}">
+    <p>From: <span th:text="${user.email}"></span></p>
+    <p>Name: <span th:text="${user.name}"></span></p>
+  </div>
+  <h5 style="font-size: 18px;">Feedback provided:</h5>
+  <p th:each="item : ${feedback.entry}">
+    <span style="font-weight: bold; text-transform: capitalize" th:text="${item.key}"></span>:
+    <span th:text="${item.value}"></span>
+  </p>
+</div>

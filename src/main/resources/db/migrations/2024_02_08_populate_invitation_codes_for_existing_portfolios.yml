@@ -1,0 +1,18 @@
+databaseChangeLog:
+- changeSet:
+    id: create-uuid-extension
+    author: akoziulia
+    comment: "Create uuid-ossp extension if not exists"
+    changes:
+    - sql:
+        sql: |
+          CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+- changeSet:
+    id: add-uuid-to-portfolios
+    author: akoziulia
+    comment: "Populate invitation_code with UUIDs for existing portfolios"
+    changes:
+    - sql:
+        sql: |
+          UPDATE portfolios
+          SET invitation_code = uuid_generate_v4();

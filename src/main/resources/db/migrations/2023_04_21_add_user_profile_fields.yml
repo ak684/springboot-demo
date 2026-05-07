@@ -1,0 +1,40 @@
+databaseChangeLog:
+- changeSet:
+    id: 1682080313929-2
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: company
+            type: varchar(255)
+        tableName: users
+- changeSet:
+    id: 1682080313929-3
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: last_name
+            type: varchar(255)
+        tableName: users
+- changeSet:
+    id: 1682080313929-4
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: position
+            type: varchar(255)
+        tableName: users
+- changeSet:
+    id: 1682080313929-1
+    author: akoziulia (generated)
+    changes:
+    - modifyDataType:
+        columnName: zip_code
+        newDataType: varchar(255)
+        tableName: ventures
+

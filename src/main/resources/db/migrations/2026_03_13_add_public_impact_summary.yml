@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026_03_13_add_public_impact_summary
+      author: alona
+      comment: "Add compact public impact summary for extractor research DB"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: public_impact_summary
+                  type: jsonb
+                  remarks: "Compact per-impact summary for public/research DB cards, charts, and maps"

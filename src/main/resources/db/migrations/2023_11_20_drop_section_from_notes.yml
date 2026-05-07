@@ -1,0 +1,9 @@
+databaseChangeLog:
+- changeSet:
+    id: drop_section_from_notes
+    author: akoziulia
+    comment: "Drop section from notes"
+    changes:
+    - dropColumn:
+        tableName: notes
+        columnName: section

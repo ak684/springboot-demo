@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-06-23-add-unit-slovak-column
+      author: alonaking
+      changes:
+        - addColumn:
+            tableName: aggregated_indicators
+            columns:
+              - column:
+                  name: unit_slovak
+                  type: VARCHAR(255)

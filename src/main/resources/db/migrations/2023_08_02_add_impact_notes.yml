@@ -1,0 +1,185 @@
+databaseChangeLog:
+- changeSet:
+    id: 1691000302241-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: note_files_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: name
+            type: VARCHAR(500)
+        - column:
+            name: public_id
+            type: VARCHAR(255)
+        - column:
+            name: size
+            type: BIGINT
+        - column:
+            name: note_id
+            type: BIGINT
+        tableName: note_files
+- changeSet:
+    id: 1691000302241-2
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: note_links_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: link
+            type: VARCHAR(500)
+        - column:
+            name: text
+            type: VARCHAR(255)
+        - column:
+            name: note_id
+            type: BIGINT
+        tableName: note_links
+- changeSet:
+    id: 1691000302241-3
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: notes_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: comment
+            type: VARCHAR(1000)
+        - column:
+            name: screen
+            type: VARCHAR(255)
+        - column:
+            name: section
+            type: VARCHAR(255)
+        - column:
+            name: impact_id
+            type: BIGINT
+        - column:
+            name: indicator_id
+            type: BIGINT
+        tableName: notes
+- changeSet:
+    id: 1691000302241-4
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: indicator_id
+        baseTableName: notes
+        constraintName: fkg7n05jlvot8m3jpn2c53gq3oo
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: impact_indicators
+        validate: true
+- changeSet:
+    id: 1691000302241-5
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: note_id
+        baseTableName: note_files
+        constraintName: fkkendx5glbg79yi0tskjerlrfr
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: notes
+        validate: true
+- changeSet:
+    id: 1691000302241-6
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: impact_id
+        baseTableName: notes
+        constraintName: fkkuh1ycjw67b0svmemt39n64l6
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: impacts
+        validate: true
+- changeSet:
+    id: 1691000302241-7
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: note_id
+        baseTableName: note_links
+        constraintName: fktoi7r918i28pjjnp2x7j4bvi7
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: notes
+        validate: true
+

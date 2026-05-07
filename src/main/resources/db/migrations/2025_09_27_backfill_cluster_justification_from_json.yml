@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_27_backfill_cluster_justification_from_json
+      author: alona
+      comment: "Backfill cluster_justification column from JSON data where it exists in raw_extraction_data but not in entity column"
+      changes:
+        - sql:
+            sql: |
+              UPDATE company_extraction_data
+              SET cluster_justification = raw_extraction_data->>'cluster_reasoning'
+              WHERE cluster_justification IS NULL
+                AND raw_extraction_data->>'cluster_reasoning' IS NOT NULL
+                AND raw_extraction_data->>'cluster_reasoning' != '';
+        - sql:
+            sql: |
+              SELECT COUNT(*) as updated_count
+              FROM company_extraction_data
+              WHERE cluster_justification IS NOT NULL;

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Authentication Successful</title>
+  <script>
+    window.onload = function() {
+      if (window.opener) {
+        window.opener.postMessage('FacebookLoginSuccess', '*');
+        window.close();
+      }
+    };
+  </script>
+</head>
+<body>
+<p>Authentication successful. You may now close this window if it is not closed automatically.</p>
+</body>
+</html>

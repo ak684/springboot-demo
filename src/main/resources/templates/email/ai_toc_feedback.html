@@ -1,0 +1,10 @@
+<div>
+  <h5 style="font-size: 18px;">Received a new AI TOC feedback</h5>
+  <div>
+    <p>Rating: <span th:text="${feedback.rating}"></span></p>
+    <p>Comment: <span th:text="${feedback.comment}"></span></p>
+    <p>Want to contact? - <span th:if="${feedback.contact}">YES</span><span th:if="${!feedback.contact}">NO</span></p>
+    <p>Name: <span th:text="${feedback.name}"></span></p>
+    <p>Email: <span th:text="${feedback.email}"></span></p>
+  </div>
+</div>

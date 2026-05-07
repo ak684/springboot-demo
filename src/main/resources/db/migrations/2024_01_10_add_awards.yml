@@ -1,0 +1,58 @@
+databaseChangeLog:
+- changeSet:
+    id: 1704899383709-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: awards_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: date
+            type: date
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: venture_id
+            type: BIGINT
+        - column:
+            name: amount
+            type: FLOAT8
+        tableName: awards
+- changeSet:
+    id: 1704899383709-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: awards
+        constraintName: fkrkmjnrr6kuif7wg7bohxr9gxf
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+

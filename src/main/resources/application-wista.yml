@@ -1,0 +1,56 @@
+application:
+  branding:
+    company-name: WISTA
+    company-short-name: WISTA
+    domain-display: wista.impactforesight.io
+    app-base-url: https://wista.impactforesight.io
+    map-base-url: https://map.impactforesight.io
+    marketing-site-url: https://wista.de/
+    pricing-url: ''
+    ai-toc-share-url: https://wista.impactforesight.io/ai-toc/start
+    stripe-checkout-url: ''
+    meta-description: WISTA white-label impact platform
+    share-images:
+      default-image-url: https://res.cloudinary.com/impactforesight/image/upload/v1714000288/app-share-image_b9xzsg.jpg
+      ai-toc-image-url: https://res.cloudinary.com/impactforesight/image/upload/v1714000446/toc-preview_ciw2zx.jpg
+    logo:
+      primary-text: WISTA
+      secondary-text: ''
+      image-url: /images/wista-logo.svg
+      image-alt: WISTA
+      image-height: 40
+      email-image-url: ''
+    emails:
+      no-reply: no_reply@impactforesight.io
+      feedback: feedback@impactforesight.io
+      certify: certify@impactforesight.io
+      support: ingo@impactforesight.io
+    social:
+      twitter: https://x.com/impactforesight
+      linkedin: https://www.linkedin.com/company/94799577/
+      facebook: https://www.facebook.com/profile.php?id=100093083318024
+      calendly: https://calendly.com/impactforesight
+    white-label:
+      enabled: true
+      auth-background-color: '#4aa6be'
+      auth-background-gradient-end: '#b4c94a'
+      auth-show-back-link: true
+      auth-back-link-url: https://wista.de/
+      auth-quote: "Let's build relationships, not just businesses."
+      auth-quote-attribution: "— CEO & Co-Founder ImpactForesight"
+      auth-forgot-password-description: "Enter the email address associated with your account and we'll send you a link to reset your password."
+      auth-login-submit-label: LOG IN
+      auth-forgot-submit-label: SEND RESET INSTRUCTIONS
+      auth-reset-submit-label: CHANGE PASSWORD
+      auth-reset-title: Change your password
+      auth-reset-password-placeholder: New password
+      auth-reset-confirm-placeholder: Confirm new password
+      welcome-headline: Welcome to the Wista service!
+      welcome-subtext: Your account is being activated. This might take a few moments.
+      welcome-button-label: START
+      auth-message-1: Welcome to WISTA's science-driven ecosystem.
+      auth-message-2: Manage your organizations and impact in one place.
+      auth-message-3: Start with the company URL dashboard, not the old venture flow.
+      default-post-login-route: /portfolios
+      company-dashboard-route-template: /portfolios/:portfolioId/company-url-extractor
+      hide-stripe-signup: true

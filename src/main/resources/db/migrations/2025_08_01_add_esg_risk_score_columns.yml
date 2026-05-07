@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-08-01-add-esg-risk-score-columns
+      author: alona
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              # ESG Risk Scores - matching entity field names
+              - column:
+                  name: esg_risk_environmental_inherent
+                  type: decimal(3,1)
+                  remarks: Inherent environmental risk score (0-10)
+              - column:
+                  name: esg_risk_environmental_adjusted
+                  type: decimal(3,1)
+                  remarks: Adjusted environmental risk score (0-10)
+              - column:
+                  name: esg_risk_social_inherent
+                  type: decimal(3,1)
+                  remarks: Inherent social risk score (0-10)
+              - column:
+                  name: esg_risk_social_adjusted
+                  type: decimal(3,1)
+                  remarks: Adjusted social risk score (0-10)
+              - column:
+                  name: esg_risk_governance_inherent
+                  type: decimal(3,1)
+                  remarks: Inherent governance risk score (0-10)
+              - column:
+                  name: esg_risk_governance_adjusted
+                  type: decimal(3,1)
+                  remarks: Adjusted governance risk score (0-10)
+              - column:
+                  name: esg_risk_total_inherent
+                  type: decimal(3,1)
+                  remarks: Average of inherent ESG scores (0-10)
+              - column:
+                  name: esg_risk_total_adjusted
+                  type: decimal(3,1)
+                  remarks: Average of adjusted ESG scores (0-10)

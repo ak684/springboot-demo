@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_17_add_portfolio_id_to_metrics_cache
+      author: alona
+      comment: "Add portfolio_id to metrics cache table to support portfolio-specific caching"
+      changes:
+        - addColumn:
+            tableName: company_data_extraction_metrics
+            columns:
+              - column:
+                  name: portfolio_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+                  remarks: "Portfolio ID for portfolio-specific metrics, null for global metrics"
+
+        - dropUniqueConstraint:
+            tableName: company_data_extraction_metrics
+            constraintName: company_data_extraction_metrics_metric_key_key
+
+        - addUniqueConstraint:
+            tableName: company_data_extraction_metrics
+            columnNames: metric_key, portfolio_id
+            constraintName: uk_metric_key_portfolio
+
+        - createIndex:
+            tableName: company_data_extraction_metrics
+            indexName: idx_metrics_portfolio_id
+            columns:
+              - column:
+                  name: portfolio_id

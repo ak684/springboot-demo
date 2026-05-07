@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_10_07_add_news_events_created_at_index
+      author: alona
+      comment: "Add index on news_events.created_at for efficient time-based queries"
+      changes:
+        - createIndex:
+            tableName: news_events
+            indexName: idx_news_events_created_at
+            columns:
+              - column:
+                  name: created_at

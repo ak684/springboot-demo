@@ -1,0 +1,12 @@
+databaseChangeLog:
+- changeSet:
+    id: 1690467640918-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: image
+            type: varchar(255)
+        tableName: impacts
+

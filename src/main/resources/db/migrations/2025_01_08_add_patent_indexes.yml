@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_01_08_add_patent_indexes
+      author: alona
+      comment: "Add index for last_patent_check_at column only - other indexes already exist"
+      changes:
+        - createIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_data_last_patent_check
+            columns:
+              - column:
+                  name: last_patent_check_at

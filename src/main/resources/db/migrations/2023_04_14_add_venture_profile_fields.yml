@@ -1,0 +1,259 @@
+databaseChangeLog:
+- changeSet:
+    id: 1681422077619-1
+    author: akoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: venture_id
+            type: BIGINT
+        - column:
+            name: hashtags
+            type: VARCHAR(255)
+        tableName: venture_hashtags
+- changeSet:
+    id: 1681422077619-2
+    author: akoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: venture_id
+            type: BIGINT
+        - column:
+            name: industries
+            type: VARCHAR(255)
+        tableName: venture_industries
+- changeSet:
+    id: 1681422077619-3
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: address
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-4
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: city
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-5
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: country
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-6
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: employees
+            type: int4
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-7
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: facebook
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-8
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: formation_date
+            type: timestamp
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-9
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: instagram
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-10
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: legal_entity_formed
+            type: bool
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-11
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: legal_form
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-12
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: linkedin
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-13
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: phone
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-14
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: profit_orientation
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-15
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: region
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-16
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: reporting_period
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-17
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: twitter
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-18
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: volunteers
+            type: int4
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-19
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: website
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-20
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: youtube
+            type: VARCHAR(255)
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-21
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: zip_code
+            type: int4
+        tableName: ventures
+- changeSet:
+    id: 1681422077619-22
+    author: akoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: venture_industries
+        constraintName: fkhp7872cubsny71g5fxp2tgvwl
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+- changeSet:
+    id: 1681422077619-23
+    author: akoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: venture_hashtags
+        constraintName: fkmf6ryed3n5jw5c65m7ve1gj3r
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+- changeSet:
+   id: change-back-description-column-type
+   author: akoziulia
+   changes:
+   - modifyDataType:
+       columnName: description
+       newDataType: VARCHAR(255)
+       tableName: ventures

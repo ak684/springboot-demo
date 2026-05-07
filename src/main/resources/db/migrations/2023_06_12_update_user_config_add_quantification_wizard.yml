@@ -1,0 +1,13 @@
+databaseChangeLog:
+- changeSet:
+    id: 1686574914347-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            defaultValueBoolean: false
+            name: hide_quantification_wizard
+            type: bool
+        tableName: user_config
+

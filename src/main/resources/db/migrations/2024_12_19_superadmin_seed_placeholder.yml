@@ -1,0 +1,11 @@
+databaseChangeLog:
+- changeSet:
+    id: create-superadmin-seed-placeholder
+    author: system
+    comment: "Legacy change kept for checksum compatibility; now a no-op"
+    validCheckSum: ANY
+    changes:
+    - sql:
+        sql: |
+          -- This migration has been intentionally left blank to preserve Liquibase history.
+          SELECT 1;

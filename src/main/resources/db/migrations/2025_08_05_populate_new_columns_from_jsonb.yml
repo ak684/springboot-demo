@@ -1,0 +1,110 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_05_populate_new_columns_from_jsonb
+      author: alona
+      comment: "Populate new columns from existing raw_extraction_data JSONB for performance"
+      changes:
+        # Populate basic company info
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET 
+                legal_form = raw_extraction_data->>'legal_form',
+                legal_entity_formation_date = raw_extraction_data->>'legal_entity_formation_date',
+                ceo_name = raw_extraction_data->>'ceo_name',
+                company_logo = raw_extraction_data->>'company_logo'
+              WHERE raw_extraction_data IS NOT NULL;
+        
+        # Populate scoring fields (convert to decimal)
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET 
+                cluster_confidence_score = CASE 
+                  WHEN raw_extraction_data->>'cluster_confidence_score' ~ '^[0-9]+\.?[0-9]*$' 
+                  THEN (raw_extraction_data->>'cluster_confidence_score')::decimal(5,2)
+                  ELSE NULL 
+                END,
+                overall_impact_potential_score = CASE 
+                  WHEN raw_extraction_data->>'overall_impact_potential_score' ~ '^[0-9]+\.?[0-9]*$' 
+                  THEN (raw_extraction_data->>'overall_impact_potential_score')::decimal(5,2)
+                  ELSE NULL 
+                END,
+                sustainability_total_score = CASE 
+                  WHEN raw_extraction_data->>'sustainability_total_score' ~ '^[0-9]+\.?[0-9]*$' 
+                  THEN (raw_extraction_data->>'sustainability_total_score')::decimal(5,2)
+                  ELSE NULL 
+                END,
+                impact_magnitude_5_year = CASE 
+                  WHEN raw_extraction_data->>'impact_magnitude_5_year' ~ '^[0-9]+\.?[0-9]*$' 
+                  THEN (raw_extraction_data->>'impact_magnitude_5_year')::decimal(5,2)
+                  ELSE NULL 
+                END,
+                impact_likelihood = CASE 
+                  WHEN raw_extraction_data->>'impact_likelihood' ~ '^[0-9]+\.?[0-9]*$' 
+                  THEN (raw_extraction_data->>'impact_likelihood')::decimal(5,2)
+                  ELSE NULL 
+                END
+              WHERE raw_extraction_data IS NOT NULL;
+        
+        # Populate sustainability scores
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET 
+                sustainability_problem_addressed_score = CASE 
+                  WHEN raw_extraction_data->>'sustainability_problem_addressed_score' ~ '^[0-9]+\.?[0-9]*$' 
+                  THEN (raw_extraction_data->>'sustainability_problem_addressed_score')::decimal(5,2)
+                  ELSE NULL 
+                END,
+                sustainability_sdg_alignment_score = CASE 
+                  WHEN raw_extraction_data->>'sustainability_sdg_alignment_score' ~ '^[0-9]+\.?[0-9]*$' 
+                  THEN (raw_extraction_data->>'sustainability_sdg_alignment_score')::decimal(5,2)
+                  ELSE NULL 
+                END,
+                sustainability_operational_score = CASE 
+                  WHEN raw_extraction_data->>'sustainability_operational_score' ~ '^[0-9]+\.?[0-9]*$' 
+                  THEN (raw_extraction_data->>'sustainability_operational_score')::decimal(5,2)
+                  ELSE NULL 
+                END
+              WHERE raw_extraction_data IS NOT NULL;
+        
+        # Populate evidence/certification fields
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET 
+                certification_name = raw_extraction_data->>'certification_name',
+                certification_link = raw_extraction_data->>'certification_link',
+                esg_impact_report = CASE 
+                  WHEN raw_extraction_data->>'esg_impact_report' = 'true' THEN true
+                  WHEN raw_extraction_data->>'esg_impact_report' = 'false' THEN false
+                  ELSE NULL 
+                END,
+                esg_report_year = raw_extraction_data->>'esg_report_year',
+                esg_report_link = raw_extraction_data->>'esg_report_link',
+                prize_award_name_1 = raw_extraction_data->>'prize_award_name_1',
+                prize_award_link_1 = raw_extraction_data->>'prize_award_link_1',
+                prize_award_name_2 = raw_extraction_data->>'prize_award_name_2',
+                prize_award_link_2 = raw_extraction_data->>'prize_award_link_2'
+              WHERE raw_extraction_data IS NOT NULL;
+        
+        # Populate industry/geographic fields
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET 
+                primary_industry_standard = raw_extraction_data->>'primary_industry_standard',
+                secondary_industry_standard = raw_extraction_data->>'secondary_industry_standard',
+                geographic_scope_estimated = raw_extraction_data->>'geographic_scope_estimated'
+              WHERE raw_extraction_data IS NOT NULL;
+        
+        # Populate justification fields
+        - sql:
+            sql: |
+              UPDATE company_extraction_data
+              SET
+                sustainability_problem_addressed_justification = raw_extraction_data->>'sustainability_problem_addressed_justification',
+                sustainability_sdg_alignment_justification = raw_extraction_data->>'sustainability_sdg_alignment_justification',
+                sustainability_operational_justification = raw_extraction_data->>'sustainability_operational_justification'
+              WHERE raw_extraction_data IS NOT NULL;

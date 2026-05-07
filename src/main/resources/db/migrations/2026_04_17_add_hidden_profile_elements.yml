@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026_04_17_add_hidden_profile_elements
+      author: alona
+      comment: "Persist per-item/section hide state for WISTA inline public profile editor (#486)"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: hidden_profile_elements
+                  type: jsonb
+                  remarks: "User-controlled visibility map for public profile sections and list items"

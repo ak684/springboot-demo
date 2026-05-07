@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: add_time_period_english_column
+      author: alona
+      changes:
+        - addColumn:
+            tableName: aggregated_indicators
+            columns:
+              - column:
+                  name: time_period_english
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
+                  remarks: "English time period label for display purposes"

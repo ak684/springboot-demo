@@ -1,0 +1,43 @@
+<div>
+  <div style="background:#2568F6;height:168px;padding:32px;">
+    <div style="font-family:Georgia,serif;font-weight:600;font-size:32px;line-height:36px;color:#fff;">
+      Welcome to <span th:text="${brand.companyName}"></span>!
+    </div>
+    <p style="margin-top:32px;">
+      <a
+        th:if="user.password == null"
+        th:href="${brand.appBaseUrl} + '/reset/' + ${user.passwordResetToken}"
+        style="padding:12px 24px;text-transform:uppercase;color:#fff;font-weight: 700;font-size: 14px;line-height: 26px;background:#2568F6;border-radius: 8px;text-decoration:none;border:1px solid #fff;"
+      >
+        Open Website
+      </a>
+      <a
+        th:if="user.password != null"
+        th:href="${brand.appBaseUrl}"
+        style="padding:12px 24px;text-transform:uppercase;color:#fff;font-weight: 700;font-size: 14px;line-height: 26px;background:#2568F6;border-radius: 8px;text-decoration:none;border:1px solid #fff;"
+      >
+        Open Website
+      </a>
+    </p>
+  </div>
+  <div style="margin-top:32px;color:#121212;">
+    <p>
+      Hello <span th:text="${user.name}"></span>,
+    </p>
+    <p>
+      Thank you for subscribing for <span th:text="${brand.companyName}"></span> service!
+    </p>
+    <p>
+      Your <span th:text="${brand.companyName}"></span> account <span th:text="${user.email}"></span> has been created.
+      <span th:if="${user.password == null}">Please click below to create a password for your account.</span>
+    </p>
+    <p th:if="${user.password == null}" style="margin:24px 0;">
+      <a
+        th:href="${brand.appBaseUrl} + '/reset/' + ${user.passwordResetToken}"
+        style="padding:12px 24px;text-transform:uppercase;color:#fff;font-weight: 700;font-size: 14px;line-height: 26px;background:#2568F6;border-radius: 8px;text-decoration:none"
+      >
+        Create Password
+      </a>
+    </p>
+  </div>
+</div>

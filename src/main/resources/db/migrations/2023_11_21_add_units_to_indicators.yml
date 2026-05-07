@@ -1,0 +1,11 @@
+databaseChangeLog:
+- changeSet:
+    id: 1700616668688-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: unit
+            type: varchar(50)
+        tableName: impact_indicators

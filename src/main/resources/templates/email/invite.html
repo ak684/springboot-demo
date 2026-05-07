@@ -1,0 +1,25 @@
+<div>
+  <p th:if="${user.name != null && #strings.length(user.name) > 0}">
+    Hello <span th:text="${user.name}"></span>,
+  </p>
+  <p>
+    <span th:text="${owner}"></span> has invited you to work on:
+  </p>
+  <ul>
+    <li th:each="venture: ${ventures}"><span th:text="${venture.name}"></span></li>
+  </ul>
+  <ul>
+    <li th:each="portfolio: ${portfolios}"><span th:text="${portfolio.name}"></span></li>
+  </ul>
+  <p th:if="${message != null && #strings.length(message) > 0}">
+    Note from <span th:text="${owner}"></span>:<br><span th:text="${message}"></span>
+  </p>
+  <p style="margin:24px 0;">
+    <a
+      th:href="${newAccount} ? ${brand.appBaseUrl} + '/create-account/' + ${user.passwordResetToken} : ${brand.appBaseUrl} + '/ventures'"
+      style="padding:12px 24px;text-transform:uppercase;color:#fff;font-weight: 700;font-size: 14px;line-height: 26px;background:#2568F6;border-radius: 8px;text-decoration:none"
+    >
+      View ventures
+    </a>
+  </p>
+</div>

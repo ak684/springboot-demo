@@ -1,0 +1,13 @@
+<div>
+  <p>
+    Hello Ingo,
+  </p>
+  <p>
+    User <span th:text="${user.name}"></span> <span th:text="${user.lastName}"></span> from
+    "<span th:text="${venture.name}"></span>" has sent a certification request for Level
+    <span th:text="${level}"></span>.
+  </p>
+  <p>
+    You can reach them by email: <a th:href="@{'mailto:' + ${user.email}}" th:text="${user.email}"></a>
+  </p>
+</div>

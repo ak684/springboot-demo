@@ -1,0 +1,17 @@
+<div>
+  <p>
+    Hello <span th:text="${owner.name}"></span>,
+  </p>
+  <p>
+    <span th:text="${name}"></span> <span th:text="${lastName}"></span> from
+    "<span th:text="${organization}"></span>" has requested access to your impact pitch deck of
+    "<span th:text="${venture.name}"></span>"<span th:if="${not #strings.isEmpty(message)}"> with the following message:</span><span
+    th:if="${#strings.isEmpty(message)}">.</span>
+  </p>
+  <p th:if="${not #strings.isEmpty(message)}">
+    <span th:text="${message}"></span>
+  </p>
+  <p>
+    You can reach them by email: <a th:href="@{'mailto:' + ${email}}" th:text="${email}"></a>
+  </p>
+</div>

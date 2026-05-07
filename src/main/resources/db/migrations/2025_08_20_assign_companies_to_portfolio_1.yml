@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_20_assign_companies_to_portfolio_1
+      author: alona
+      comment: "Assign all existing company extraction data to portfolio 1"
+      changes:
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET portfolio_id = 1
+              WHERE portfolio_id IS NULL;

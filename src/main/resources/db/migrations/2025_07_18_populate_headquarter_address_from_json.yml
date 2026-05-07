@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_18_populate_headquarter_address_from_json
+      author: alona
+      comment: Populate headquarter_address column from raw_extraction_data JSON
+      changes:
+        - sql:
+            sql: |
+              UPDATE company_extraction_data
+              SET headquarter_address = raw_extraction_data->>'headquarter_address'
+              WHERE raw_extraction_data->>'headquarter_address' IS NOT NULL
+                AND headquarter_address IS NULL;

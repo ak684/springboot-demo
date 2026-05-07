@@ -1,0 +1,63 @@
+databaseChangeLog:
+- changeSet:
+    id: modify-counter-data-types
+    author: alona
+    comment: "Modify start_value and target_value to DECIMAL(19,2)"
+    changes:
+    - modifyDataType:
+        tableName: counters
+        columnName: start_value
+        newDataType: DECIMAL(19,2)
+    - modifyDataType:
+        tableName: counters
+        columnName: target_value
+        newDataType: DECIMAL(19,2)
+
+- changeSet:
+    id: add-show-decimals-column
+    author: alona
+    comment: "Add show_decimals column if it doesn't exist"
+    preConditions:
+    - onFail: MARK_RAN
+    - not:
+        columnExists:
+          tableName: counters
+          columnName: show_decimals
+    changes:
+    - addColumn:
+        tableName: counters
+        columns:
+        - column:
+            name: show_decimals
+            type: BOOLEAN
+            defaultValueBoolean: false
+            constraints:
+              nullable: false
+
+- changeSet:
+    id: add-number-format-column
+    author: alona
+    comment: "Add number_format column if it doesn't exist"
+    preConditions:
+    - onFail: MARK_RAN
+    - not:
+        columnExists:
+          tableName: counters
+          columnName: number_format
+    changes:
+    - addColumn:
+        tableName: counters
+        columns:
+        - column:
+            name: number_format
+            type: VARCHAR(20)
+            constraints:
+              nullable: true
+
+- changeSet:
+    id: update-existing-counters-decimals
+    author: alona
+    comment: "Update existing counters to use decimal values"
+    changes:
+    - sql:
+        sql: "UPDATE counters SET show_decimals = false WHERE show_decimals IS NULL;"

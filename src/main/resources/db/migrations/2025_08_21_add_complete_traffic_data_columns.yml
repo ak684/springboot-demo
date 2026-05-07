@@ -1,0 +1,133 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_21_add_complete_traffic_data_columns
+      author: alona
+      comment: "Add all 24 months of website traffic data columns and comprehensive growth metrics"
+      changes:
+        # Historical traffic columns (Aug 2023 - Jan 2025)
+        # Note: Feb-July 2025 already exist from previous migration
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              # 2023 months
+              - column:
+                  name: traffic_aug_2023
+                  type: bigint
+                  remarks: "Website traffic for August 2023"
+              - column:
+                  name: traffic_sep_2023
+                  type: bigint
+                  remarks: "Website traffic for September 2023"
+              - column:
+                  name: traffic_oct_2023
+                  type: bigint
+                  remarks: "Website traffic for October 2023"
+              - column:
+                  name: traffic_nov_2023
+                  type: bigint
+                  remarks: "Website traffic for November 2023"
+              - column:
+                  name: traffic_dec_2023
+                  type: bigint
+                  remarks: "Website traffic for December 2023"
+              
+              # 2024 months
+              - column:
+                  name: traffic_jan_2024
+                  type: bigint
+                  remarks: "Website traffic for January 2024"
+              - column:
+                  name: traffic_feb_2024
+                  type: bigint
+                  remarks: "Website traffic for February 2024"
+              - column:
+                  name: traffic_mar_2024
+                  type: bigint
+                  remarks: "Website traffic for March 2024"
+              - column:
+                  name: traffic_apr_2024
+                  type: bigint
+                  remarks: "Website traffic for April 2024"
+              - column:
+                  name: traffic_may_2024
+                  type: bigint
+                  remarks: "Website traffic for May 2024"
+              - column:
+                  name: traffic_jun_2024
+                  type: bigint
+                  remarks: "Website traffic for June 2024"
+              - column:
+                  name: traffic_jul_2024
+                  type: bigint
+                  remarks: "Website traffic for July 2024"
+              - column:
+                  name: traffic_aug_2024
+                  type: bigint
+                  remarks: "Website traffic for August 2024"
+              - column:
+                  name: traffic_sep_2024
+                  type: bigint
+                  remarks: "Website traffic for September 2024"
+              - column:
+                  name: traffic_oct_2024
+                  type: bigint
+                  remarks: "Website traffic for October 2024"
+              - column:
+                  name: traffic_nov_2024
+                  type: bigint
+                  remarks: "Website traffic for November 2024"
+              - column:
+                  name: traffic_dec_2024
+                  type: bigint
+                  remarks: "Website traffic for December 2024"
+              
+              # 2025 months (Jan only - Feb-Jul exist, Aug will be added separately)
+              - column:
+                  name: traffic_jan_2025
+                  type: bigint
+                  remarks: "Website traffic for January 2025"
+              - column:
+                  name: traffic_aug_2025
+                  type: bigint
+                  remarks: "Website traffic for August 2025"
+              
+        # Extended growth metrics columns
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: one_month_growth
+                  type: decimal(10,2)
+                  remarks: "1-month growth percentage"
+              - column:
+                  name: one_year_growth
+                  type: decimal(10,2)
+                  remarks: "1-year growth percentage"
+              - column:
+                  name: two_year_growth
+                  type: decimal(10,2)
+                  remarks: "2-year growth percentage"
+              
+              # Store latest traffic month for reference
+              - column:
+                  name: latest_traffic_month
+                  type: varchar(20)
+                  remarks: "Latest month with traffic data (e.g., '2025-07')"
+              - column:
+                  name: traffic_data_updated_at
+                  type: timestamp
+                  remarks: "When traffic data was last updated"
+                  
+        # Fix existing growth columns that have wrong precision (DECIMAL 5,2 -> 10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: three_month_growth_trend
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: six_month_growth_trend
+            newDataType: DECIMAL(10,2)
+        - modifyDataType:
+            tableName: company_extraction_data
+            columnName: monthly_growth_trend
+            newDataType: DECIMAL(10,2)

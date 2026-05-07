@@ -1,0 +1,24 @@
+<table
+  th:fragment="header"
+  role="presentation"
+  style="width:94%;max-width:600px;border:none;border-spacing:0;text-align:left;background-color:#fff;"
+>
+  <tr>
+    <td style="width: 32px;"></td>
+    <td style="padding: 16px 0; border-bottom: 1px solid #ADBCD0;">
+      <a th:href="${brand.appBaseUrl}" style="text-decoration:none;">
+        <img
+          th:if="${not #strings.isEmpty(brand.logo.emailImageUrl)}"
+          th:src="${brand.logo.emailImageUrl}"
+          th:alt="${brand.companyName}"
+        >
+        <span
+          th:if="${#strings.isEmpty(brand.logo.emailImageUrl)}"
+          th:text="${brand.companyName}"
+          style="font-family:Arial,sans-serif;font-weight:700;font-size:24px;color:#121212;text-decoration:none;"
+        ></span>
+      </a>
+    </td>
+    <td style="width: 32px;"></td>
+  </tr>
+</table>

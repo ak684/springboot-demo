@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_08_add_last_patent_check_column
+      author: alona
+      comment: "Add last_patent_check_at column to track when patents were last checked for each company"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: last_patent_check_at
+                  type: TIMESTAMP
+                  remarks: "Timestamp of when patents were last checked for this company"

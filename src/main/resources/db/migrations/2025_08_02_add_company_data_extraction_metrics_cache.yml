@@ -1,0 +1,62 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_02_add_company_data_extraction_metrics_cache
+      author: alona
+      comment: "Add metrics cache table for company data extraction to improve performance"
+      changes:
+        - createTable:
+            tableName: company_data_extraction_metrics
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: metric_key
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: metric_value
+                  type: decimal(20,2)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: string_value
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: last_calculated
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - createIndex:
+            tableName: company_data_extraction_metrics
+            indexName: idx_company_metrics_key
+            columns:
+              - column:
+                  name: metric_key
+        - createIndex:
+            tableName: company_data_extraction_metrics
+            indexName: idx_company_metrics_last_calculated
+            columns:
+              - column:
+                  name: last_calculated

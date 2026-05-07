@@ -1,0 +1,63 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_05_populate_esg_score_columns
+      author: alona
+      comment: "Populate ESG materiality score columns from existing JSONB data"
+      changes:
+        # Populate ESG Materiality Scores (complex calculation from nested JSONB)
+        - sql:
+            sql: |
+              -- This calculates ESG scores from the esg_materiality_analysis topics
+              WITH esg_calculations AS (
+                SELECT 
+                  id,
+                  COALESCE(
+                    (
+                      SELECT SUM(
+                        COALESCE(CAST(topic->>'stakeholder_importance' AS DECIMAL), 0) + 
+                        COALESCE(CAST(COALESCE(topic->>'business_importance', topic->>'sustainability_business_score') AS DECIMAL), 0)
+                      )
+                      FROM jsonb_array_elements(raw_extraction_data->'esg_materiality_analysis'->'topics') AS topic
+                    ), 0
+                  ) AS sb_scores_sum,
+                  COALESCE(
+                    (
+                      SELECT SUM(
+                        COALESCE(CAST(topic->>'stakeholder_importance' AS DECIMAL), 0) + 
+                        COALESCE(CAST(COALESCE(topic->>'business_importance', topic->>'sustainability_business_score') AS DECIMAL), 0)
+                      )
+                      FROM jsonb_array_elements(raw_extraction_data->'esg_materiality_analysis'->'topics') AS topic
+                      WHERE COALESCE(topic->>'category', topic->>'pillar') = 'E'
+                    ), 0
+                  ) AS environmental_score,
+                  COALESCE(
+                    (
+                      SELECT SUM(
+                        COALESCE(CAST(topic->>'stakeholder_importance' AS DECIMAL), 0) + 
+                        COALESCE(CAST(COALESCE(topic->>'business_importance', topic->>'sustainability_business_score') AS DECIMAL), 0)
+                      )
+                      FROM jsonb_array_elements(raw_extraction_data->'esg_materiality_analysis'->'topics') AS topic
+                      WHERE COALESCE(topic->>'category', topic->>'pillar') = 'S'
+                    ), 0
+                  ) AS social_score,
+                  COALESCE(
+                    (
+                      SELECT SUM(
+                        COALESCE(CAST(topic->>'stakeholder_importance' AS DECIMAL), 0) + 
+                        COALESCE(CAST(COALESCE(topic->>'business_importance', topic->>'sustainability_business_score') AS DECIMAL), 0)
+                      )
+                      FROM jsonb_array_elements(raw_extraction_data->'esg_materiality_analysis'->'topics') AS topic
+                      WHERE COALESCE(topic->>'category', topic->>'pillar') = 'G'
+                    ), 0
+                  ) AS governance_score
+                FROM company_extraction_data 
+                WHERE raw_extraction_data->'esg_materiality_analysis'->'topics' IS NOT NULL
+              )
+              UPDATE company_extraction_data 
+              SET 
+                esg_sb_scores_sum = esg_calculations.sb_scores_sum,
+                esg_environmental_score = esg_calculations.environmental_score,
+                esg_social_score = esg_calculations.social_score,
+                esg_governance_score = esg_calculations.governance_score
+              FROM esg_calculations 
+              WHERE company_extraction_data.id = esg_calculations.id;

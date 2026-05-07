@@ -1,0 +1,312 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_29_convert_annual_sales_to_decimal
+      author: system
+      comment: Convert annual sales from VARCHAR to DECIMAL and add data consistency
+      changes:
+        # First, clean up the data before changing column types
+        - sql:
+            sql: |
+              -- Update type fields where sales data is N/A or empty
+              UPDATE company_extraction_data 
+              SET annual_sales_2022_type = 'n.a.'
+              WHERE (annual_sales_2022 IS NULL 
+                 OR annual_sales_2022 = '' 
+                 OR UPPER(annual_sales_2022) = 'N/A'
+                 OR UPPER(annual_sales_2022) = 'N.A.'
+                 OR UPPER(annual_sales_2022) = 'NA')
+                AND annual_sales_2022_type != 'n.a.';
+                
+              UPDATE company_extraction_data 
+              SET annual_sales_2023_type = 'n.a.'
+              WHERE (annual_sales_2023 IS NULL 
+                 OR annual_sales_2023 = '' 
+                 OR UPPER(annual_sales_2023) = 'N/A'
+                 OR UPPER(annual_sales_2023) = 'N.A.'
+                 OR UPPER(annual_sales_2023) = 'NA')
+                AND annual_sales_2023_type != 'n.a.';
+                
+              UPDATE company_extraction_data 
+              SET annual_sales_2024_type = 'n.a.'
+              WHERE (annual_sales_2024 IS NULL 
+                 OR annual_sales_2024 = '' 
+                 OR UPPER(annual_sales_2024) = 'N/A'
+                 OR UPPER(annual_sales_2024) = 'N.A.'
+                 OR UPPER(annual_sales_2024) = 'NA')
+                AND annual_sales_2024_type != 'n.a.';
+                
+              -- Clear currency when sales is N/A
+              UPDATE company_extraction_data 
+              SET currency_2022 = NULL
+              WHERE (annual_sales_2022 IS NULL 
+                 OR annual_sales_2022 = '' 
+                 OR UPPER(annual_sales_2022) = 'N/A'
+                 OR UPPER(annual_sales_2022) = 'N.A.'
+                 OR UPPER(annual_sales_2022) = 'NA');
+                 
+              UPDATE company_extraction_data 
+              SET currency_2023 = NULL
+              WHERE (annual_sales_2023 IS NULL 
+                 OR annual_sales_2023 = '' 
+                 OR UPPER(annual_sales_2023) = 'N/A'
+                 OR UPPER(annual_sales_2023) = 'N.A.'
+                 OR UPPER(annual_sales_2023) = 'NA');
+                 
+              UPDATE company_extraction_data 
+              SET currency_2024 = NULL
+              WHERE (annual_sales_2024 IS NULL 
+                 OR annual_sales_2024 = '' 
+                 OR UPPER(annual_sales_2024) = 'N/A'
+                 OR UPPER(annual_sales_2024) = 'N.A.'
+                 OR UPPER(annual_sales_2024) = 'NA');
+              
+              -- Set N/A values to NULL before conversion
+              UPDATE company_extraction_data 
+              SET annual_sales_2022 = NULL
+              WHERE annual_sales_2022 = '' 
+                 OR UPPER(annual_sales_2022) = 'N/A'
+                 OR UPPER(annual_sales_2022) = 'N.A.'
+                 OR UPPER(annual_sales_2022) = 'NA';
+                 
+              UPDATE company_extraction_data 
+              SET annual_sales_2023 = NULL
+              WHERE annual_sales_2023 = '' 
+                 OR UPPER(annual_sales_2023) = 'N/A'
+                 OR UPPER(annual_sales_2023) = 'N.A.'
+                 OR UPPER(annual_sales_2023) = 'NA';
+                 
+              UPDATE company_extraction_data 
+              SET annual_sales_2024 = NULL
+              WHERE annual_sales_2024 = '' 
+                 OR UPPER(annual_sales_2024) = 'N/A'
+                 OR UPPER(annual_sales_2024) = 'N.A.'
+                 OR UPPER(annual_sales_2024) = 'NA';
+                 
+            comment: Clean up N/A values and ensure type consistency
+            
+        # Create temporary columns for the conversion
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: annual_sales_2022_numeric
+                  type: DECIMAL(15,2)
+              - column:
+                  name: annual_sales_2023_numeric
+                  type: DECIMAL(15,2)
+              - column:
+                  name: annual_sales_2024_numeric
+                  type: DECIMAL(15,2)
+                  
+        # Convert the data with parsing logic
+        - sql:
+            sql: |
+              -- Parse 2022 sales values
+              UPDATE company_extraction_data 
+              SET annual_sales_2022_numeric = 
+                CASE 
+                  -- Handle millions
+                  WHEN annual_sales_2022 ~* '[0-9]+\.?[0-9]*\s*M' THEN 
+                    CAST(REGEXP_REPLACE(annual_sales_2022, '[^0-9.]', '', 'g') AS DECIMAL) * 1000000
+                  -- Handle billions
+                  WHEN annual_sales_2022 ~* '[0-9]+\.?[0-9]*\s*B' THEN 
+                    CAST(REGEXP_REPLACE(annual_sales_2022, '[^0-9.]', '', 'g') AS DECIMAL) * 1000000000
+                  -- Handle thousands
+                  WHEN annual_sales_2022 ~* '[0-9]+\.?[0-9]*\s*K' THEN 
+                    CAST(REGEXP_REPLACE(annual_sales_2022, '[^0-9.]', '', 'g') AS DECIMAL) * 1000
+                  -- Handle plain numbers
+                  WHEN annual_sales_2022 ~ '^[0-9,]+\.?[0-9]*$' THEN 
+                    CAST(REPLACE(annual_sales_2022, ',', '') AS DECIMAL)
+                  ELSE NULL
+                END
+              WHERE annual_sales_2022 IS NOT NULL;
+              
+              -- Parse 2023 sales values
+              UPDATE company_extraction_data 
+              SET annual_sales_2023_numeric = 
+                CASE 
+                  -- Handle millions
+                  WHEN annual_sales_2023 ~* '[0-9]+\.?[0-9]*\s*M' THEN 
+                    CAST(REGEXP_REPLACE(annual_sales_2023, '[^0-9.]', '', 'g') AS DECIMAL) * 1000000
+                  -- Handle billions
+                  WHEN annual_sales_2023 ~* '[0-9]+\.?[0-9]*\s*B' THEN 
+                    CAST(REGEXP_REPLACE(annual_sales_2023, '[^0-9.]', '', 'g') AS DECIMAL) * 1000000000
+                  -- Handle thousands
+                  WHEN annual_sales_2023 ~* '[0-9]+\.?[0-9]*\s*K' THEN 
+                    CAST(REGEXP_REPLACE(annual_sales_2023, '[^0-9.]', '', 'g') AS DECIMAL) * 1000
+                  -- Handle plain numbers
+                  WHEN annual_sales_2023 ~ '^[0-9,]+\.?[0-9]*$' THEN 
+                    CAST(REPLACE(annual_sales_2023, ',', '') AS DECIMAL)
+                  ELSE NULL
+                END
+              WHERE annual_sales_2023 IS NOT NULL;
+              
+              -- Parse 2024 sales values
+              UPDATE company_extraction_data 
+              SET annual_sales_2024_numeric = 
+                CASE 
+                  -- Handle millions
+                  WHEN annual_sales_2024 ~* '[0-9]+\.?[0-9]*\s*M' THEN 
+                    CAST(REGEXP_REPLACE(annual_sales_2024, '[^0-9.]', '', 'g') AS DECIMAL) * 1000000
+                  -- Handle billions
+                  WHEN annual_sales_2024 ~* '[0-9]+\.?[0-9]*\s*B' THEN 
+                    CAST(REGEXP_REPLACE(annual_sales_2024, '[^0-9.]', '', 'g') AS DECIMAL) * 1000000000
+                  -- Handle thousands
+                  WHEN annual_sales_2024 ~* '[0-9]+\.?[0-9]*\s*K' THEN 
+                    CAST(REGEXP_REPLACE(annual_sales_2024, '[^0-9.]', '', 'g') AS DECIMAL) * 1000
+                  -- Handle plain numbers
+                  WHEN annual_sales_2024 ~ '^[0-9,]+\.?[0-9]*$' THEN 
+                    CAST(REPLACE(annual_sales_2024, ',', '') AS DECIMAL)
+                  ELSE NULL
+                END
+              WHERE annual_sales_2024 IS NOT NULL;
+                  
+              -- Update type to 'estimate' for any parsed values that still have 'n.a.' type
+              UPDATE company_extraction_data 
+              SET annual_sales_2022_type = 'estimate'
+              WHERE annual_sales_2022_numeric IS NOT NULL 
+                AND annual_sales_2022_type = 'n.a.';
+                
+              UPDATE company_extraction_data 
+              SET annual_sales_2023_type = 'estimate'
+              WHERE annual_sales_2023_numeric IS NOT NULL 
+                AND annual_sales_2023_type = 'n.a.';
+                
+              UPDATE company_extraction_data 
+              SET annual_sales_2024_type = 'estimate'
+              WHERE annual_sales_2024_numeric IS NOT NULL 
+                AND annual_sales_2024_type = 'n.a.';
+                
+              -- Set default currency EUR for numeric values without currency
+              UPDATE company_extraction_data 
+              SET currency_2022 = 'EUR'
+              WHERE annual_sales_2022_numeric IS NOT NULL 
+                AND currency_2022 IS NULL;
+                
+              UPDATE company_extraction_data 
+              SET currency_2023 = 'EUR'
+              WHERE annual_sales_2023_numeric IS NOT NULL 
+                AND currency_2023 IS NULL;
+                
+              UPDATE company_extraction_data 
+              SET currency_2024 = 'EUR'
+              WHERE annual_sales_2024_numeric IS NOT NULL 
+                AND currency_2024 IS NULL;
+                
+            comment: Parse and convert sales values to numeric format
+            
+        # Drop the old columns and rename the new ones
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: annual_sales_2022
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: annual_sales_2023
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: annual_sales_2024
+            
+        - renameColumn:
+            tableName: company_extraction_data
+            oldColumnName: annual_sales_2022_numeric
+            newColumnName: annual_sales_2022
+        - renameColumn:
+            tableName: company_extraction_data
+            oldColumnName: annual_sales_2023_numeric
+            newColumnName: annual_sales_2023
+        - renameColumn:
+            tableName: company_extraction_data
+            oldColumnName: annual_sales_2024_numeric
+            newColumnName: annual_sales_2024
+            
+        # Add constraints to ensure data consistency
+        - sql:
+            sql: |
+              ALTER TABLE company_extraction_data 
+              ADD CONSTRAINT chk_annual_sales_2022_consistency 
+              CHECK (
+                (annual_sales_2022 IS NULL AND annual_sales_2022_type = 'n.a.' AND currency_2022 IS NULL) OR
+                (annual_sales_2022 IS NOT NULL AND annual_sales_2022_type IN ('actual', 'estimate') AND currency_2022 IS NOT NULL)
+              );
+              
+              ALTER TABLE company_extraction_data 
+              ADD CONSTRAINT chk_annual_sales_2023_consistency 
+              CHECK (
+                (annual_sales_2023 IS NULL AND annual_sales_2023_type = 'n.a.' AND currency_2023 IS NULL) OR
+                (annual_sales_2023 IS NOT NULL AND annual_sales_2023_type IN ('actual', 'estimate') AND currency_2023 IS NOT NULL)
+              );
+              
+              ALTER TABLE company_extraction_data 
+              ADD CONSTRAINT chk_annual_sales_2024_consistency 
+              CHECK (
+                (annual_sales_2024 IS NULL AND annual_sales_2024_type = 'n.a.' AND currency_2024 IS NULL) OR
+                (annual_sales_2024 IS NOT NULL AND annual_sales_2024_type IN ('actual', 'estimate') AND currency_2024 IS NOT NULL)
+              );
+              
+            comment: Add constraints to ensure data consistency
+            
+      rollback:
+        # Remove constraints
+        - sql:
+            sql: |
+              ALTER TABLE company_extraction_data DROP CONSTRAINT IF EXISTS chk_annual_sales_2022_consistency;
+              ALTER TABLE company_extraction_data DROP CONSTRAINT IF EXISTS chk_annual_sales_2023_consistency;
+              ALTER TABLE company_extraction_data DROP CONSTRAINT IF EXISTS chk_annual_sales_2024_consistency;
+              
+        # Add back the VARCHAR columns
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: annual_sales_2022_varchar
+                  type: VARCHAR(100)
+              - column:
+                  name: annual_sales_2023_varchar
+                  type: VARCHAR(100)
+              - column:
+                  name: annual_sales_2024_varchar
+                  type: VARCHAR(100)
+                  
+        # Convert back to string format
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET annual_sales_2022_varchar = 
+                CASE 
+                  WHEN annual_sales_2022 IS NULL THEN NULL
+                  ELSE CAST(annual_sales_2022 AS VARCHAR(100))
+                END,
+                annual_sales_2023_varchar = 
+                CASE 
+                  WHEN annual_sales_2023 IS NULL THEN NULL
+                  ELSE CAST(annual_sales_2023 AS VARCHAR(100))
+                END,
+                annual_sales_2024_varchar = 
+                CASE 
+                  WHEN annual_sales_2024 IS NULL THEN NULL
+                  ELSE CAST(annual_sales_2024 AS VARCHAR(100))
+                END;
+                
+        # Drop decimal columns and rename varchar back
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: annual_sales_2022
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: annual_sales_2023
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: annual_sales_2024
+            
+        - renameColumn:
+            tableName: company_extraction_data
+            oldColumnName: annual_sales_2022_varchar
+            newColumnName: annual_sales_2022
+        - renameColumn:
+            tableName: company_extraction_data
+            oldColumnName: annual_sales_2023_varchar
+            newColumnName: annual_sales_2023
+        - renameColumn:
+            tableName: company_extraction_data
+            oldColumnName: annual_sales_2024_varchar
+            newColumnName: annual_sales_2024

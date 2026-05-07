@@ -1,0 +1,17 @@
+databaseChangeLog:
+- changeSet:
+    id: 1706193969234
+    author: andrewkoziulia
+    changes:
+    - dropColumn:
+        tableName: venture_public_settings
+        columnName: show_summary
+    - dropColumn:
+        tableName: venture_public_settings
+        columnName: show_financials
+    - dropColumn:
+          tableName: venture_public_settings
+          columnName: show_impacts
+    - dropColumn:
+          tableName: venture_public_settings
+          columnName: show_team

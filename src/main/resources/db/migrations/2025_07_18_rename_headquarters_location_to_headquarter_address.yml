@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_18_rename_headquarters_location_to_headquarter_address
+      author: alona
+      comment: Standardize field name to headquarter_address to match frontend usage
+      changes:
+        - renameColumn:
+            tableName: company_extraction_data
+            oldColumnName: headquarters_location
+            newColumnName: headquarter_address
+            columnDataType: varchar(255)

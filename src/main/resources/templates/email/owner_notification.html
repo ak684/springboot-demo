@@ -1,0 +1,26 @@
+<div>
+  <p>
+    Hello <span th:text="${owner.name}"></span>,
+  </p>
+  <p>
+    <span th:text="${user.name}"></span> <span th:text="${user.lastName}"></span>
+    <span th:if="${added}">has invited</span><span th:if="${!added}">has revoked</span>
+    <span th:text="${member.name}"></span> <span th:text="${member.lastName}"></span>
+    <span th:if="${added}">to work on the following ventures:</span>
+    <span th:if="${!added}">access from the following ventures:</span>
+  </p>
+  <ul>
+    <li th:each="venture: ${ventures}"><span th:text="${venture.name}"></span></li>
+  </ul>
+  <p>
+    Please click below to view and manage your team.
+  </p>
+  <p style="margin:24px 0;">
+    <a
+      th:href="${brand.appBaseUrl} + '/team'"
+      style="padding:12px 24px;text-transform:uppercase;color:#fff;font-weight: 700;font-size: 14px;line-height: 26px;background:#2568F6;border-radius: 8px;text-decoration:none"
+    >
+      Manage team
+    </a>
+  </p>
+</div>

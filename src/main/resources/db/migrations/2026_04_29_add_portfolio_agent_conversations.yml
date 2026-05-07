@@ -1,0 +1,130 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026_04_29_add_portfolio_agent_conversations
+      author: alona
+      comment: "Create portfolio_agent_conversations and portfolio_agent_messages tables for persisting AI agent chat history per user, per portfolio."
+      changes:
+        - createTable:
+            tableName: portfolio_agent_conversations
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: created_by
+                  type: bigint
+              - column:
+                  name: last_modified_by
+                  type: bigint
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: portfolio_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: title
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: portfolio_agent_conversations
+            baseColumnNames: user_id
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_portfolio_agent_conv_user
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: portfolio_agent_conversations
+            baseColumnNames: portfolio_id
+            referencedTableName: portfolios
+            referencedColumnNames: id
+            constraintName: fk_portfolio_agent_conv_portfolio
+            onDelete: CASCADE
+        - createIndex:
+            tableName: portfolio_agent_conversations
+            indexName: idx_portfolio_agent_conv_user_portfolio_modified
+            columns:
+              - column:
+                  name: user_id
+              - column:
+                  name: portfolio_id
+              - column:
+                  name: last_modified_at
+                  descending: true
+        - createTable:
+            tableName: portfolio_agent_messages
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: created_by
+                  type: bigint
+              - column:
+                  name: last_modified_by
+                  type: bigint
+              - column:
+                  name: conversation_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: VARCHAR(16)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: text
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: portfolio_agent_messages
+            baseColumnNames: conversation_id
+            referencedTableName: portfolio_agent_conversations
+            referencedColumnNames: id
+            constraintName: fk_portfolio_agent_msg_conversation
+            onDelete: CASCADE
+        - sql:
+            sql: "ALTER TABLE portfolio_agent_messages ADD CONSTRAINT chk_portfolio_agent_msg_role CHECK (role IN ('USER', 'ASSISTANT'))"
+        - createIndex:
+            tableName: portfolio_agent_messages
+            indexName: idx_portfolio_agent_msg_conversation_created
+            columns:
+              - column:
+                  name: conversation_id
+              - column:
+                  name: created_at

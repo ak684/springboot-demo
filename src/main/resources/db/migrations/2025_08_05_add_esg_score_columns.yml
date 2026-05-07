@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_05_add_esg_score_columns
+      author: alona
+      comment: "Add ESG materiality score columns for table display performance"
+      changes:
+        # ESG Materiality Score fields (for table display performance)
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: esg_sb_scores_sum
+                  type: decimal(10,2)
+              - column:
+                  name: esg_environmental_score
+                  type: decimal(10,2)
+              - column:
+                  name: esg_social_score
+                  type: decimal(10,2)
+              - column:
+                  name: esg_governance_score
+                  type: decimal(10,2)

@@ -1,0 +1,19 @@
+databaseChangeLog:
+- changeSet:
+    id: migrate-stripe-ids
+    author: andrewkoziulia
+    comment: "Migrate stripe_id to user_customer_ids table"
+    changes:
+    - sql:
+        sql: |
+          INSERT INTO user_customer_ids (user_id, customer_ids)
+          SELECT id, stripe_id FROM users WHERE stripe_id IS NOT NULL;
+
+- changeSet:
+    id: remove-stripe-id-from-users
+    author: andrewkoziulia
+    comment: "Remove stripe_id column from users table"
+    changes:
+    - dropColumn:
+        tableName: users
+        columnName: stripe_id

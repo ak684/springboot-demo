@@ -1,0 +1,27 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_11_20_remove_impact_orientation_columns
+      author: alona
+      comment: "Drop legacy Sustainability Analysis columns no longer used by extractor"
+      changes:
+        - dropColumn:
+            columnName: sustainability_total_score
+            tableName: company_extraction_data
+        - dropColumn:
+            columnName: sustainability_problem_addressed_score
+            tableName: company_extraction_data
+        - dropColumn:
+            columnName: sustainability_sdg_alignment_score
+            tableName: company_extraction_data
+        - dropColumn:
+            columnName: sustainability_operational_score
+            tableName: company_extraction_data
+        - dropColumn:
+            columnName: sustainability_problem_addressed_justification
+            tableName: company_extraction_data
+        - dropColumn:
+            columnName: sustainability_sdg_alignment_justification
+            tableName: company_extraction_data
+        - dropColumn:
+            columnName: sustainability_operational_justification
+            tableName: company_extraction_data

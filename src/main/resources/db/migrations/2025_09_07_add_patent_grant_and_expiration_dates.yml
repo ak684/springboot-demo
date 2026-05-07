@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_07_add_patent_grant_and_expiration_dates
+      author: alona
+      comment: "Add grant date and expiration date fields for patent lifecycle tracking"
+      changes:
+        - addColumn:
+            tableName: company_patents
+            columns:
+              - column:
+                  name: grant_date
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: true
+        - addColumn:
+            tableName: company_patents
+            columns:
+              - column:
+                  name: expiration_date
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: true

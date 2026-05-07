@@ -1,0 +1,43 @@
+databaseChangeLog:
+- changeSet:
+    id: 1708027700625-1
+    author: andrewkoziulia
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: portfolio_public_settings_pkey
+            name: portfolio_id
+            type: BIGINT
+        - column:
+            defaultValueBoolean: false
+            name: shared
+            type: BOOLEAN
+        tableName: portfolio_public_settings
+- changeSet:
+    id: 1708027700625-2
+    author: andrewkoziulia
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: portfolio_id
+        baseTableName: portfolio_public_settings
+        constraintName: fk_portfolio_public_settings_portfolio_id
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: portfolios
+        validate: true
+
+- changeSet:
+    id: 1708027700625-3
+    author: andrewkoziulia
+    comment: "Create a record for each portfolio"
+    changes:
+    - sql:
+        sql: |
+          INSERT INTO portfolio_public_settings (portfolio_id, shared) SELECT id, false FROM portfolios

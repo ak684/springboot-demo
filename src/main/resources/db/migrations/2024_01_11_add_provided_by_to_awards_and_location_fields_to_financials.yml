@@ -1,0 +1,221 @@
+databaseChangeLog:
+- changeSet:
+    id: 1704998061919-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: address
+            type: varchar(255)
+        tableName: accelerations
+- changeSet:
+    id: 1704998061919-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: address
+            type: varchar(255)
+        tableName: funding_round_investors
+- changeSet:
+    id: 1704998061919-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: company
+            type: varchar(255)
+        tableName: awards
+- changeSet:
+    id: 1704998061919-4
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: address
+            type: varchar(255)
+        tableName: awards
+- changeSet:
+    id: 1704998061919-5
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: city
+            type: varchar(255)
+        tableName: accelerations
+- changeSet:
+    id: 1704998061919-6
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: city
+            type: varchar(255)
+        tableName: funding_round_investors
+- changeSet:
+    id: 1704998061919-7
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: city
+            type: varchar(255)
+        tableName: awards
+- changeSet:
+    id: 1704998061919-8
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: country
+            type: varchar(255)
+        tableName: accelerations
+- changeSet:
+    id: 1704998061919-9
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: country
+            type: varchar(255)
+        tableName: funding_round_investors
+- changeSet:
+    id: 1704998061919-10
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: country
+            type: varchar(255)
+        tableName: awards
+- changeSet:
+    id: 1704998061919-11
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: lat
+            type: float8
+        tableName: accelerations
+- changeSet:
+    id: 1704998061919-12
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: lat
+            type: float8
+        tableName: funding_round_investors
+- changeSet:
+    id: 1704998061919-13
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: lat
+            type: float8
+        tableName: awards
+- changeSet:
+    id: 1704998061919-14
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: lng
+            type: float8
+        tableName: accelerations
+- changeSet:
+    id: 1704998061919-15
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: lng
+            type: float8
+        tableName: funding_round_investors
+- changeSet:
+    id: 1704998061919-16
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: lng
+            type: float8
+        tableName: awards
+- changeSet:
+    id: 1704998061919-17
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: region
+            type: varchar(255)
+        tableName: accelerations
+- changeSet:
+    id: 1704998061919-18
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: region
+            type: varchar(255)
+        tableName: funding_round_investors
+- changeSet:
+    id: 1704998061919-19
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: region
+            type: varchar(255)
+        tableName: awards
+- changeSet:
+    id: 1704998061919-20
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: zip_code
+            type: varchar(255)
+        tableName: accelerations
+- changeSet:
+    id: 1704998061919-21
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: zip_code
+            type: varchar(255)
+        tableName: funding_round_investors
+- changeSet:
+    id: 1704998061919-22
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: zip_code
+            type: varchar(255)
+        tableName: awards

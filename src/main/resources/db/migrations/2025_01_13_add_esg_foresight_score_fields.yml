@@ -1,0 +1,40 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_01_13_add_esg_foresight_score_fields
+      author: alona
+      comment: "Add ESG Foresight Score fields for 8-year projection analysis"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              # Core foresight scores
+              - column:
+                  name: esg_risk_environmental_foresight
+                  type: DECIMAL(3,1)
+                  remarks: "Environmental foresight score (0-10) for 8-year projection"
+              - column:
+                  name: esg_risk_social_foresight
+                  type: DECIMAL(3,1)
+                  remarks: "Social foresight score (0-10) for 8-year projection"
+              - column:
+                  name: esg_risk_governance_foresight
+                  type: DECIMAL(3,1)
+                  remarks: "Governance foresight score (0-10) for 8-year projection"
+              - column:
+                  name: esg_risk_total_foresight
+                  type: DECIMAL(4,1)
+                  remarks: "Total foresight score (0-30) sum of E+S+G for 8-year projection"
+
+              # Note: Detailed explanations, drivers, HSRIs, and mitigation recommendations
+              # are stored in raw_extraction_data JSONB following the existing pattern
+
+              # Large-cap detection
+              - column:
+                  name: is_large_cap_mode
+                  type: BOOLEAN
+                  defaultValue: false
+                  remarks: "Flag indicating if company qualifies for large-cap scoring mode (5000+ employees or 500M+ revenue)"
+              - column:
+                  name: large_cap_threshold_reason
+                  type: VARCHAR(100)
+                  remarks: "Reason for large-cap mode classification"

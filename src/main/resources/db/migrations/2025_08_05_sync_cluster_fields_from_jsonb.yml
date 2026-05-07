@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_05_sync_cluster_fields_from_jsonb
+      author: alona
+      comment: "Sync cluster_assignment and cluster_justification entity fields from raw_extraction_data JSONB for existing companies"
+      changes:
+        # Sync cluster_assignment from technology_cluster in raw data
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET cluster_assignment = raw_extraction_data->>'technology_cluster'
+              WHERE raw_extraction_data->>'technology_cluster' IS NOT NULL
+                AND raw_extraction_data->>'technology_cluster' != ''
+                AND (cluster_assignment IS NULL OR cluster_assignment != raw_extraction_data->>'technology_cluster');
+        
+        # Sync cluster_justification from cluster_reasoning in raw data
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET cluster_justification = raw_extraction_data->>'cluster_reasoning'
+              WHERE raw_extraction_data->>'cluster_reasoning' IS NOT NULL
+                AND raw_extraction_data->>'cluster_reasoning' != ''
+                AND (cluster_justification IS NULL OR cluster_justification != raw_extraction_data->>'cluster_reasoning');
+        
+        # Log the sync results
+        - sql:
+            sql: |
+              -- This will show in the migration logs how many records were updated
+              SELECT 
+                COUNT(*) as total_companies,
+                COUNT(cluster_assignment) as companies_with_cluster_assignment,
+                COUNT(cluster_justification) as companies_with_cluster_justification
+              FROM company_extraction_data;

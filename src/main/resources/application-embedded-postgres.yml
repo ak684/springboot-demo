@@ -1,0 +1,27 @@
+# Profile for running with embedded PostgreSQL (no external DB required)
+# Usage: mvn spring-boot:run -Dspring-boot.run.profiles=embedded-postgres -Dskip.npm
+
+spring:
+  datasource:
+    # These will be overridden by EmbeddedPostgresConfig
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/embedded
+    username: postgres
+    password: postgres
+  liquibase:
+    enabled: true
+
+# Disable external services that require credentials
+sentry:
+  dsn:
+
+# Override branding for demo/preview environment
+application:
+  branding:
+    company-name: VenturePlatform
+    company-short-name: VenturePlatform
+    domain-display: VenturePlatform.io
+    meta-description: Venture impact platform demo
+    logo:
+      primary-text: Venture
+      secondary-text: Platform

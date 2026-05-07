@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${subject}"></title>
+  <!--[if mso]>
+  <style>
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+      border: none;
+      margin: 0;
+    }
+
+    div, td {
+      padding: 0;
+    }
+
+    div {
+      margin: 0 !important;
+    }
+  </style>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <style>
+    table, td, div, h1, p {
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body style="margin:0;padding:0;word-spacing:normal;background-color:#fafafa;">
+  <table role="presentation" style="width:100%;border:none;border-spacing:0;">
+    <tr>
+      <td align="center" style="padding:0;">
+        <!--[if mso]>
+        <table role="presentation" align="center" style="width:600px;">
+          <tr>
+            <td>
+        <![endif]-->
+        <table th:replace="fragments/header.html :: header"></table>
+        <table
+          role="presentation"
+          style="width:94%;max-width:600px;border:none;border-spacing:0;text-align:left;font-family:Helvetica,Arial,sans-serif;font-size:16px;line-height:22px;color:#121212;background-color:#fff;"
+        >
+          <tr>
+            <td style="padding:16px 32px;">
+              <div th:replace="(${template}) :: div"></div>
+            </td>
+          </tr>
+        </table>
+        <table th:replace="fragments/footer.html :: table"></table>
+        <!--[if mso]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

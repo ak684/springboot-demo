@@ -1,0 +1,19 @@
+databaseChangeLog:
+- changeSet:
+    id: make_quantification_data_unique-1
+    author: akoziulia
+    comment: "Add unique constraint to quantification_data for year, impact_id, indicator_id, and type"
+    changes:
+    - addUniqueConstraint:
+        tableName: quantification_data
+        columnNames: year, impact_id, indicator_id, type
+        constraintName: uq_quantification_data_year_impact_indicator_type
+- changeSet:
+      id: make_quantification_data_unique-2
+      author: akoziulia
+      comment: "Add unique constraint to indicator_quantification_data for year, indicator_id, and type"
+      changes:
+      - addUniqueConstraint:
+            tableName: indicator_quantification_data
+            columnNames: year, indicator_id, type
+            constraintName: uq_indicator_quantification_data_year_impact_indicator_type

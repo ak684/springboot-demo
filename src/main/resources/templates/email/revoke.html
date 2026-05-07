@@ -1,0 +1,21 @@
+<div>
+  <p>
+    Hello <span th:text="${user.name}"></span>,
+  </p>
+  <p>
+    Your access to the following projects has been revoked:
+  </p>
+  <ul>
+    <li th:each="venture: ${ventures}"><span th:text="${venture.name}"></span></li>
+  </ul>
+  <ul>
+    <li th:each="portfolio: ${portfolios}"><span th:text="${portfolio.name}"></span></li>
+  </ul>
+  <p>
+    If you think this was done as a mistake, please contact the project owner for further assistance.
+  </p>
+  <p>
+    Best regards,<br>
+    <span th:text="${brand.companyName}"></span> team
+  </p>
+</div>

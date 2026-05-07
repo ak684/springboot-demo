@@ -1,0 +1,115 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-06-22-add-aggregated-indicators-table
+      author: alonaking
+      changes:
+        - createTable:
+            tableName: aggregated_indicators
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name_slovak
+                  type: VARCHAR(255)
+              - column:
+                  name: category
+                  type: VARCHAR(255)
+              - column:
+                  name: unit
+                  type: VARCHAR(255)
+              - column:
+                  name: time_period
+                  type: VARCHAR(100)
+              - column:
+                  name: time_period_slovak
+                  type: VARCHAR(100)
+              - column:
+                  name: is_main
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: hover_slot
+                  type: INT
+              - column:
+                  name: parent_indicator_id
+                  type: BIGINT
+              - column:
+                  name: portfolio_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: data_sources_json
+                  type: TEXT
+              - column:
+                  name: aggregation_type
+                  type: VARCHAR(50)
+              - column:
+                  name: display_order
+                  type: INT
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: venture_ids_json
+                  type: TEXT
+              - column:
+                  name: selected_year
+                  type: INT
+              - column:
+                  name: calculated_value
+                  type: DOUBLE
+              - column:
+                  name: component_breakdown_json
+                  type: TEXT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+        - addForeignKeyConstraint:
+            baseTableName: aggregated_indicators
+            baseColumnNames: parent_indicator_id
+            referencedTableName: aggregated_indicators
+            referencedColumnNames: id
+            constraintName: fk_aggregated_indicators_parent
+        - addForeignKeyConstraint:
+            baseTableName: aggregated_indicators
+            baseColumnNames: portfolio_id
+            referencedTableName: portfolios
+            referencedColumnNames: id
+            constraintName: fk_aggregated_indicators_portfolio
+        - createIndex:
+            tableName: aggregated_indicators
+            indexName: idx_aggregated_indicators_portfolio
+            columns:
+              - column:
+                  name: portfolio_id
+        - createIndex:
+            tableName: aggregated_indicators
+            indexName: idx_aggregated_indicators_parent
+            columns:
+              - column:
+                  name: parent_indicator_id

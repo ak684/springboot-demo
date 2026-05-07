@@ -1,0 +1,29 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_11_30_add_portfolio_id_to_team_members
+      author: system
+      comment: Add portfolio_id column to team_members table for portfolio team support
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            columnExists:
+              tableName: team_members
+              columnName: portfolio_id
+      changes:
+        - addColumn:
+            tableName: team_members
+            columns:
+              - column:
+                  name: portfolio_id
+                  type: BIGINT
+        - addForeignKeyConstraint:
+            baseColumnNames: portfolio_id
+            baseTableName: team_members
+            constraintName: fksywvdw1b6qr2kaviipqf5fujx
+            deferrable: false
+            initiallyDeferred: false
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+            referencedColumnNames: id
+            referencedTableName: portfolios
+            validate: true

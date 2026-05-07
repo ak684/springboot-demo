@@ -1,0 +1,13 @@
+databaseChangeLog:
+- changeSet:
+    id: 1750026839047-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            defaultValueBoolean: false
+            name: impact_calculation_total
+            type: bool
+        tableName: impacts
+

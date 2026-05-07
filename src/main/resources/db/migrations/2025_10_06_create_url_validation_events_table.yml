@@ -1,0 +1,100 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_10_06_create_url_validation_events_table
+      author: alona
+      comment: "Create table to track URL validation events and notify users of URL changes or issues"
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: url_validation_events
+      changes:
+        - createTable:
+            tableName: url_validation_events
+            columns:
+              - column:
+                  name: id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: company_extraction_data_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: event_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                  remarks: "URL_UPDATED, URL_BROKEN, URL_ISSUE"
+              - column:
+                  name: old_url
+                  type: VARCHAR(500)
+              - column:
+                  name: new_url
+                  type: VARCHAR(500)
+              - column:
+                  name: status_code
+                  type: INTEGER
+              - column:
+                  name: error_message
+                  type: TEXT
+              - column:
+                  name: approval_status
+                  type: VARCHAR(50)
+                  remarks: "PENDING_APPROVAL, APPROVED, REJECTED"
+              - column:
+                  name: reviewed_by
+                  type: BIGINT
+              - column:
+                  name: reviewed_at
+                  type: TIMESTAMP
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: url_validation_events
+            baseColumnNames: company_extraction_data_id
+            referencedTableName: company_extraction_data
+            referencedColumnNames: id
+            constraintName: fk_url_validation_events_company
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: url_validation_events
+            baseColumnNames: reviewed_by
+            referencedTableName: users
+            referencedColumnNames: id
+            constraintName: fk_url_validation_events_reviewer
+        - createIndex:
+            tableName: url_validation_events
+            indexName: idx_url_validation_events_company_id
+            columns:
+              - column:
+                  name: company_extraction_data_id
+        - createIndex:
+            tableName: url_validation_events
+            indexName: idx_url_validation_events_created_at
+            columns:
+              - column:
+                  name: created_at
+        - createIndex:
+            tableName: url_validation_events
+            indexName: idx_url_validation_events_approval_status
+            columns:
+              - column:
+                  name: approval_status

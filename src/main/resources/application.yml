@@ -1,0 +1,167 @@
+# Deployment info - accessible via /actuator/info
+info:
+  app:
+    name: Venture Impact Platform
+    version: '@project.version@'
+    commit: '${git.commit.id.abbrev:unknown}'
+    branch: '${git.branch:unknown}'
+    build-time: '${git.build.time:unknown}'
+
+# Enable actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  info:
+    git:
+      mode: full
+
+server:
+  port: ${SERVER_PORT:9000}
+  compression:
+    enabled: true
+    mime-types: text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 4096
+  ssl:
+    enabled: ${SERVER_SSL_ENABLED:false}
+    key-store-type: ${SERVER_SSL_KEY_STORE_TYPE:PKCS12}
+    key-store: ${SERVER_SSL_KEY_STORE:}
+    key-store-password: ${SERVER_SSL_KEY_STORE_PASSWORD:}
+    key-alias: ${SERVER_SSL_KEY_ALIAS:}
+
+token:
+  secret: 9w3qmMvFn*46
+  expiration:
+    short: 2592000 # 1 month, value in seconds
+    long: 31540000 # 1 year, value in seconds
+
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  security:
+    filter:
+      order: 10 # Add padding to filters so that we can insert ours before the default ones
+    superadmin:
+      emails:
+        - ingo.michelfelder@web.de
+        - alona@impactforesight.io
+        - ingo@impactforesight.io
+        - praew@impactforesight.io
+        - vivian@impactforesight.io
+      notification-email: ingo@impactforesight.io
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5433/ventureplatform_dev?currentSchema=public
+    username: impact_user
+    password: ${db.password}
+
+  liquibase:
+    change-log: classpath:db/db.changelog.yml
+    enabled: true
+    default-schema: public
+
+  mvc:
+    pathmatch:
+      # toDO: Check how we can use the newer PathPattern in FrontEndController.java
+      matching-strategy: ant_path_matcher
+  jackson:
+    mapper:
+      default-view-inclusion: true
+  mail:
+    host: smtp.office365.com
+    port: 587
+    username: ingo@impactforesight.io
+    password: Boston2022IM*
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 60000
+          starttls:
+            enable: true
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 200MB
+
+cloudinary:
+  name: impactforesight
+  key: 253321297779457
+  secret: RgBOKEnuSfPrNKbXRVVxscGk6ZQ
+
+openai:
+  key: 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
+
+google:
+  api:
+    mapsKey: AIzaSyConGJ_91SH6u4a8_d2NkR8A-5AlR6rYHA
+    clientId: 643474432134-ubqoskgh2j4pmel2d0br8cndhdid0p2i.apps.googleusercontent.com
+    clientSecret: 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
+
+stripe:
+  apiKey: sk_test_51MEBvVA61kDjpcputdeUyr1VAVsRDdsY3fTTB5Fz6AfWkbMB6QqvR1f7U54POwy8RqCPhRiCNeQrfZOmuAUj8M2I00N6CMX5mO
+  webhookSecret: whsec_6naaKmdWHP7w9Pgo6BA1WCGtgDUn0nPz
+  prices:
+    basic:
+      monthly: price_1MYToKA61kDjpcpu4y1F8NnB
+      yearly: price_1MYToKA61kDjpcpuKGa7Q2XX
+    pro:
+      monthly: price_1NEXdoA61kDjpcpuiAm6ljAH
+      yearly: price_1NEXdoA61kDjpcpuO5LSZTpB
+
+application:
+  backend:
+    url: http://localhost:9000/
+  branding:
+    company-name: ImpactForesight
+    company-short-name: ImpactForesight
+    domain-display: ImpactForesight.io
+    app-base-url: https://app.impactforesight.io
+    map-base-url: https://map.impactforesight.io
+    marketing-site-url: https://impactforesight.io/
+    pricing-url: https://www.impactforesight.io/pricing
+    ai-toc-share-url: https://app.impactforesight.io/ai-toc/start
+    stripe-checkout-url: https://buy.stripe.com/cN2bMx0o77n2b8QaEE
+    meta-description: Venture impact foresight platform
+    share-images:
+      default-image-url: https://res.cloudinary.com/impactforesight/image/upload/v1714000288/app-share-image_b9xzsg.jpg
+      ai-toc-image-url: https://res.cloudinary.com/impactforesight/image/upload/v1714000446/toc-preview_ciw2zx.jpg
+    logo:
+      primary-text: Impact
+      secondary-text: Foresight
+      email-image-url: https://app.impactforesight.io/images/email/logo.png
+    emails:
+      no-reply: no_reply@impactforesight.io
+      feedback: feedback@impactforesight.io
+      certify: certify@impactforesight.io
+      support: ingo@impactforesight.io
+    social:
+      twitter: https://x.com/impactforesight
+      linkedin: https://www.linkedin.com/company/94799577/
+      facebook: https://www.facebook.com/profile.php?id=100093083318024
+      calendly: https://calendly.com/impactforesight
+
+linkedin:
+  clientId: server-only
+  clientSecret: server-only
+  refreshToken: server-only
+
+facebook:
+  clientId: server-only
+  clientSecret: server-only
+  appToken: server-only
+
+azure:
+  storage:
+    sas-url: https://impactforesight.blob.core.windows.net/storage-dev?sp=rwd&st=2023-11-28T16:13:52Z&se=2030-01-01T00:13:52Z&spr=https&sv=2022-11-02&sr=c&sig=pFpLzdlzSFlGOAYRbL61covBYmgRSoSC2hCXaTTypdc%3D
+    container-name: storage-dev
+
+# SysAdmin remote access (for Claude Code web, scripts, etc.)
+# Set SYSADMIN_API_KEY environment variable to enable
+sysadmin:
+  api-key: ${SYSADMIN_API_KEY:}

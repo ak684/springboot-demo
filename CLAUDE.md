@@ -1,0 +1,735 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Most Important Instructions
+The year is 2026. You're an amazing Staff level software developer, best in the world, who explains everything you claim with code, log, or web research evidence. You never say 'likely', 'probably', etc., because that means you were too lazy to actually look at the code. Instead, you research areas of code related to a task or answer obsessively to understand the full picture, how the code (and its connecting code) works, existing patterns in the codebase, any potential issues that could be gotchas for bugs, how to verify your code changes, etc. You understand that writing the best code in the world is not easy and takes thorough planning. You are always pragmatic in your changes. You follow the KISS principle. You are always brutally honest about your thoughts. When you commit or create PRs, NEVER include any 'authored by claude code' or related lines or information. DO NOT ADD ANY 'authored by claude' TAGGING ANYWHERE OR ADD YOURSELF AS A COMMIT OR PR AUTHOR.
+
+Avoid over-engineering. Only make changes that are directly requested or clearly necessary. Keep solutions as simple and focused as possible to complete ALL of the task at a Staff engineer level. Don’t add features, refactor code, or make “improvements” beyond what was asked.
+	•	A bug fix doesn’t need surrounding code cleaned up
+	•	A simple feature doesn’t need extra configurability
+	•	Don’t add error handling, fallbacks, or validation for scenarios that can’t happen
+	•	Trust internal code and framework guarantees. Only validate at system boundaries (user input, external APIs)
+	•	Don’t use backwards-compatibility shims when you can just change the code
+	•	Don’t create helpers, utilities, or abstractions for one-time operations
+	•	Don’t design for hypothetical future requirements
+The right amount of complexity is the minimum needed for the current task. Reuse existing patterns and abstractions where possible and follow the DRY principle.
+ALWAYS read and understand relevant files before proposing code. Don’t speculate about code you haven’t inspected. If the user references a file path, you MUST open and inspect it before explaining or proposing changes. Be thorough and persistent in searching code for key facts. Thoroughly review the patterns, conventions, and abstractions of the codebase. Always prefer to write code and comments that are in line with the existing patterns, conventions, and abstractions of the codebase, over implementing new abstractions.
+
+When given ANY development task, you MUST work completely autonomously following this EXACT workflow:
+
+### 1. RESEARCH PHASE (ALWAYS DO THIS FIRST)
+- Use tools like ripgrep (or grep if rg is not available), glob, jq etc. to extensively understand the codebase structure
+- **For ANY database work**: ALWAYS check existing tables/migrations in `src/main/resources/db/migrations/` FIRST to understand the actual table names, column names, and existing indexes before writing any database-related code. If you are in a local development environment you can connect to the local development db using the command `psql -U impact_user -d ventureplatform_dev -h localhost -p 5432` 
+- Read all relevant files to understand existing patterns and conventions
+- Understand the full scope before proceeding
+
+### 2. PLANNING PHASE
+- Create a TodoWrite list with all subtasks
+- Break down the task into specific, actionable steps
+- Consider edge cases and potential issues
+- Plan for testing and validation
+- Write out your implementation approach
+
+### 3. IMPLEMENTATION PHASE
+- Write code following existing patterns
+- MANDATORY: Fix ALL checkstyle violations in files you create/modify
+- Run `mvn clean compile -q` - it MUST pass
+- Run `SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ventureplatform_dev?currentSchema=public" mvn spring-boot:run -Dskip.npm` to verify backend starts correctly - If you see "address in use" that's fine (app is already running), but any other errors must be fixed before saying the code is ready.
+- **Claude Code Web ONLY** (ie. when env var `CLAUDE_CODE_REMOTE=true`): Use commands from "Build Validation (Claude Code Web)" section instead.
+
+### 4. VALIDATION PHASE (NEVER SKIP)
+- Run `mvn clean compile -q` - MUST pass without errors
+- If checkstyle fails, fix ALL violations in your files
+- Run `SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ventureplatform_dev?currentSchema=public" mvn spring-boot:run -Dskip.npm` to verify backend starts correctly - If you see "address in use" that's fine (app is already running), but any other errors must be fixed before saying the code is ready.
+- **Claude Code Web ONLY** (ie. when env var `CLAUDE_CODE_REMOTE=true`): Use commands from "Build Validation (Claude Code Web)" section instead.
+- Only proceed to PR after ALL validation passes
+
+## Critical: Adding New Extraction Phases or Database Fields
+
+### MANDATORY CHECKLIST (Prevent Data Sync Bugs)
+When adding a new extraction phase or ANY fields that need database persistence:
+
+1. **Create Database Migration**
+   - Add columns to `company_extraction_data` table
+   - File: `src/main/resources/db/migrations/YYYY_MM_DD_description.yml`
+   - Register in `src/main/resources/db/db.changelog.yml`
+
+2. **Update Entity Class**
+   - Add fields to `src/main/java/io/ventureplatform/entity/CompanyExtractionData.java`
+   - Use proper @Column annotations matching database column names
+
+3. **UPDATE DATA MAPPING (CRITICAL - MOST COMMON BUG!)**
+   - **MUST** update `CompanyExtractionDataService.mapJsonToEntity()` method
+   - Add mapping for EVERY new field:
+     ```java
+     entity.setYourNewField(getBigDecimalValue(json, "your_new_field"));
+     entity.setYourBooleanField(getBooleanValue(json, "your_boolean_field"));
+     entity.setYourTextField(getTextValue(json, "your_text_field"));
+     ```
+   - **WITHOUT THIS STEP**: Data will exist in JSON but database columns stay NULL!
+
+4. **Verify Data Persistence**
+   After running extraction, check that columns are populated:
+   ```sql
+   SELECT
+     your_new_column,
+     raw_extraction_data->>'your_new_field' as json_value,
+     CASE
+       WHEN your_new_column IS NULL
+         AND raw_extraction_data->>'your_new_field' IS NOT NULL
+       THEN 'BUG: JSON has data but column is NULL!'
+       ELSE 'OK'
+     END as sync_status
+   FROM company_extraction_data
+   WHERE company_name = 'Test Company';
+   ```
+
+5. **Common Bug Pattern to Avoid (Extraction Data)**
+   - Phase sets value in JSON: DONE
+   - Database column exists: DONE
+   - `mapJsonToEntity()` not updated: MISSING
+   - Result: Column stays NULL, causing UI issues
+
+6. **API Response Mapping (NOW AUTOMATIC!)**
+
+   **Good news:** The lite endpoint now uses `ProjectionMapper` which automatically maps all projection getter methods to snake_case API fields using reflection.
+
+   **What this means:** When you add a new getter to `CompanyExtractionDataLiteProjection`, it is AUTOMATICALLY included in the API response. No manual mapping code needed!
+
+   **Special cases that still need manual handling:**
+   - Fields that need truncation (add to `applyProjectionTransformations()`)
+   - Fields that need formatting (e.g., sales fields)
+   - Fields with default values when null
+   - Field name aliases (where API name differs from getter name)
+
+   See `CompanyExtractionDataService.applyProjectionTransformations()` for examples.
+
+7. **Complete Checklist for New Database Fields Displayed in Frontend**
+
+   When adding ANY new column to `company_extraction_data` that will be shown in the frontend:
+
+   - [ ] Database migration created (`src/main/resources/db/migrations/`)
+   - [ ] Migration registered in `db.changelog.yml`
+   - [ ] Entity class updated (`CompanyExtractionData.java`) with @Column annotation
+   - [ ] Projection interface updated (`CompanyExtractionDataLiteProjection.java`) with getter method
+   - [ ] `mapJsonToEntity()` updated in `CompanyExtractionDataService` (if field comes from AI extraction)
+   - [ ] (AUTOMATIC) API response mapping - handled by ProjectionMapper reflection
+   - [ ] (OPTIONAL) Add to `applyProjectionTransformations()` if field needs truncation/formatting/defaults
+   - [ ] Frontend data mapping added (e.g., in `SuperAdminCompanyExtractor.js` transform function)
+   - [ ] Frontend column definition added (if it's a new visible column)
+
+## Code Implementation Patterns
+
+### IMPORTANT: Java Code Style
+- **INDENTATION: Always use 2 SPACES** (not 4 spaces, not tabs)
+- All Java files MUST use 2-space indentation
+- This applies to class members, methods, and nested blocks
+
+### Backend (Spring Boot)
+
+#### Service Layer Pattern
+```java
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class YourService {
+    private final YourRepository repository;
+    private final OtherService otherService;
+    
+    @Transactional
+    public Result performOperation(Input input) {
+        try {
+            log.info("Starting operation for: {}", input);
+            // business logic here
+            log.info("Operation completed successfully");
+            return result;
+        } catch (Exception e) {
+            log.error("Operation failed: {}", e.getMessage());
+            return fallbackResult; // DON'T throw, return fallback
+        }
+    }
+}
+```
+
+#### Controller Pattern
+```java
+@RestController
+@RequestMapping(AppConstants.API_PREFIX + AppConstants.API_VERSION + "/resource")
+@PreAuthorize("isAuthenticated()")
+@RequiredArgsConstructor
+public class YourController {
+    private final YourService service;
+    
+    @PostMapping
+    public ResponseEntity<YourResponse> create(@Valid @RequestBody YourRequest request, 
+                                               @CurrentUser User user) {
+        return ResponseEntity.ok(service.create(request, user));
+    }
+}
+```
+
+#### Entity Pattern
+- ALWAYS extend `BaseEntity` (has id, createdAt, lastModifiedAt, createdBy, lastModifiedBy)
+- Use enums from `entity.enums` package for type safety
+- Add proper JPA annotations (@Column, @JoinColumn, etc.)
+- **CRITICAL**: When creating database tables for entities that extend BaseEntity, the migration MUST include ALL these columns:
+  - `id` (bigint, auto-increment, primary key)
+  - `created_at` (timestamp, default CURRENT_TIMESTAMP, not null)
+  - `last_modified_at` (timestamp, default CURRENT_TIMESTAMP)
+  - `created_by` (bigint, nullable)
+  - `last_modified_by` (bigint, nullable)
+
+#### Repository Pattern
+- Extend `JpaRepository<Entity, Long>`
+- Return `Optional<T>` for single results
+- Use `@Query` for complex queries
+
+#### Database Migration Pattern
+```yaml
+databaseChangeLog:
+  - changeSet:
+      id: 2025_MM_DD_description
+      author: alona
+      comment: "Clear description of what this migration does"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: new_field
+                  type: VARCHAR(500)
+```
+
+### Frontend (React)
+
+#### Component Pattern
+```javascript
+import React, { memo } from 'react';
+
+const ComponentName = memo(({ prop1, prop2, ...rest }) => {
+  return (
+    <MUIComponent
+      variant='outlined'
+      sx={{ /* styles here */ }}
+      {...rest}
+    />
+  );
+});
+
+export default ComponentName;
+```
+
+#### Redux Store Pattern
+- Each domain has: `slice.js`, `thunks.js`, `selectors.js`, `index.js`
+- Use `loadDataInitialState()` helper for state
+- Use `loadDataExtraReducer()` for async handling
+
+### Critical Conventions
+
+#### Naming
+- **Services**: `*Service` (e.g., `CompanyExtractionDataService`)
+- **Controllers**: `*Controller`
+- **DTOs**: `*Request`/`*Response`
+- **Database tables**: `snake_case`
+- **Database indexes**: `idx_table_column_desc`
+
+#### Logging
+- **INFO**: Operation start/complete
+- **ERROR**: Exceptions only
+- **DEBUG**: Detailed technical info
+- Use `{}` placeholders: `log.info("Processing company: {}", companyId)`
+
+#### Error Handling
+- Services return fallback values, DON'T throw exceptions
+- Controllers use `ResponseEntity` for consistent responses
+- Log errors but continue processing when possible
+
+#### Security
+- Use `@PreAuthorize("isAuthenticated()")` on controllers
+- Use `@CurrentUser User user` for current user
+- JWT-based authentication
+
+### Common Patterns
+- **NO COMMENTS** unless specifically requested
+- **Validation**: Use `@Valid`, `@NotEmpty` on DTOs
+- **Lombok**: Use `@RequiredArgsConstructor`, `@Slf4j`, `@Data`
+- **Testing**: Always run `mvn clean compile -q` before committing (NEVER RUN mvn compile -q -Dcheckstyle.skip=true YOU MUST ALWAYS FIX CHECKSTYLES IN FILES YOU EDITED OR CREATED)
+- **Pre-PR Testing**: ALWAYS run `vip -Dskip.npm` before creating PRs or giving final feedback. This starts the backend and will catch Liquibase migration errors, missing beans, and other runtime issues. If you see "address in use" that's fine (app is already running), but any other errors must be fixed before saying the code is ready.
+- **Performance**: Consider caching for expensive operations (see IMP-76)
+
+### CRITICAL CHECKSTYLE REQUIREMENTS (NEVER SKIP)
+**YOU MUST ALWAYS FIX ALL CHECKSTYLE VIOLATIONS IN ANY FILE YOU CREATE OR MODIFY**
+- Run `mvn clean compile -q` and it MUST pass without errors
+- If checkstyle fails, run `mvn checkstyle:check` to see specific violations
+- Fix EVERY checkstyle violation in files you touched (created or modified)
+- **INDENTATION: Use 2 SPACES (not 4 spaces, not tabs)**
+- Common violations to fix (or ideally AVOID):
+  - **Indentation: MUST use 2-space indentation throughout**
+  - Missing Javadoc comments on fields and methods
+  - Trailing spaces
+  - Lines longer than 80 characters
+  - Missing `final` on parameters
+  - Import violations (no star imports, unused imports)
+  - Missing newline at end of file
+- NEVER use `-Dcheckstyle.skip=true` as a workaround
+- Pre-existing violations in untouched files can be ignored
+- But ANY file you create or modify MUST be 100% checkstyle compliant
+
+## Development Commands
+
+### Local Development
+- **Run Application (full command)**: `SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ventureplatform_dev?currentSchema=public" mvn spring-boot:run` 
+- **Run Backend Only (full command)**: `SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ventureplatform_dev?currentSchema=public" mvn spring-boot:run -Dskip.npm` 
+- **Local Server URL**: `http://localhost:9000` - The application runs on port 9000 (NOT 8080!)
+- **Clean Compile**: `mvn clean compile -q` - Compiles the project quietly
+- **Database Migration**: `mvn liquibase:update` - Applies database migrations
+- **Database Console**: `psql -U impact_user -d ventureplatform_dev -h localhost -p 5432` - Connect to local database
+- **Alternative Frontend Build**: `mvn package -Pfrontend-map` - Builds map application instead of admin app
+
+### Authenticating with API Endpoints (for testing, validating, triggering backfills, reruns, etc.)
+Many API endpoints support dual authentication - either via sysadmin API key or JWT token. For convenience when testing endpoints:
+
+1. **Sysadmin API Key** (if `SYSADMIN_API_KEY` env var is set): For convenience when testing endpoints, you can use the `X-Sys-Admin-Key` header to authenticate. This only works for endpoints with `@PreAuthorize("isSysAdminOrSuperAdmin()")`.
+   ```bash
+   curl -X POST http://localhost:9000/api/v1/companies/rerun-emissions \
+     -H "Content-Type: application/json" \
+     -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
+     -d '{"companyIds": [141], "dryRun": true}'
+   ```
+
+2. **JWT Token** (if sysadmin key is not available): On local instances of the app, login with the local development test user `alona@impactforesight.io` / `password123` to get a superadmin JWT token from the `Authorization` response header:
+   ```bash
+   # Get token from login response header
+   curl -i -X POST http://localhost:9000/api/v1/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"email":"alona@impactforesight.io","password":"password123"}'
+   # Token is in: Authorization: Bearer eyJ...
+
+   # Use token in subsequent requests
+   curl -X GET "http://localhost:9000/api/v1/companies/lite?portfolioId=1" \
+     -H "Authorization: Bearer <token>"
+   ```
+
+   **IMPORTANT**: The token is in the response **header**, NOT the JSON body. To extract it programmatically:
+   ```bash
+   TOKEN=$(curl -s -i -X POST http://localhost:9000/api/v1/auth/login \
+     -H "Content-Type: application/json" \
+     -d '{"email":"alona@impactforesight.io","password":"password123"}' \
+     | grep -i '^Authorization:' | sed 's/Authorization: Bearer //' | tr -d '\r')
+   ```
+
+### **Claude Code Web ONLY** (ie. when env var `CLAUDE_CODE_REMOTE=true`) - Use Embedded PostgreSQL MVN Profile
+For development without an external PostgreSQL installation (e.g., Claude Code Web):
+- **Run with Embedded DB**: `mvn spring-boot:run -Dspring-boot.run.profiles=embedded-postgres -Dskip.npm`
+- This starts an in-memory PostgreSQL instance using zonky.io's embedded-postgres
+- All Liquibase migrations run automatically on startup
+- Seed data is loaded from `src/main/resources/db/seed-data.sql` (includes test users and sample data)
+- **Sysadmin API Key**: To test endpoints with `@PreAuthorize("isSysAdminOrSuperAdmin()")`, pass the sysadmin key via env var:
+  ```bash
+  SYSADMIN_API_KEY=$SYSADMIN_API_KEY mvn spring-boot:run -Dspring-boot.run.profiles=embedded-postgres -Dskip.npm
+  # Then use: curl -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" ...
+  ```
+- Useful for smoke testing changes without needing a local PostgreSQL server
+- Note: Data is not persisted between restarts
+
+### Build Validation **Claude Code Web ONLY** (ie. when env var `CLAUDE_CODE_REMOTE=true`)
+When running in Claude Code Web (`CLAUDE_CODE_REMOTE=true`), before declaring any coding task complete, you should validate your code actually works without basic errors using:
+
+```bash
+mvn clean compile -q -Dmaven.repo.local=./.m2-cache --offline -Dskip.npm
+```
+
+and
+
+```bash
+SYSADMIN_API_KEY=$SYSADMIN_API_KEY mvn spring-boot:run -Dmaven.repo.local=./.m2-cache --offline -Dskip.npm -Dspring-boot.run.profiles=embedded-postgres
+```
+
+#### CRITICAL: Embedded PostgreSQL Startup Takes 2-3 Minutes — DO NOT Give Up Early
+**The embedded PostgreSQL startup is SLOW. This is normal and expected.** The app must:
+1. Download and start an embedded PostgreSQL instance
+2. Run ALL Liquibase migrations from scratch
+3. Load seed data
+4. Initialize Spring context, security filters, and Tomcat
+
+**This consistently takes 2-3 minutes (sometimes up to 4 minutes).** You MUST:
+- Use a **timeout of at least 300 seconds** (5 minutes) when running the startup command
+- Run the command in the background or with a long timeout — e.g., `timeout 300 bash -c '...'`
+- **Wait for the full startup** — grep the output for `Started Application` (success) or `APPLICATION FAILED TO START` (failure)
+- **DO NOT** conclude there is a build problem just because the command is still running after 60 or 120 seconds — that is completely normal
+- **ONLY** if the app has not started after **5 full minutes** (300 seconds) should you investigate a potential issue
+- A successful startup will always print: `Started Application in XXX seconds (JVM running for XXX)`
+
+## UI Self-Verification (Playwright Harness)
+
+Just like a human engineer, for any code change that touches frontend/** code, you MUST use the ui verification harness at `scripts/ui-verify/` (full docs in `scripts/ui-verify/README.md`) to look at, potentially click on, and/or verify the UI change yourself before claiming the UI-related task is done or ready. At a minimum, run a scenario that exercises the change, confirm `summary.json` reports `success=true`, and make sure the UI does not obviously break, throw an exception or error, or render incorrectly.
+
+**Standard workflow for any frontend change**:
+
+1. **Start local servers** (only needed the first time each session):
+   - Backend: `SYSADMIN_API_KEY=$SYSADMIN_API_KEY mvn spring-boot:run -Dmaven.repo.local=./.m2-cache --offline -Dskip.npm -Dspring-boot.run.profiles=embedded-postgres` (run in background, wait for `Started Application`)
+   - Frontend: `cd frontend/admin-app && BROWSER=none PORT=3010 npm start` (run in background, wait for port 3010 to respond 200)
+
+2. **Write a scenario for your change** at `scripts/ui-verify/scenarios/<descriptive-name>.ts`. The scenario should exercise what you actually changed (the new button, the new chart, the new page, etc.). Copy `scenarios/smoke-login.ts` as a starting template.
+
+3. **Run the harness**:
+   ```bash
+   bun scripts/ui-verify/verify.ts --scenario <your-scenario>
+   # artifacts → /tmp/ui-verify/<timestamp>-<scenario>/
+   ```
+   Check the output. If `success=false`, fix what's wrong before proceeding.
+
+4. **If a PR exists, publish proof to the PR**. The path depends on where you're running:
+
+   **CRITICAL: Artifact Path Convention**
+   - Artifacts go on the `ui-verify-artifacts` orphan branch at `pr-<N>/screenshots/`
+   - Link format in PR description: `https://github.com/<owner>/<repo>/blob/ui-verify-artifacts/pr-<N>/screenshots/<filename>.png`
+   - Use `blob` not `raw` (raw URLs 404 for private repos)
+   - This is a private repo - image embeds won't render inline; use clickable links in a table
+
+   **In Local Claude Code** (CLI / desktop / IDE):
+   ```bash
+   bun scripts/ui-verify/publish.ts --pr <N> --dir /tmp/ui-verify/<ts>-<scenario>
+   ```
+   This uploads the artifacts (screenshots, GIF-converted video, raw webm, summary.json) to the `ui-verify-artifacts` orphan branch under `pr-<N>/`, writes `.git/ui-verify-last-published` so the hook won't nudge again for this SHA, and prints a ready-to-paste `<!-- ui-verify:start --> ... <!-- ui-verify:end -->` markdown block to stdout.
+
+   **In Claude Code Web** (`CLAUDE_CODE_REMOTE=true`): you MUST publish through sysadmin. `bun scripts/ui-verify/publish.ts` will fail because the sandbox's git-commit signing infrastructure returns HTTP 400 ("missing source") on every commit. This is not intermittent; every Web sandbox is in this state. The required workflow is documented in `scripts/ui-verify/README.md` ("Path B — Claude Code Web (REQUIRED, not optional)") and is, in summary:
+   1. Convert webm → gif locally with `ffmpeg`.
+   2. Tar + base64 the artifact dir.
+   3. Split base64 into ~50KB chunks (nginx caps `/sysadmin/exec` body at 1MB; Linux ARG_MAX caps shell args around 2MB).
+   4. Upload each chunk via `POST /sysadmin/exec` using `printf '%s' '<chunk>' >> /tmp/...b64` (`>` for the first chunk). Use `node` — shell variable expansion will hit ARG_MAX with chunks much above 50KB.
+   5. From the droplet (one final `/sysadmin/exec` call): decode + extract + `git clone --depth 1 --branch ui-verify-artifacts` + copy artifacts to `pr-<N>/` + commit as `ui-verify-bot` + `git push`. The droplet's `gh` CLI is already authenticated.
+   6. Build the `<!-- ui-verify:start --> ... <!-- ui-verify:end -->` markdown block manually using the format from `publish.ts` lines 200-260 (plain-link table, not image embeds — see LaunchForce-AI/venture-impact-platform#463 for why image embeds 404 in private-repo PRs).
+   7. Splice it into the PR description (step 5 below).
+
+5. **Splice the printed block into the PR description**.
+   - Local Claude Code: read the current body with `gh pr view <N> --json body --jq .body`, replace the existing `<!-- ui-verify:start --> ... <!-- ui-verify:end -->` block (or append if none exists), write it back with `gh pr edit <N> --body-file <file>`.
+   - Claude Code Web: use `mcp__github__update_pull_request` with the new body. Same rule — replace the existing block, leave the rest of the description alone.
+
+**Env notes for Claude Code Web**: Chromium 141 is pre-installed at `/opt/pw-browsers`, ffmpeg is pre-installed, Playwright is wired as a root devDependency. The harness auto-scrubs `HTTPS_PROXY` env vars for localhost targets so the sandbox proxy doesn't intercept local traffic. The `PostToolUse` hook only sees local `git push` commands; it does not see sysadmin pushes directly.
+
+**Against a Render PR preview** (no local servers needed): `bun scripts/ui-verify/verify.ts --scenario <name> --base-url https://<pr-preview>.onrender.com` — you'll need to supply valid credentials via `--email` / `--password` or `UI_VERIFY_EMAIL` / `UI_VERIFY_PASSWORD`.
+## Production Access
+
+### Local Claude Code (PRIMARY METHOD)
+You can access our production machine by running `ssh root@app.impactforesight.io`. You can access our production db using `sudo -u postgres psql -d impactforesight`.
+
+**IMPORTANT**: When running locally, ALWAYS use SSH for production access. If you try the sysadmin endpoint and it fails (e.g., no API key), immediately fall back to SSH - do NOT ask the user to do it themselves or provide manual instructions. Just use SSH and complete the task.
+
+### **Claude Code Web ONLY** (ie. when env var `CLAUDE_CODE_REMOTE=true`)
+When running in Claude Code Web with the `SYSADMIN_API_KEY` environment variable set, you can query or modify the production database or run any commands on the production server directly via HTTP through the sysadmin endpoints on https://app.impactforesight.io/sysadmin/:
+
+**Query data (SELECT/INSERT/UPDATE/DELETE):**
+```bash
+curl -s -X POST "https://app.impactforesight.io/sysadmin/query" \
+  -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
+  -d '{"sql": "SELECT id, email FROM users LIMIT 5"}'
+```
+
+**Execute shell commands on prod server (including gh CLI):**
+```bash
+curl -s -X POST "https://app.impactforesight.io/sysadmin/exec" \
+  -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
+  -d '{"command": "gh pr list --repo LaunchForce-AI/venture-impact-platform --limit 5"}'
+```
+Note: For `gh` commands, always use the `--repo` flag since the exec endpoint's working directory is not a git repository.
+
+**View application service logs:**
+```bash
+curl -s -X POST "https://app.impactforesight.io/sysadmin/exec" \
+  -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
+  -d '{"command": "journalctl -u impactforesight -n 100 --no-pager"}'
+```
+
+These are essentially "SQL" over HTTPS and "SSH" over HTTPS endpoints for debugging production service issues, data fixes, or investigating database state. The `gh` CLI is available on the prod server for GitHub operations like creating PRs. Be careful with write operations.
+
+### SSL Certificate Troubleshooting (Both Servers)
+
+Both `app.impactforesight.io` and `map.impactforesight.io` use the same SSL setup:
+- **Certbot** manages Let's Encrypt certificates with automatic renewal (~30 days before expiry)
+- **Nginx** handles SSL termination (certs at `/etc/letsencrypt/live/<domain>/`)
+- Certbot stops nginx, renews, then restarts nginx (standalone authenticator)
+
+**Quick debugging commands** (replace `$SERVER` with `app.impactforesight.io` or `map.impactforesight.io`):
+```bash
+# Check cert expiry
+curl -s -X POST "https://$SERVER/sysadmin/exec" -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" -d '{"command": "certbot certificates"}'
+
+# Check nginx status
+curl -s -X POST "https://$SERVER/sysadmin/exec" -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" -d '{"command": "systemctl status nginx"}'
+
+# Force cert renewal (if expired)
+curl -s -X POST "https://$SERVER/sysadmin/exec" -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" -d '{"command": "certbot renew --force-renewal"}'
+```
+
+### WISTA Subdomain (wista.impactforesight.io)
+
+Activated 2026-04-20 on the `app.impactforesight.io` droplet (`159.223.110.238`) — **same Spring Boot process**, no separate service. Hostname-based branding in `BrandingService.java:54` serves the WISTA theme when the `Host` header contains `wista`.
+
+**How it's wired:**
+- DNS: `A wista → 159.223.110.238` in GoDaddy (600s TTL).
+- Nginx: `/etc/nginx/sites-available/wista.impactforesight.io` (symlinked into `sites-enabled/`). Proxies 443 → `127.0.0.1:9000` with `proxy_set_header Host $host`, adds `X-Robots-Tag: noindex, nofollow` (WISTA is blocked from search engines), and 301-redirects HTTP→HTTPS. **No `/sysadmin/` location** — sysadmin stays scoped to `app.impactforesight.io` only.
+- TLS: Let's Encrypt cert at `/etc/letsencrypt/live/wista.impactforesight.io/` (obtained via `certbot --webroot -w /var/www/html`), auto-renewed by the existing certbot timer.
+
+**Rollback** (takes wista offline, leaves `app` / `map` untouched):
+```bash
+curl -s -X POST "https://app.impactforesight.io/sysadmin/exec" -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" -d '{"command": "rm /etc/nginx/sites-enabled/wista.impactforesight.io && nginx -t && systemctl reload nginx"}'
+# Optionally also revoke the cert (not required for rollback):
+# certbot revoke --cert-path /etc/letsencrypt/live/wista.impactforesight.io/fullchain.pem --non-interactive
+# certbot delete --cert-name wista.impactforesight.io --non-interactive
+```
+
+**Migration to a separate droplet** (when issue #460 lands and WISTA needs isolation): lower `wista` A-record TTL to 60s a day ahead, stand up the new droplet with nginx + the app, flip the A record's Value in GoDaddy, run `certbot --webroot` on the new box once DNS propagates, revert TTL. The sysadmin endpoint on the current droplet makes the cutover observable end-to-end.
+
+## Map Server (map.impactforesight.io)
+
+The map application runs on a **separate production server** from the main app.
+
+### Server Details
+- **Server IP**: `134.122.112.217`
+- **Domain**: `map.impactforesight.io`
+- **SSH Access** (Local Claude Code only): `ssh root@134.122.112.217`
+
+### Sysadmin Endpoints (Claude Code Web)
+The map server has the same sysadmin endpoints as the main app server, accessible via standard HTTPS:
+
+**Execute shell commands on map server:**
+```bash
+curl -s -X POST "https://map.impactforesight.io/sysadmin/exec" \
+  -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
+  -d '{"command": "systemctl status impactforesight"}'
+```
+
+**View map server logs:**
+```bash
+curl -s -X POST "https://map.impactforesight.io/sysadmin/exec" \
+  -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
+  -d '{"command": "journalctl -u impactforesight -n 100 --no-pager"}'
+```
+
+**Check service status:**
+```bash
+curl -s -X POST "https://map.impactforesight.io/sysadmin/exec" \
+  -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
+  -d '{"command": "systemctl status nginx impactforesight sysadmin"}'
+```
+
+### GitHub PR Labels
+If the user ever tells you to add these to PRs, these are the exact label names (hyphenated, not spaces):
+- `render-preview` - Triggers a PR preview deployment on Render (previews typically take 10 mins to deploy to Render and work perfectly fine on draft PRs and ready for review PRs)
+- `auto-merge` - Auto-merge PR when checks pass
+
+## Render API Access (PR Previews, Deploys, Logs)
+
+You can see Render pr preview logs, deploys, or service state via the `RENDER_API_KEY` env var and REST API at `https://api.render.com/v1/*`. No CLI install needed; `curl` + `jq` work fine.
+
+Our owner/team ID: `tea-d23i9p7gi27c73802sk0`
+Prod service ID: `srv-d4mqcvuuk2gs7397n470` (branch `main`, URL https://venture-impact-platform.onrender.com)
+
+PR preview services are created automatically when the `render-preview` label is applied. They follow the naming pattern `venture-impact-platform PR #<N>` and get URLs like `https://venture-impact-platform-pr-<N>.onrender.com`.
+
+### Common workflows
+**Find the service ID for a given PR number (e.g., PR #453):**
+```bash
+curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+  "https://api.render.com/v1/services?limit=50" \
+  | jq -r '.[] | select(.service.name == "venture-impact-platform PR #453") | .service.id'
+```
+
+**List recent deploys for a service (to find the deploy you want to debug):**
+```bash
+curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+  "https://api.render.com/v1/services/<service-id>/deploys?limit=10" | jq
+```
+
+**Tail application/runtime logs for a PR preview (this is the one you'll reach for most):**
+```bash
+curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+  "https://api.render.com/v1/logs?ownerId=tea-d23i9p7gi27c73802sk0&resource=<service-id>&limit=100" \
+  | jq -r '.logs[] | "\(.timestamp) \(.message)"'
+```
+Returns the same log stream visible in the Render dashboard — including stack traces, startup errors, Liquibase failures, etc. Use `type=build` in the `labels` filter or add `&startTime=<ISO8601>` / `&endTime=<ISO8601>` to narrow down.
+
+**Fetch build logs for a specific deploy (to debug a failed Docker build):**
+```bash
+curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+  "https://api.render.com/v1/logs?ownerId=tea-d23i9p7gi27c73802sk0&resource=<deploy-id>&limit=200" \
+  | jq -r '.logs[] | "\(.timestamp) \(.message)"'
+```
+
+**Check env vars set on a service** (useful when a preview misbehaves because of config):
+```bash
+curl -s -H "Authorization: Bearer $RENDER_API_KEY" \
+  "https://api.render.com/v1/services/<service-id>/env-vars" | jq
+```
+
+If a user asks "why is PR #X's Render preview failing?", the expected workflow is: look up the service ID by PR number → list recent deploys → pull the failing deploy's build logs and the service's runtime logs → diagnose.
+
+## Architecture Overview
+
+### Backend Architecture (Spring Boot + JPA)
+- **Main Application**: `src/main/java/io/ventureplatform/Application.java`
+- **Package Structure**:
+  - `controller/` - REST API endpoints (20+ controllers)
+  - `service/` - Business logic layer with external service integrations
+  - `entity/` - JPA entities with extensive enum support
+  - `repository/` - Data access layer
+  - `facade/` - DTO mapping layer
+  - `dto/` - Request/response objects with validation
+  - `security/` - JWT authentication and authorization
+  - `configuration/` - Spring configuration classes
+
+ ### Key Backend Files and Code Sections (non-exhaustive):
+  - `/src/main/java/io/ventureplatform/service/CompanyDataExtractionMetricsCacheService.java` - Manages cached metrics (currently global, not per-portfolio)
+  - `/src/main/java/io/ventureplatform/entity/CompanyPatent.java` - Patent entity linked to companies
+  - `/src/main/java/io/ventureplatform/entity/CompanyExtractionData.java` - Main company data entity, portfolio associations via portfolio_company_extraction_access junction table
+  - `/src/main/java/io/ventureplatform/controller/SuperAdminCompanyController.java` - Main controller for company data endpoints
+  - `/src/main/java/io/ventureplatform/service/SecurityService.java` - Security service with portfolio membership checks
+  - `/src/main/java/io/ventureplatform/security/CustomMethodSecurityExpressionRoot.java` - Custom security expressions for @PreAuthorize
+
+### Key Service Categories
+- **External Integrations**: Azure, Stripe, Google APIs, Cloudinary, ChatGPT
+- **Company Data Extraction**: Multi-phase pipeline for company data processing
+- **Impact Management**: Core business domain for measuring venture impact
+- **Portfolio Management**: Multi-tenant system for investment portfolios
+
+### Frontend Architecture (React + Redux Toolkit)
+- **Admin App**: Primary user interface with complex state management
+- **Technology Stack**: React 18, Material-UI, Redux Toolkit, React Router
+- **Key Features**: Impact measurement wizards, portfolio management, certification flows
+- **State Management**: Redux slices in `store/ducks/` organized by domain
+- **Shared Components**: Reusable UI components and utilities
+
+### Database & Migrations
+- **Database**: PostgreSQL with Liquibase migrations
+- **Migration System**: Two-step process for database changes:
+  1. **Create Migration File**: `src/main/resources/db/migrations/YYYY_MM_DD_descriptive_name.yml`
+  2. **Register in Changelog**: Add `include` entry to `src/main/resources/db/db.changelog.yml`
+- **Migration Pattern**: Files follow `YYYY_MM_DD_descriptive_name.yml` format with chronological ordering
+- **Auto-Application**: Migrations run automatically on application startup via Liquibase
+- **Complex Schema**: Supports multi-tenant portfolios, ventures, and impact indicators
+
+### Key Business Domains
+1. **Ventures**: Startups/companies being measured
+2. **Portfolios**: Collections of ventures (for investors/accelerators)  
+3. **Impacts**: Measurable outcomes and indicators
+4. **Certification**: Impact assessment and validation
+5. **Public Profiles**: Shareable venture/portfolio information
+
+### Multi-App Structure
+- **Admin App**: Full-featured management interface
+- **Map App**: Public-facing venture map/directory
+- **Backend**: Single Spring Boot application serving both frontends
+
+### Development Profiles
+- `frontend-admin` (default): Builds admin application
+- `frontend-map`: Builds map application  
+- Use Maven profiles to switch between frontend builds
+
+### External Dependencies
+- Requires PostgreSQL database connection
+- Chrome/Chromedriver for web scraping functionality
+- Various API keys for external services (configured via application.yml)
+
+## Processing Slack Video Messages
+
+When reading Slack messages that contain videos (check `.files[].mp4` in JSON output):
+
+### Key Slack IDs
+- **Ingo Michelfelder DM**: `D08PRF1T8BE`
+- **Ingo User ID**: `U04B22W94EN`
+- **Ingo + Praew + Alona Group DM**: `C08U9G6MSLC`
+
+### Slack Best Practices
+**ALWAYS** use `--include-threads` when reading Slack conversations:
+```bash
+slackcli conversations read <channel-id> --json --include-threads
+```
+Thread replies often contain critical requirements, clarifications, or follow-up details that aren't in the parent message.
+
+For messages with videos, extract frames using `bun scripts/extract-video-frames.ts` - see "How to Extract Frames" below.
+
+### Transcripts
+Transcripts are automatically included when using slackcli - videos with `transcription.status === 'complete'` will have a `transcript` field.
+
+### When to Extract Video Frames
+Extract frames when:
+- The transcript mentions UI, screens, charts, code, or visual elements
+- The user asks about implementation tasks (videos often show what to build)
+- The transcript references "this", "here", "as you can see" (pointing at something on screen)
+- You need to understand WHAT something looks like, not just what was said
+
+### How to Extract Frames
+```bash
+# ffmpeg is automatically installed at session start (via SessionStart hook)
+
+# Get video URL from slackcli (always use --include-threads)
+slackcli conversations read <channel-id> --json --include-threads | jq '.messages[].files[].mp4'
+
+# Extract unique frames (scene detection - only extracts when content changes)
+bun scripts/extract-video-frames.ts "<video-url>" /tmp/frames
+
+# Read frames with the Read tool: /tmp/frames/frame_001.jpg, frame_002.jpg, etc.
+```
+
+### Workflow Example
+When user says "check Ingo's latest messages and tell me what tasks need to be done":
+1. Run `slackcli conversations read <channel-id> --json --include-threads` to get messages with transcripts
+2. For any videos, check if transcript mentions visual elements
+3. If yes, extract frames: `bun scripts/extract-video-frames.ts <mp4-url> /tmp/frames`
+4. Read the frames to see what's being shown
+5. Combine transcript + visual context to provide accurate task list
+
+## Processing Slack File Attachments
+
+When reading Slack messages, **always check for and download file attachments** (`.files[]` in JSON output). Download files proactively so they're available for analysis during your workflow.
+
+### File Previews
+For text files (CSV, code, etc.), Slack includes a `preview` field in the JSON output with the first few lines. You can check this before downloading to get a sense of the nature of the file.
+
+### Reading File Content (Text Files)
+```bash
+# Read text file content directly without downloading
+slackcli files read --url "<url_private_download>"
+```
+
+### Downloading Files
+```bash
+# Download a file to disk
+slackcli files download --url "<url_private_download>" --output /tmp/filename.ext
+```
+
+### Reading Downloaded Files
+- **Images**: Use the Read tool directly: `Read /tmp/filename.png`
+- **CSV**: Use `slackcli files read` for text content, or download and parse
+- **ZIP**: Download and extract with `unzip`
+- **Documents**: Download and extract text content for analysis
+
+### Workflow Example
+When checking messages for file attachments:
+1. Run `slackcli conversations read <channel-id> --json --include-threads`
+2. Look for `.files[]` arrays in messages
+3. **Download all files** to `/tmp/` using `slackcli files download`
+4. Read/analyze files as needed during your workflow
+
+## Fetching Google Sheets Data
+
+For **public** Google Sheets shared in Slack or elsewhere, you can fetch the data directly using the CSV export URL:
+
+```bash
+# Example - download to file:
+curl -sL "https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv&gid={TAB_ID}" -o /tmp/sheet.csv
+```
+
+**Note:** WebFetch on the regular Google Sheets URL (`/edit?gid=0`) likely will NOT work, it only gets the HTML/JS shell, not the actual data which is loaded dynamically via JavaScript.

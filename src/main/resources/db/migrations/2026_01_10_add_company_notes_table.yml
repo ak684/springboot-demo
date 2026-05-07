@@ -1,0 +1,75 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026_01_10_add_company_notes_table
+      author: alona
+      comment: "Create company_notes table for portfolio-scoped notes on companies in the URL extractor"
+      changes:
+        - createTable:
+            tableName: company_notes
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_at
+                  type: timestamp
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: created_by
+                  type: bigint
+              - column:
+                  name: last_modified_by
+                  type: bigint
+              - column:
+                  name: company_extraction_data_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: portfolio_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: text
+        - addForeignKeyConstraint:
+            baseTableName: company_notes
+            baseColumnNames: company_extraction_data_id
+            referencedTableName: company_extraction_data
+            referencedColumnNames: id
+            constraintName: fk_company_notes_extraction_data
+            onDelete: CASCADE
+        - addForeignKeyConstraint:
+            baseTableName: company_notes
+            baseColumnNames: portfolio_id
+            referencedTableName: portfolios
+            referencedColumnNames: id
+            constraintName: fk_company_notes_portfolio
+            onDelete: CASCADE
+        - addUniqueConstraint:
+            tableName: company_notes
+            columnNames: company_extraction_data_id, portfolio_id
+            constraintName: uq_company_notes_company_portfolio
+        - createIndex:
+            tableName: company_notes
+            indexName: idx_company_notes_extraction_data
+            columns:
+              - column:
+                  name: company_extraction_data_id
+        - createIndex:
+            tableName: company_notes
+            indexName: idx_company_notes_portfolio
+            columns:
+              - column:
+                  name: portfolio_id

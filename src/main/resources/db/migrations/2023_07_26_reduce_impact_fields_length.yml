@@ -1,0 +1,41 @@
+databaseChangeLog:
+- changeSet:
+    id: 1
+    author: andrewkoziulia
+    changes:
+    - modifyDataType:
+        tableName: impacts
+        columnName: status_quo
+        newDataType: VARCHAR(100)
+- changeSet:
+    id: 2
+    author: andrewkoziulia
+    changes:
+    - modifyDataType:
+        tableName: impacts
+        columnName: innovation
+        newDataType: VARCHAR(100)
+- changeSet:
+    id: 3
+    author: andrewkoziulia
+    changes:
+    - modifyDataType:
+        tableName: impacts
+        columnName: stakeholders
+        newDataType: VARCHAR(100)
+- changeSet:
+    id: 4
+    author: andrewkoziulia
+    changes:
+    - modifyDataType:
+        tableName: impacts
+        columnName: change
+        newDataType: VARCHAR(100)
+- changeSet:
+    id: 5
+    author: andrewkoziulia
+    changes:
+    - modifyDataType:
+        tableName: impacts
+        columnName: output_units
+        newDataType: VARCHAR(100)

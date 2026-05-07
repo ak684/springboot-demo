@@ -1,0 +1,12 @@
+databaseChangeLog:
+- changeSet:
+    id: 1709166413561-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: public_hidden
+            type: bool
+        tableName: portfolio_venture_access
+

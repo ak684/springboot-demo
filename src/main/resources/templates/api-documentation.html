@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impact Foresight API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: white;
+            min-height: 100vh;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            color: #34495e;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #e74c3c;
+        }
+        
+        pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .endpoint {
+            background-color: #3498db;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 16px;
+            word-break: break-all;
+        }
+        
+        .method {
+            background-color: #2ecc71;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        .tab-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            color: #7f8c8d;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        
+        .tab-button:hover {
+            color: #34495e;
+        }
+        
+        .tab-button.active {
+            color: #3498db;
+            border-bottom-color: #3498db;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .response-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .response-table th,
+        .response-table td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        .response-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .response-table td:first-child {
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            color: #e74c3c;
+        }
+        
+        .note {
+            background-color: #ffeaa7;
+            border-left: 4px solid #fdcb6e;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        .note strong {
+            color: #f39c12;
+        }
+        
+        .copy-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .copy-button:hover {
+            background: #2980b9;
+        }
+        
+        .code-block {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Impact Foresight API Documentation</h1>
+        
+        <p>Welcome to the Impact Foresight API. This API allows you to programmatically access aggregated impact indicators for your portfolio.</p>
+        
+        <p><strong>Key Features:</strong></p>
+        <ul>
+            <li>📊 Access all your portfolio's aggregated indicators</li>
+            <li>🌐 Multi-language support (English and Slovak)</li>
+            <li>🔢 Flexible number formatting (EU/US)</li>
+            <li>📈 Optional live counter data for real-time displays <span style="color: #2ecc71;">NEW</span></li>
+        </ul>
+        
+        <h2>Authentication</h2>
+        <p>All API requests require authentication using an API key. Include your API key in the request headers:</p>
+        
+        <pre>X-API-Key: YOUR_API_KEY</pre>
+        
+        <div class="note">
+            <strong>Note:</strong> Contact Impact Foresight to obtain your API key for your portfolio.
+        </div>
+        
+        <h2>Base URL</h2>
+        <pre>https://app.impactforesight.io</pre>
+        
+        <h2>Endpoints</h2>
+        
+        <h3>Get Aggregated Indicators</h3>
+        <div class="endpoint">
+            <span class="method">GET</span>/api/v1/public/portfolios/{portfolioId}/indicators
+        </div>
+        
+        <p>Retrieves all aggregated indicators for a specific portfolio.</p>
+        
+        <h4>Parameters</h4>
+        <table class="response-table">
+            <tr>
+                <th>Parameter</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>portfolioId</td>
+                <td>number</td>
+                <td>The ID of your portfolio</td>
+            </tr>
+        </table>
+        
+        <h4>Response Format</h4>
+        <p>The API returns an array of indicator objects. Each object represents a main indicator with up to 3 hover indicators:</p>
+        
+        <pre>[
+  {
+    // Example 1: Standard indicator
+    "indicator_id": 123,
+    "category": "Environmental",
+    "indicator_name_en": "CO2 Emissions Reduced",
+    "indicator_name_sk": "Znížené emisie CO2",
+    "indicator_value": 1500.5,
+    "time_period": "currentYearFull",
+    "time_period_en": "2024 Annual Total",
+    "time_period_sk": "celý rok",
+    "unit": "tons",
+    "unit_sk": "ton",
+    "decimal_places": 1,
+    "number_format": "EU",
+    "calculation_type": "full",
+    "calculated_date": "2025-01-23",
+    // ... hover indicators
+  },
+  {
+    // Example 2: Indicator with live counter
+    "indicator_id": 124,
+    "category": "Housing",
+    "indicator_name_en": "Families Housed YTD",
+    "indicator_name_sk": "Ubytované rodiny od začiatku roka",
+    "indicator_value": 17.26,
+    "time_period": "ytd",
+    "time_period_en": "Q1 2024 Progress",
+    "time_period_sk": "od začiatku roka",
+    "unit": "families",
+    "unit_sk": "rodiny",
+    "decimal_places": 0,
+    "number_format": "EU",
+    "calculation_type": "prorated",
+    "calculated_date": "2025-06-29",
+    "continuous_counter": {    // 🆕 Only present for live indicators
+      "annual_total": 35.0,
+      "daily_rate": 0.0959,
+      "hourly_rate": 0.00399,
+      "rate_per_second": 0.00000111,
+      "base_value_midnight": 17.16,
+      "last_updated": "2025-06-29T23:40:26"
+    },
+    // ... hover indicators
+  }
+]</pre>
+        
+        <h4>Response Fields</h4>
+        <table class="response-table">
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>indicator_id</td>
+                <td>number</td>
+                <td>Unique identifier for the indicator</td>
+            </tr>
+            <tr>
+                <td>category</td>
+                <td>string</td>
+                <td>Category of the indicator (e.g., Environmental, Social)</td>
+            </tr>
+            <tr>
+                <td>indicator_name_en</td>
+                <td>string</td>
+                <td>Indicator name in English</td>
+            </tr>
+            <tr>
+                <td>indicator_name_sk</td>
+                <td>string</td>
+                <td>Indicator name in Slovak</td>
+            </tr>
+            <tr>
+                <td>indicator_value</td>
+                <td>number</td>
+                <td>The calculated value of the indicator</td>
+            </tr>
+            <tr>
+                <td>time_period</td>
+                <td>string</td>
+                <td>Time period code (ytd, mtd, currentYearFull, etc.)</td>
+            </tr>
+            <tr>
+                <td>time_period_en</td>
+                <td>string</td>
+                <td>Custom English time period label (e.g., "Q1 2024", "Daily Progress")</td>
+            </tr>
+            <tr>
+                <td>time_period_sk</td>
+                <td>string</td>
+                <td>Custom Slovak time period label (e.g., "Q1 2024", "Denný pokrok")</td>
+            </tr>
+            <tr>
+                <td>unit</td>
+                <td>string</td>
+                <td>Unit of measurement</td>
+            </tr>
+            <tr>
+                <td>unit_sk</td>
+                <td>string</td>
+                <td>Unit of measurement in Slovak</td>
+            </tr>
+            <tr>
+                <td>decimal_places</td>
+                <td>number</td>
+                <td>Number of decimal places to display</td>
+            </tr>
+            <tr>
+                <td>number_format</td>
+                <td>string</td>
+                <td>Number format (EU or US)</td>
+            </tr>
+            <tr>
+                <td>calculation_type</td>
+                <td>string</td>
+                <td>"prorated" for YTD/MTD calculations, "full" otherwise</td>
+            </tr>
+            <tr>
+                <td>hover1_*, hover2_*, hover3_*</td>
+                <td>various</td>
+                <td>Optional hover indicators with same field structure</td>
+            </tr>
+            <tr>
+                <td>continuous_counter</td>
+                <td>object</td>
+                <td>Optional - Present for YTD/MTD/today indicators with live counter enabled (see <a href="#continuous-counter">Continuous Counter section</a>)</td>
+            </tr>
+        </table>
+
+        <h3>Hover Indicator Fields</h3>
+        <p>Each main indicator can have up to 3 hover indicators (hover1, hover2, hover3) with the following fields:</p>
+
+        <table>
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>hover1_name, hover2_name, hover3_name</td>
+                <td>string</td>
+                <td>Name of the hover indicator</td>
+            </tr>
+            <tr>
+                <td>hover1_name_sk, hover2_name_sk, hover3_name_sk</td>
+                <td>string</td>
+                <td>Name of the hover indicator in Slovak</td>
+            </tr>
+            <tr>
+                <td>hover1_value, hover2_value, hover3_value</td>
+                <td>number</td>
+                <td>Calculated value of the hover indicator</td>
+            </tr>
+            <tr>
+                <td>hover1_time_period, hover2_time_period, hover3_time_period</td>
+                <td>string</td>
+                <td>Time period code for the hover indicator</td>
+            </tr>
+            <tr>
+                <td>hover1_time_period_en, hover2_time_period_en, hover3_time_period_en</td>
+                <td>string</td>
+                <td>Custom English time period label for the hover indicator</td>
+            </tr>
+            <tr>
+                <td>hover1_time_period_sk, hover2_time_period_sk, hover3_time_period_sk</td>
+                <td>string</td>
+                <td>Custom Slovak time period label for the hover indicator</td>
+            </tr>
+            <tr>
+                <td>hover1_unit, hover2_unit, hover3_unit</td>
+                <td>string</td>
+                <td>Unit of measurement for the hover indicator</td>
+            </tr>
+            <tr>
+                <td>hover1_unit_sk, hover2_unit_sk, hover3_unit_sk</td>
+                <td>string</td>
+                <td>Unit of measurement in Slovak for the hover indicator</td>
+            </tr>
+            <tr>
+                <td>hover1_decimal_places, hover2_decimal_places, hover3_decimal_places</td>
+                <td>number</td>
+                <td>Number of decimal places to display</td>
+            </tr>
+            <tr>
+                <td>hover1_number_format, hover2_number_format, hover3_number_format</td>
+                <td>string</td>
+                <td>Number format ("US" or "EU")</td>
+            </tr>
+        </table>
+
+        <h2>Code Examples</h2>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('javascript')">JavaScript</button>
+            <button class="tab-button" onclick="showTab('python')">Python</button>
+            <button class="tab-button" onclick="showTab('curl')">cURL</button>
+        </div>
+        
+        <div id="javascript" class="tab-content active">
+            <h3>JavaScript (Fetch API)</h3>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode('js-code')">Copy</button>
+                <pre id="js-code">const API_KEY = 'YOUR_API_KEY';
+const PORTFOLIO_ID = YOUR_PORTFOLIO_ID;
+
+fetch(`https://app.impactforesight.io/api/v1/public/portfolios/${PORTFOLIO_ID}/indicators`, {
+  headers: {
+    'X-API-Key': API_KEY,
+    'Content-Type': 'application/json'
+  }
+})
+.then(response => {
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+})
+.then(data => {
+  // Process your indicators
+  data.forEach(indicator => {
+    console.log(`${indicator.indicator_name_en}: ${indicator.indicator_value} ${indicator.unit}`);
+    
+// Check if this indicator has live counter data
+    if (indicator.continuous_counter) {
+      console.log(`  Live counter enabled - Rate: ${indicator.continuous_counter.rate_per_second}/sec`);
+    }
+    
+    // Format numbers according to locale
+    const formattedValue = indicator.number_format === 'EU' 
+      ? indicator.indicator_value.toLocaleString('sk-SK', { 
+          minimumFractionDigits: indicator.decimal_places,
+          maximumFractionDigits: indicator.decimal_places 
+        })
+      : indicator.indicator_value.toLocaleString('en-US', { 
+          minimumFractionDigits: indicator.decimal_places,
+          maximumFractionDigits: indicator.decimal_places 
+        });
+        
+    console.log(`Formatted value: ${formattedValue}`);
+  });
+})
+.catch(error => {
+  console.error('Error fetching indicators:', error);
+});</pre>
+            </div>
+        </div>
+        
+        <div id="python" class="tab-content">
+            <h3>Python (requests library)</h3>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode('python-code')">Copy</button>
+                <pre id="python-code">import requests
+import json
+
+API_KEY = 'YOUR_API_KEY'
+PORTFOLIO_ID = YOUR_PORTFOLIO_ID
+URL = f'https://app.impactforesight.io/api/v1/public/portfolios/{PORTFOLIO_ID}/indicators'
+
+headers = {
+    'X-API-Key': API_KEY,
+    'Content-Type': 'application/json'
+}
+
+try:
+    response = requests.get(URL, headers=headers)
+    response.raise_for_status()  # Raise an exception for bad status codes
+    
+    indicators = response.json()
+    
+    # Process indicators
+    for indicator in indicators:
+        print(f"{indicator['indicator_name_en']}: {indicator['indicator_value']} {indicator['unit']}")
+        
+        # Check for continuous counter
+        if 'continuous_counter' in indicator:
+            cc = indicator['continuous_counter']
+            print(f"  📊 Live counter - Daily rate: {cc['daily_rate']:.2f} {indicator['unit']}/day")
+        
+        # Handle hover indicators
+        for i in range(1, 4):
+            hover_name = f'hover{i}_name'
+            if indicator.get(hover_name):
+                hover_value = indicator[f'hover{i}_value']
+                hover_unit = indicator[f'hover{i}_unit']
+                print(f"  - {indicator[hover_name]}: {hover_value} {hover_unit}")
+                
+except requests.exceptions.RequestException as e:
+    print(f"Error fetching indicators: {e}")</pre>
+            </div>
+        </div>
+        
+        <div id="curl" class="tab-content">
+            <h3>cURL</h3>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode('curl-code')">Copy</button>
+                <pre id="curl-code">curl -X GET \
+  'https://app.impactforesight.io/api/v1/public/portfolios/YOUR_PORTFOLIO_ID/indicators' \
+  -H 'X-API-Key: YOUR_API_KEY' \
+  -H 'Content-Type: application/json'</pre>
+            </div>
+            
+            <p>Pretty print the JSON response:</p>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode('curl-pretty')">Copy</button>
+                <pre id="curl-pretty">curl -X GET \
+  'https://app.impactforesight.io/api/v1/public/portfolios/YOUR_PORTFOLIO_ID/indicators' \
+  -H 'X-API-Key: YOUR_API_KEY' \
+  -H 'Content-Type: application/json' \
+  | python -m json.tool</pre>
+            </div>
+        </div>
+        
+        <h2>Error Responses</h2>
+        
+        <h3>401 Unauthorized</h3>
+        <p>Returned when the API key is missing or invalid.</p>
+        <pre>{
+  "error": "Invalid or missing API key"
+}</pre>
+        
+        <h3>403 Forbidden</h3>
+        <p>Returned when trying to access a portfolio that doesn't match your API key.</p>
+        <pre>{
+  "error": "Access denied to this portfolio"
+}</pre>
+        
+        <h2>Number Formatting</h2>
+        <p>The API provides formatting hints for displaying numbers correctly:</p>
+        <ul>
+            <li><strong>EU format:</strong> Uses comma as decimal separator (1.234,56)</li>
+            <li><strong>US format:</strong> Uses period as decimal separator (1,234.56)</li>
+            <li><strong>decimal_places:</strong> Specifies how many decimal places to show</li>
+        </ul>
+        
+        <h2 id="continuous-counter">Continuous Counter Feature <span style="background: #2ecc71; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.8em; margin-left: 10px;">Optional</span></h2>
+        <p>Some indicators support real-time incrementing display. When enabled, prorated indicators (YTD, MTD, today) include additional data for creating live counters.</p>
+        
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h4 style="margin-top: 0;">📊 Live Dashboard Example</h4>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; flex: 1; min-width: 200px;">
+                    <div style="color: #666; font-size: 14px;">Families Housed YTD</div>
+                    <div style="font-size: 36px; font-weight: bold; color: #2c3e50;">
+                        17.26 <span style="font-size: 16px; color: #27ae60;">↑</span>
+                    </div>
+                    <div style="color: #27ae60; font-size: 12px;">
+                        <span style="background: #27ae60; color: white; padding: 2px 6px; border-radius: 3px;">LIVE</span>
+                        +0.096 per day
+                    </div>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd; flex: 1; min-width: 200px;">
+                    <div style="color: #666; font-size: 14px;">Trees Planted (Full Year)</div>
+                    <div style="font-size: 36px; font-weight: bold; color: #2c3e50;">1,250</div>
+                    <div style="color: #666; font-size: 12px;">Static value</div>
+                </div>
+            </div>
+        </div>
+        
+        <h3>Response Structure</h3>
+        <p>When an indicator has continuous counter enabled:</p>
+        <pre>{
+  "indicator_name_en": "Families Housed YTD",
+  "indicator_value": 584.93,
+  "time_period": "ytd",
+  "time_period_en": "Daily Housing Progress",
+  "continuous_counter": {
+    "annual_total": 1100,
+    "daily_rate": 3.0137,
+    "hourly_rate": 0.1256,
+    "rate_per_second": 0.0000349,
+    "base_value_midnight": 584.00,
+    "last_updated": "2025-06-29T10:30:00"
+  }
+  // ... other fields
+}</pre>
+
+        <h3>Continuous Counter Fields</h3>
+        <div class="note" style="margin-bottom: 20px;">
+            <strong>Important:</strong> The presence of the <code>continuous_counter</code> object indicates the feature is active. If the indicator doesn't have live counter enabled, this entire object will be absent from the response.
+        </div>
+
+        <h3>Continuous Counter Fields</h3>
+        <table class="response-table">
+            <tr>
+                <th>Field</th>
+                <th>Type</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>annual_total</td>
+                <td>number</td>
+                <td>Projected total for the full year</td>
+            </tr>
+            <tr>
+                <td>daily_rate</td>
+                <td>number</td>
+                <td>Average increment per day</td>
+            </tr>
+            <tr>
+                <td>hourly_rate</td>
+                <td>number</td>
+                <td>Average increment per hour</td>
+            </tr>
+            <tr>
+                <td>rate_per_second</td>
+                <td>number</td>
+                <td>Average increment per second</td>
+            </tr>
+            <tr>
+                <td>base_value_midnight</td>
+                <td>number</td>
+                <td>Value at start of current day</td>
+            </tr>
+        </table>
+        
+        <h3>Implementation Examples</h3>
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('counter-js')">JavaScript</button>
+            <button class="tab-button" onclick="showTab('counter-react')">React</button>
+            <button class="tab-button" onclick="showTab('counter-vue')">Vue.js</button>
+        </div>
+        
+        <div id="counter-js" class="tab-content active">
+            <h4>Vanilla JavaScript Live Counter</h4>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode('counter-js-code')">Copy</button>
+                <pre id="counter-js-code">// Create a live counter for an indicator
+function createLiveCounter(indicator, elementId) {
+  const element = document.getElementById(elementId);
+  
+  if (!indicator.continuous_counter) {
+    // Not a continuous counter, just display the value
+    element.textContent = formatNumber(indicator.indicator_value, indicator);
+    return;
+  }
+  
+  const counter = indicator.continuous_counter;
+  let currentValue = indicator.indicator_value;
+  const startTime = Date.now();
+  
+  // Update the counter every second
+  const interval = setInterval(() => {
+    const elapsedSeconds = (Date.now() - startTime) / 1000;
+    currentValue = indicator.indicator_value + (counter.rate_per_second * elapsedSeconds);
+    
+    element.textContent = formatNumber(currentValue, indicator);
+  }, 1000);
+  
+  // Return cleanup function
+  return () => clearInterval(interval);
+}
+
+// Format number according to indicator settings
+function formatNumber(value, indicator) {
+  const locale = indicator.number_format === 'EU' ? 'de-DE' : 'en-US';
+  return value.toLocaleString(locale, {
+    minimumFractionDigits: indicator.decimal_places,
+    maximumFractionDigits: indicator.decimal_places
+  }) + ' ' + indicator.unit;
+}</pre>
+            </div>
+        </div>
+        
+        <div id="counter-react" class="tab-content">
+            <h4>React Hook for Live Counter</h4>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode('counter-react-code')">Copy</button>
+                <pre id="counter-react-code">import { useState, useEffect } from 'react';
+
+// Custom hook for live counter
+function useLiveCounter(indicator) {
+  const [currentValue, setCurrentValue] = useState(indicator.indicator_value);
+  
+  useEffect(() => {
+    if (!indicator.continuous_counter) {
+      return;
+    }
+    
+    const counter = indicator.continuous_counter;
+    const startTime = Date.now();
+    const startValue = indicator.indicator_value;
+    
+    const interval = setInterval(() => {
+      const elapsedSeconds = (Date.now() - startTime) / 1000;
+      const newValue = startValue + (counter.rate_per_second * elapsedSeconds);
+      setCurrentValue(newValue);
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [indicator]);
+  
+  return currentValue;
+}
+
+// Component usage
+function IndicatorDisplay({ indicator }) {
+  const currentValue = useLiveCounter(indicator);
+  
+  const formatValue = (value) => {
+    const locale = indicator.number_format === 'EU' ? 'de-DE' : 'en-US';
+    return value.toLocaleString(locale, {
+      minimumFractionDigits: indicator.decimal_places,
+      maximumFractionDigits: indicator.decimal_places
+    });
+  };
+  
+  return (
+    <div className="indicator">
+      <h3>{indicator.indicator_name_en}</h3>
+      <div className="value">
+        {formatValue(currentValue)} {indicator.unit}
+        {indicator.continuous_counter && (
+          <span className="live-badge">LIVE</span>
+        )}
+      </div>
+    </div>
+  );
+}</pre>
+            </div>
+        </div>
+        
+        <div id="counter-vue" class="tab-content">
+            <h4>Vue.js Composition API</h4>
+            <div class="code-block">
+                <button class="copy-button" onclick="copyCode('counter-vue-code')">Copy</button>
+                <pre id="counter-vue-code">// Vue 3 Composition API
+import { ref, onMounted, onUnmounted, computed } from 'vue';
+
+export function useLiveCounter(indicator) {
+  const currentValue = ref(indicator.value.indicator_value);
+  let interval = null;
+  
+  const isLive = computed(() => 
+    !!indicator.value.continuous_counter
+  );
+  
+  const formattedValue = computed(() => {
+    const locale = indicator.value.number_format === 'EU' ? 'de-DE' : 'en-US';
+    return currentValue.value.toLocaleString(locale, {
+      minimumFractionDigits: indicator.value.decimal_places,
+      maximumFractionDigits: indicator.value.decimal_places
+    });
+  });
+  
+  onMounted(() => {
+    if (!isLive.value) return;
+    
+    const counter = indicator.value.continuous_counter;
+    const startTime = Date.now();
+    const startValue = indicator.value.indicator_value;
+    
+    interval = setInterval(() => {
+      const elapsedSeconds = (Date.now() - startTime) / 1000;
+      currentValue.value = startValue + (counter.rate_per_second * elapsedSeconds);
+    }, 1000);
+  });
+  
+  onUnmounted(() => {
+    if (interval) clearInterval(interval);
+  });
+  
+  return {
+    currentValue,
+    formattedValue,
+    isLive
+  };
+}</pre>
+            </div>
+        </div>
+        
+        <div class="note">
+            <strong>Note:</strong> The continuous counter feature is optional. Indicators without this feature will not include the <code>continuous_counter</code> object in the response. Always check for its presence before implementing live updates.
+        </div>
+        
+        <h3>Best Practices for Live Counters</h3>
+        <ul>
+            <li>✅ Always check if <code>continuous_counter</code> exists before using it</li>
+            <li>✅ Use <code>requestAnimationFrame</code> for smooth visual updates</li>
+            <li>✅ Clean up intervals when components unmount</li>
+            <li>✅ Consider performance - don't create too many simultaneous counters</li>
+            <li>✅ Round displayed values appropriately using <code>decimal_places</code></li>
+        </ul>
+        
+        <h2>Support</h2>
+        <p>For questions about the API or to report issues, please contact Impact Foresight support.</p>
+    </div>
+    
+    <script>
+        function showTab(tabName) {
+            // Find the parent tabs container
+            const tabsContainer = event.target.closest('.tabs');
+            const contentParent = tabsContainer.nextElementSibling;
+            
+            // Hide all tabs in this section
+            let sibling = contentParent;
+            while (sibling && sibling.classList && sibling.classList.contains('tab-content')) {
+                sibling.classList.remove('active');
+                sibling = sibling.nextElementSibling;
+            }
+            
+            // Remove active class from all buttons in this section
+            tabsContainer.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+        
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const textArea = document.createElement('textarea');
+            textArea.value = codeElement.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            // Change button text temporarily
+            const button = event.target;
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+                button.textContent = originalText;
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+databaseChangeLog:
+- changeSet:
+    id: 1708391671170-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: website
+            type: varchar(255)
+        tableName: accelerations

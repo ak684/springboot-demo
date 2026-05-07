@@ -1,0 +1,38 @@
+databaseChangeLog:
+- changeSet:
+    id: 1690305959676-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            defaultValueBoolean: false
+            name: hide_monitoring_wizard
+            type: bool
+        tableName: user_config
+- changeSet:
+    id: 1690305959676-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: indicator_id
+            type: int8
+        tableName: quantification_data
+- changeSet:
+    id: 1690305959676-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: indicator_id
+        baseTableName: quantification_data
+        constraintName: fkrauqflropxsb687ehvfyc5x6w
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: impact_indicators
+        validate: true
+

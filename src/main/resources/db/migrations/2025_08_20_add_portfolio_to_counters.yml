@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_08_20_add_portfolio_to_counters
+      author: alona
+      comment: "Add portfolio_id to counters table for portfolio-scoped counters"
+      changes:
+        - addColumn:
+            tableName: counters
+            columns:
+              - column:
+                  name: portfolio_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+        - sql:
+            sql: |
+              UPDATE counters 
+              SET portfolio_id = 39
+              WHERE portfolio_id IS NULL;
+        - addForeignKeyConstraint:
+            baseTableName: counters
+            baseColumnNames: portfolio_id
+            referencedTableName: portfolios
+            referencedColumnNames: id
+            constraintName: fk_counters_portfolio
+        - createIndex:
+            tableName: counters
+            indexName: idx_counters_portfolio
+            columns:
+              - column:
+                  name: portfolio_id

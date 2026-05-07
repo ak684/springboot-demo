@@ -1,0 +1,12 @@
+databaseChangeLog:
+- changeSet:
+    id: 1707408731187-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: invitation_code
+            type: varchar(255)
+        tableName: portfolios
+

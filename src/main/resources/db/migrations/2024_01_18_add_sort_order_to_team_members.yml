@@ -1,0 +1,51 @@
+databaseChangeLog:
+- changeSet:
+    id: 1705621903512-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: sort_order
+            type: int4
+        tableName: venture_team_members
+
+- changeSet:
+    id: 1705621903512-2
+    author: andrewkoziulia
+    changes:
+    - sql:
+        sql: |
+          WITH numbered_members AS (
+            SELECT
+              id,
+              row_number() OVER (PARTITION BY venture_id ORDER BY created_at) - 1 AS new_sort_order
+            FROM impacts
+          )
+          UPDATE venture_team_members
+          SET sort_order = numbered_members.new_sort_order
+          FROM numbered_members
+          WHERE venture_team_members.id = numbered_members.id;
+
+- changeSet:
+    id: 1705621903512-3
+    author: andrewkoziulia
+    comment: "Change type column data type to VARCHAR"
+    changes:
+    - modifyDataType:
+        tableName: venture_team_members
+        columnName: type
+        newDataType: VARCHAR(255)
+
+- changeSet:
+    id: 1705621903512-4
+    author: andrewkoziulia
+    comment: "Update existing enum values in venture_team_members"
+    changes:
+    - sql:
+        sql: |
+          UPDATE venture_team_members SET type = 'CEO' WHERE type = '0';
+          UPDATE venture_team_members SET type = 'C_LEVEL' WHERE type = '1';
+          UPDATE venture_team_members SET type = 'REGULAR' WHERE type = '2';
+
+

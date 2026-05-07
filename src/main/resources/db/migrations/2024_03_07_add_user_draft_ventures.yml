@@ -1,0 +1,53 @@
+databaseChangeLog:
+- changeSet:
+    id: 1709769579361-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: user_venture_drafts_pkey
+            name: user_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: user_venture_drafts_pkey
+            name: venture_id
+            type: BIGINT
+        tableName: user_venture_drafts
+- changeSet:
+    id: 1709769579361-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: user_venture_drafts
+        constraintName: fk5ar7i8tfp2cuop88dfq76kq5d
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+- changeSet:
+    id: 1709769579361-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: user_venture_drafts
+        constraintName: fkn3sg35g7lrj0v9e72d2jvo6u0
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+

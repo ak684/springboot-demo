@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_14_add_phone_email_if_missing
+      author: alonaking
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            columnExists:
+              tableName: company_extraction_data
+              columnName: phone_number
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: phone_number
+                  type: varchar(100)
+              - column:
+                  name: contact_email
+                  type: varchar(255)
+  
+  - changeSet:
+      id: 2025_07_14_add_annual_sales_by_year_columns
+      author: alonaking
+      changes:
+        # Add annual sales columns for specific years
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: annual_sales_2022
+                  type: varchar(100)
+              - column:
+                  name: annual_sales_2023
+                  type: varchar(100)
+              - column:
+                  name: annual_sales_2024
+                  type: varchar(100)
+              - column:
+                  name: currency_2022
+                  type: varchar(10)
+              - column:
+                  name: currency_2023
+                  type: varchar(10)
+              - column:
+                  name: currency_2024
+                  type: varchar(10)
+  
+  - changeSet:
+      id: 2025_07_14_rename_annual_sales_to_legacy
+      author: alonaking
+      changes:
+        # Rename the old annual_sales column to annual_sales_legacy
+        - renameColumn:
+            tableName: company_extraction_data
+            oldColumnName: annual_sales
+            newColumnName: annual_sales_legacy
+            columnDataType: varchar(100)

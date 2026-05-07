@@ -1,0 +1,13 @@
+databaseChangeLog:
+- changeSet:
+    id: 1683914699128-1
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            defaultValue: USD
+            name: currency
+            type: varchar(255)
+        tableName: ventures
+

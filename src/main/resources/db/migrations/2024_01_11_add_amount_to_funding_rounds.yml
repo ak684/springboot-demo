@@ -1,0 +1,12 @@
+databaseChangeLog:
+- changeSet:
+    id: 1704979155977-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: amount
+            type: float8
+        tableName: funding_rounds
+

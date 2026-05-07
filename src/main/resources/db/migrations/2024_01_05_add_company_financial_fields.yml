@@ -1,0 +1,153 @@
+databaseChangeLog:
+- changeSet:
+    id: 1704467050280-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: accelerations_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: currency
+            type: VARCHAR(255)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: price
+            type: FLOAT8
+        - column:
+            name: venture_id
+            type: BIGINT
+        tableName: accelerations
+- changeSet:
+    id: 1704467050280-2
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: funding_round_id
+            type: BIGINT
+        - column:
+            name: amount
+            type: FLOAT8
+        - column:
+            name: company
+            type: VARCHAR(255)
+        - column:
+            name: currency
+            type: VARCHAR(255)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: avatar
+            type: VARCHAR(255)
+        tableName: funding_round_investors
+- changeSet:
+    id: 1704467050280-3
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: funding_rounds_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: date
+            type: date
+        - column:
+            name: venture_id
+            type: BIGINT
+        - column:
+            name: type
+            type: VARCHAR(255)
+        tableName: funding_rounds
+- changeSet:
+    id: 1704467050280-4
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: funding_round_id
+        baseTableName: funding_round_investors
+        constraintName: fk2y9xb8hhfjjls0rore0nn1wj3
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: funding_rounds
+        validate: true
+- changeSet:
+    id: 1704467050280-5
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: funding_rounds
+        constraintName: fkaagjj5ctt7es6vyq1bbui2all
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+- changeSet:
+    id: 1704467050280-6
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: accelerations
+        constraintName: fkkbu5qaiouo29ekemrcgnb06xc
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+

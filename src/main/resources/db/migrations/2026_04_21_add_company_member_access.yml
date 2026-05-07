@@ -1,0 +1,75 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026_04_21_add_company_member_access
+      author: alona
+      comment: "Per-user per-company access grants (e.g. PUBLIC_PROFILE_ONLY for founders) — issue #505"
+      changes:
+        - createTable:
+            tableName: company_member_access
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: company_member_access_pkey
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: created_by
+                  type: BIGINT
+              - column:
+                  name: last_modified_at
+                  type: TIMESTAMP WITHOUT TIME ZONE
+              - column:
+                  name: last_modified_by
+                  type: BIGINT
+              - column:
+                  name: access
+                  type: VARCHAR(255)
+              - column:
+                  name: status
+                  type: VARCHAR(255)
+              - column:
+                  name: member_id
+                  type: BIGINT
+              - column:
+                  name: company_id
+                  type: BIGINT
+        - addUniqueConstraint:
+            tableName: company_member_access
+            columnNames: member_id, company_id
+            constraintName: uk_company_member_access_member_company
+        - addForeignKeyConstraint:
+            baseTableName: company_member_access
+            baseColumnNames: member_id
+            constraintName: fk_company_member_access_member
+            referencedTableName: users
+            referencedColumnNames: id
+            onDelete: NO ACTION
+            onUpdate: NO ACTION
+        - addForeignKeyConstraint:
+            baseTableName: company_member_access
+            baseColumnNames: company_id
+            constraintName: fk_company_member_access_company
+            referencedTableName: company_extraction_data
+            referencedColumnNames: id
+            onDelete: CASCADE
+            onUpdate: NO ACTION
+        - createIndex:
+            indexName: idx_company_member_access_member_id
+            tableName: company_member_access
+            columns:
+              - column:
+                  name: member_id
+        - createIndex:
+            indexName: idx_company_member_access_company_id
+            tableName: company_member_access
+            columns:
+              - column:
+                  name: company_id

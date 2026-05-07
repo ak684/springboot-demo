@@ -1,0 +1,81 @@
+databaseChangeLog:
+- changeSet:
+    id: 1707416649979-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: portfolio_venture_access_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: access
+            type: VARCHAR(255)
+        - column:
+            name: hidden
+            type: BOOLEAN
+        - column:
+            name: portfolio_id
+            type: BIGINT
+        - column:
+            name: venture_id
+            type: BIGINT
+        tableName: portfolio_venture_access
+- changeSet:
+    id: 1707416649979-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: venture_id, portfolio_id
+        constraintName: ukeca1wnxqsrbrbrsxtuwqt1l2n
+        tableName: portfolio_venture_access
+- changeSet:
+    id: 1707416649979-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: portfolio_id
+        baseTableName: portfolio_venture_access
+        constraintName: fk5shoeu5bp4t1e0visplqskbqm
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: portfolios
+        validate: true
+- changeSet:
+    id: 1707416649979-4
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: portfolio_venture_access
+        constraintName: fkjl1bmhclghsgmiqlm1lxn8d96
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+

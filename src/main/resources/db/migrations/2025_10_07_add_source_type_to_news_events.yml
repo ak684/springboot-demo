@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_10_07_add_source_type_to_news_events
+      author: alona
+      comment: "Add source_type column to news_events table to track origin of articles"
+      changes:
+        - addColumn:
+            tableName: news_events
+            columns:
+              - column:
+                  name: source_type
+                  type: VARCHAR(50)
+                  defaultValue: 'GOOGLE_NEWS'
+                  constraints:
+                    nullable: true

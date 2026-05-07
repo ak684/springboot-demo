@@ -1,0 +1,62 @@
+databaseChangeLog:
+- changeSet:
+    id: 1680554114970-1
+    author: akoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: impact_id
+            type: BIGINT
+        - column:
+            name: geography
+            type: VARCHAR(255)
+        tableName: impact_geography
+- changeSet:
+    id: 1680554114970-2
+    author: akoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: impact_id
+            type: BIGINT
+        - column:
+            name: geography_custom
+            type: VARCHAR(255)
+        tableName: impact_geography_custom
+- changeSet:
+    id: 1680554114970-3
+    author: akoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: impact_id
+        baseTableName: impact_geography_custom
+        constraintName: fkmx0hxtf9wjb83sx5tch8xmtvy
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: impacts
+        validate: true
+- changeSet:
+    id: 1680554114970-4
+    author: akoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: impact_id
+        baseTableName: impact_geography
+        constraintName: fkojdu03389a7ijgmx0b442w2jh
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: impacts
+        validate: true
+

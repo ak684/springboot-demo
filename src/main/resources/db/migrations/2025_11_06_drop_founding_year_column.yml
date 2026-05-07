@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_11_06_drop_founding_year_column
+      author: alona
+      comment: "Drop unused founding_year column - using legal_entity_formation_date instead"
+      changes:
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: founding_year

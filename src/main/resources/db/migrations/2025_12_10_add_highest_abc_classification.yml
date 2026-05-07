@@ -1,0 +1,42 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-highest-abc-classification-column
+      author: claude
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: highest_abc_classification
+                  type: varchar(1)
+                  remarks: "Highest ABC classification from theory of change impact chains (A, B, or C). C > B > A priority."
+
+  - changeSet:
+      id: backfill-highest-abc-classification-from-jsonb
+      author: claude
+      comment: "Populate highest_abc_classification from theory_of_change in raw_extraction_data JSONB"
+      changes:
+        - sql:
+            sql: |
+              UPDATE company_extraction_data
+              SET highest_abc_classification = (
+                SELECT
+                  CASE
+                    WHEN EXISTS (
+                      SELECT 1 FROM jsonb_array_elements(raw_extraction_data->'theory_of_change') AS toc
+                      WHERE UPPER(toc->'abc_classification'->>'classification') = 'C'
+                    ) THEN 'C'
+                    WHEN EXISTS (
+                      SELECT 1 FROM jsonb_array_elements(raw_extraction_data->'theory_of_change') AS toc
+                      WHERE UPPER(toc->'abc_classification'->>'classification') = 'B'
+                    ) THEN 'B'
+                    WHEN EXISTS (
+                      SELECT 1 FROM jsonb_array_elements(raw_extraction_data->'theory_of_change') AS toc
+                      WHERE UPPER(toc->'abc_classification'->>'classification') = 'A'
+                    ) THEN 'A'
+                    ELSE NULL
+                  END
+              )
+              WHERE raw_extraction_data IS NOT NULL
+                AND raw_extraction_data->'theory_of_change' IS NOT NULL
+                AND jsonb_array_length(raw_extraction_data->'theory_of_change') > 0;

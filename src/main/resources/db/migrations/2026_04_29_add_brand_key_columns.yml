@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026_04_29_add_brand_key_columns
+      author: alona
+      comment: "First-class brand identity for portfolios and users to support WISTA whitelabel emails — issue #467"
+      changes:
+        - addColumn:
+            tableName: portfolios
+            columns:
+              - column:
+                  name: brand_key
+                  type: VARCHAR(32)
+                  defaultValue: default
+                  constraints:
+                    nullable: false
+        - addColumn:
+            tableName: users
+            columns:
+              - column:
+                  name: home_brand_key
+                  type: VARCHAR(32)
+                  defaultValue: default
+                  constraints:
+                    nullable: false
+        - createIndex:
+            indexName: idx_portfolios_brand_key
+            tableName: portfolios
+            columns:
+              - column:
+                  name: brand_key
+        - createIndex:
+            indexName: idx_users_home_brand_key
+            tableName: users
+            columns:
+              - column:
+                  name: home_brand_key

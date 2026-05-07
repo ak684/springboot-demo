@@ -1,0 +1,9 @@
+sh ~/liquibase-4.18.0/liquibase \
+--driver=org.postgresql.Driver \
+--url=offline:postgresql?snapshot=snapshot.json \
+--defaultSchemaName=public \
+--referenceUrl=jdbc:postgresql://localhost:5432/ventureplatform_dev \
+--referenceUsername=impact_user \
+--referencePassword=your_password \
+--changeLogFile=diff.yml \
+diff-changelog

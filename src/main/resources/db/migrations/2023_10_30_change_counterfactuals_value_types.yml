@@ -1,0 +1,22 @@
+databaseChangeLog:
+- changeSet:
+    id: change-counterfactuals-data-types
+    author: akoziulia
+    comment: "Change counterfactuals data type to double precision"
+    changes:
+    - modifyDataType:
+        tableName: impact_indicators
+        columnName: deadweight
+        newDataType: double precision
+    - modifyDataType:
+        tableName: impact_indicators
+        columnName: displacement
+        newDataType: double precision
+    - modifyDataType:
+        tableName: impact_indicators
+        columnName: attribution
+        newDataType: double precision
+    - modifyDataType:
+        tableName: impact_indicator_dropoff
+        columnName: dropoff
+        newDataType: double precision

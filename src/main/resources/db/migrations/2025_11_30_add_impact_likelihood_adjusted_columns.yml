@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_11_30_add_impact_likelihood_adjusted_columns
+      author: alona
+      comment: "Add net and gross 5-year impact likelihood columns to company_extraction_data"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: impact_likelihood_5_year_net
+                  type: DECIMAL(10,2)
+              - column:
+                  name: impact_likelihood_5_year_gross
+                  type: DECIMAL(10,2)

@@ -1,0 +1,50 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-traffic-columns
+      author: system
+      changes:
+        # Monthly traffic columns (Feb-July 2025)
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: traffic_feb_2025
+                  type: bigint
+                  remarks: "Website traffic for February 2025"
+              - column:
+                  name: traffic_mar_2025
+                  type: bigint
+                  remarks: "Website traffic for March 2025"
+              - column:
+                  name: traffic_apr_2025
+                  type: bigint
+                  remarks: "Website traffic for April 2025"
+              - column:
+                  name: traffic_may_2025
+                  type: bigint
+                  remarks: "Website traffic for May 2025"
+              - column:
+                  name: traffic_jun_2025
+                  type: bigint
+                  remarks: "Website traffic for June 2025"
+              - column:
+                  name: traffic_jul_2025
+                  type: bigint
+                  remarks: "Website traffic for July 2025"
+              
+        # Growth trend columns
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: monthly_growth_trend
+                  type: decimal(5,2)
+                  remarks: "Monthly growth trend (June vs July percentage change)"
+              - column:
+                  name: three_month_growth_trend
+                  type: decimal(5,2)
+                  remarks: "3-month growth trend (May-July percentage change)"
+              - column:
+                  name: six_month_growth_trend
+                  type: decimal(5,2)
+                  remarks: "6-month growth trend (Feb-July percentage change)"

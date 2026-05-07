@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_10_07_add_track_news_to_company_extraction_data
+      author: alona
+      comment: "Add track_news boolean to enable opt-in news tracking per company"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: track_news
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+                  remarks: "Whether to track news articles for this company"
+        - addNotNullConstraint:
+            tableName: company_extraction_data
+            columnName: track_news
+            columnDataType: BOOLEAN

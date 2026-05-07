@@ -1,0 +1,12 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025-06-29-add-continuous-counter-column
+      author: alonaking
+      changes:
+        - addColumn:
+            tableName: aggregated_indicators
+            columns:
+              - column:
+                  name: continuous_counter
+                  type: BOOLEAN
+                  defaultValueBoolean: false

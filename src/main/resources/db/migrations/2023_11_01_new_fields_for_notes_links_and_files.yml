@@ -1,0 +1,72 @@
+databaseChangeLog:
+- changeSet:
+    id: 1698880295326-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: comment
+            type: varchar(1000)
+        tableName: note_links
+- changeSet:
+    id: 1698880295326-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: comment
+            type: varchar(1000)
+        tableName: note_files
+- changeSet:
+    id: 1698880295326-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: risk
+            type: int4
+        tableName: note_links
+- changeSet:
+    id: 1698880295326-4
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: evidence_type
+            type: varchar(255)
+        tableName: note_links
+- changeSet:
+    id: 1698880295326-5
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: risk
+            type: int4
+        tableName: note_files
+- changeSet:
+    id: 1698880295326-6
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: same
+            type: bool
+        tableName: notes
+- changeSet:
+    id: 1698880295326-7
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: evidence_type
+            type: varchar(255)
+        tableName: note_files
+

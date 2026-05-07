@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_24_add_annual_sales_data_type_columns
+      author: alonaking
+      comment: Add columns to track whether annual sales data is actual, estimate, or n.a.
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: annual_sales_2022_type
+                  type: varchar(10)
+                  remarks: "Type of sales data for 2022: actual, estimate, or n.a."
+              - column:
+                  name: annual_sales_2023_type
+                  type: varchar(10)
+                  remarks: "Type of sales data for 2023: actual, estimate, or n.a."
+              - column:
+                  name: annual_sales_2024_type
+                  type: varchar(10)
+                  remarks: "Type of sales data for 2024: actual, estimate, or n.a."
+        - sql:
+            sql: |
+              UPDATE company_extraction_data 
+              SET annual_sales_2022_type = 'n.a.',
+                  annual_sales_2023_type = 'n.a.',
+                  annual_sales_2024_type = 'n.a.'
+              WHERE annual_sales_2022_type IS NULL 
+                 OR annual_sales_2023_type IS NULL 
+                 OR annual_sales_2024_type IS NULL;
+            comment: Initialize all existing records with 'n.a.' as default

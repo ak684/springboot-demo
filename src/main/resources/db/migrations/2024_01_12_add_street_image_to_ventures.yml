@@ -1,0 +1,11 @@
+databaseChangeLog:
+- changeSet:
+    id: 1705072426589-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: street_image
+            type: varchar(255)
+        tableName: ventures

@@ -1,0 +1,61 @@
+databaseChangeLog:
+- changeSet:
+    id: create-venture-employee-history-table
+    author: akoziulia
+    comment: "Create venture_employees_records table"
+    changes:
+    - createTable:
+        tableName: venture_employees_records
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: venture_employees_records_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: venture_id
+            type: bigint
+            constraints:
+              nullable: false
+              foreignKeyName: fk_venture_employees_records_venture
+              referencedTableName: ventures
+              referencedColumnNames: id
+        - column:
+            name: count
+            type: integer
+
+- changeSet:
+    id: migrate-existing-employee-data
+    author: akoziulia
+    comment: "Migrate existing employee data to venture_employees_records"
+    changes:
+    - sql:
+        sql: |
+          INSERT INTO venture_employees_records (venture_id, count, created_at)
+          SELECT id, employees, CURRENT_TIMESTAMP FROM ventures WHERE employees IS NOT NULL;
+
+- changeSet:
+    id: drop-employees-column-from-ventures
+    author: akoziulia
+    comment: "Remove employees column from ventures table"
+    changes:
+    - dropColumn:
+        tableName: ventures
+        columnName: employees

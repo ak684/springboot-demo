@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_07_30_add_core_products_services_column
+      author: alona
+      comment: Add core_products_services column to store structured product/service data
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: core_products_services
+                  type: jsonb
+                  constraints:
+                    nullable: true
+                  remarks: "Structured data for 2-5 core products/services with titles and descriptions"
+      rollback:
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: core_products_services

@@ -1,0 +1,32 @@
+databaseChangeLog:
+- changeSet:
+    id: 1678916600503-1
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: problem_importance_negative
+            type: varchar(255 BYTE)
+        tableName: impact_scores
+- changeSet:
+    id: 1678916600503-2
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: size_of_stakeholders_negative
+            type: varchar(255 BYTE)
+        tableName: impact_scores
+- changeSet:
+    id: 1678916600503-3
+    author: akoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: stakeholder_situation_negative
+            type: varchar(255 BYTE)
+        tableName: impact_scores
+

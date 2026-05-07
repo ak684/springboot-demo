@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_18_fix_esg_foresight_qualified_sync
+      author: alona
+      comment: "Fix synchronization of ESG foresight fields from JSON to database columns"
+      changes:
+        - sql:
+            sql: |
+              -- Update ESG Foresight qualification status from raw_extraction_data JSON
+              UPDATE company_extraction_data
+              SET
+                esg_foresight_qualified = (raw_extraction_data->>'esg_foresight_qualified')::boolean,
+                esg_risk_environmental_foresight = CASE
+                  WHEN raw_extraction_data->>'esg_risk_environmental_foresight' IS NOT NULL
+                    AND raw_extraction_data->>'esg_risk_environmental_foresight' != ''
+                  THEN (raw_extraction_data->>'esg_risk_environmental_foresight')::numeric
+                  ELSE NULL
+                END,
+                esg_risk_social_foresight = CASE
+                  WHEN raw_extraction_data->>'esg_risk_social_foresight' IS NOT NULL
+                    AND raw_extraction_data->>'esg_risk_social_foresight' != ''
+                  THEN (raw_extraction_data->>'esg_risk_social_foresight')::numeric
+                  ELSE NULL
+                END,
+                esg_risk_governance_foresight = CASE
+                  WHEN raw_extraction_data->>'esg_risk_governance_foresight' IS NOT NULL
+                    AND raw_extraction_data->>'esg_risk_governance_foresight' != ''
+                  THEN (raw_extraction_data->>'esg_risk_governance_foresight')::numeric
+                  ELSE NULL
+                END,
+                esg_risk_total_foresight = CASE
+                  WHEN raw_extraction_data->>'esg_risk_total_foresight' IS NOT NULL
+                    AND raw_extraction_data->>'esg_risk_total_foresight' != ''
+                  THEN (raw_extraction_data->>'esg_risk_total_foresight')::numeric
+                  ELSE NULL
+                END
+              WHERE
+                raw_extraction_data IS NOT NULL
+                AND raw_extraction_data->>'esg_foresight_qualified' IS NOT NULL
+                AND (
+                  esg_foresight_qualified IS NULL
+                  OR esg_foresight_qualified != (raw_extraction_data->>'esg_foresight_qualified')::boolean
+                );
+
+      rollback:
+        - sql:
+            sql: |
+              -- Rollback would set the fields back to NULL for the affected records
+              -- This is a data fix, so we don't actually want to rollback the data
+              -- Just log that rollback was requested
+              DO $$
+              BEGIN
+                RAISE NOTICE 'Rollback requested for ESG foresight sync fix - no action taken';
+              END $$;

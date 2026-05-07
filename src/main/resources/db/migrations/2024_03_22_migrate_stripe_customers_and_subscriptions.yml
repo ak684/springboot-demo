@@ -1,0 +1,51 @@
+databaseChangeLog:
+- changeSet:
+    id: 1711066120011-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: user_id
+            type: BIGINT
+        - column:
+            name: customer_ids
+            type: VARCHAR(255)
+        tableName: user_customer_ids
+- changeSet:
+    id: 1711066120011-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: active
+            type: bool
+        tableName: ventures
+- changeSet:
+    id: 1711066120011-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: subscription_id
+            type: varchar(255)
+        tableName: ventures
+- changeSet:
+    id: 1711066120011-4
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: user_customer_ids
+        constraintName: fkm1o2rxig7r77kac0efq4415mk
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true

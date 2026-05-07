@@ -1,0 +1,67 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_09_08_add_patent_events_table
+      author: alona
+      comment: "Add table to track patent-related events for notifications"
+      changes:
+        - createTable:
+            tableName: patent_events
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: company_extraction_data_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+              - column:
+                  name: company_patent_id
+                  type: BIGINT
+                  constraints:
+                    nullable: true
+              - column:
+                  name: event_type
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: old_value
+                  type: VARCHAR(255)
+              - column:
+                  name: new_value
+                  type: VARCHAR(255)
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: patent_events
+            baseColumnNames: company_extraction_data_id
+            constraintName: fk_patent_event_company
+            referencedTableName: company_extraction_data
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: patent_events
+            baseColumnNames: company_patent_id
+            constraintName: fk_patent_event_patent
+            referencedTableName: company_patents
+            referencedColumnNames: id
+        - createIndex:
+            tableName: patent_events
+            indexName: idx_patent_events_company_id
+            columns:
+              - column:
+                  name: company_extraction_data_id
+        - createIndex:
+            tableName: patent_events
+            indexName: idx_patent_events_created_at
+            columns:
+              - column:
+                  name: created_at

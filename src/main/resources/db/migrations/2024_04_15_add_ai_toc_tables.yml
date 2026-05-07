@@ -1,0 +1,98 @@
+databaseChangeLog:
+- changeSet:
+    id: 1713206633255-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: ai_toc_feedbacks_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: comment
+            type: TEXT
+        - column:
+            constraints:
+              nullable: false
+            name: contact
+            type: BOOLEAN
+        - column:
+            name: email
+            type: VARCHAR(255)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: rating
+            type: INTEGER
+        tableName: ai_toc_feedbacks
+- changeSet:
+    id: 1713206633255-2
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: ai_toc_usages_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: city
+            type: VARCHAR(255)
+        - column:
+            name: country
+            type: VARCHAR(255)
+        - column:
+            name: ip_address
+            type: VARCHAR(255)
+        - column:
+            name: lat
+            type: FLOAT8
+        - column:
+            name: lng
+            type: FLOAT8
+        - column:
+            name: type
+            type: varchar(255)
+        - column:
+            name: result
+            type: TEXT
+        tableName: ai_toc_usages
+

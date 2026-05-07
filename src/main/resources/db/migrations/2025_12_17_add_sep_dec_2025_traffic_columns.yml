@@ -1,0 +1,25 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_12_17_add_sep_dec_2025_traffic_columns
+      author: alona
+      comment: "Add September to December 2025 traffic columns"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: traffic_sep_2025
+                  type: bigint
+                  remarks: "Website traffic for September 2025"
+              - column:
+                  name: traffic_oct_2025
+                  type: bigint
+                  remarks: "Website traffic for October 2025"
+              - column:
+                  name: traffic_nov_2025
+                  type: bigint
+                  remarks: "Website traffic for November 2025"
+              - column:
+                  name: traffic_dec_2025
+                  type: bigint
+                  remarks: "Website traffic for December 2025"

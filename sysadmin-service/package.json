@@ -1,0 +1,12 @@
+{
+  "name": "sysadmin-service",
+  "version": "1.0.0",
+  "description": "Lightweight sysadmin service for remote exec and SQL queries",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "pg": "^8.11.0"
+  }
+}

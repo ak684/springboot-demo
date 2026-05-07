@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026_02_16_remove_legacy_portfolio_id_from_extraction_data
+      author: alona
+      comment: "Remove legacy portfolio_id column from company_extraction_data. All portfolio associations now use the portfolio_company_extraction_access junction table."
+      changes:
+        - sql:
+            comment: "Migrate any orphaned portfolio_id references into the access table as a safety net"
+            sql: >
+              INSERT INTO portfolio_company_extraction_access
+                (company_extraction_data_id, portfolio_id, created_at, last_modified_at)
+              SELECT ced.id, ced.portfolio_id, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+              FROM company_extraction_data ced
+              WHERE ced.portfolio_id IS NOT NULL
+                AND NOT EXISTS (
+                  SELECT 1 FROM portfolio_company_extraction_access pcea
+                  WHERE pcea.company_extraction_data_id = ced.id
+                    AND pcea.portfolio_id = ced.portfolio_id
+                );
+        - dropIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_portfolio_modified
+        - dropIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_data_portfolio_geo
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: portfolio_id

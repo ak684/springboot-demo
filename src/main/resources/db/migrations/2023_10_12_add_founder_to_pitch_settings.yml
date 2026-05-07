@@ -1,0 +1,27 @@
+databaseChangeLog:
+- changeSet:
+    id: 1697145714009-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: founder_id
+            type: int8
+        tableName: venture_pitch_settings
+- changeSet:
+    id: 1697145714009-2
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: founder_id
+        baseTableName: venture_pitch_settings
+        constraintName: fkjjb2ooifnxvcwqhcf3hs9jxpl
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+

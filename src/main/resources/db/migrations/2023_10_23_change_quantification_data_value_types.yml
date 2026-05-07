@@ -1,0 +1,54 @@
+databaseChangeLog:
+- changeSet:
+    id: change-quantification-data-types
+    author: akoziulia
+    comment: "Change month columns data type to double precision in quantification_data table"
+    changes:
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: jan
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: feb
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: mar
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: apr
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: may
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: jun
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: jul
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: aug
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: sep
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: oct
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: nov
+        newDataType: double precision
+    - modifyDataType:
+        tableName: quantification_data
+        columnName: dec
+        newDataType: double precision

@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2026_01_08_add_fintech_classification_columns
+      author: alona
+      comment: "Add FinTech classification columns for AI-based analysis of companies that could be attributed to a FinTech cluster"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: is_fintech
+                  type: BOOLEAN
+                  remarks: "Whether AI classifies this company as a FinTech company"
+              - column:
+                  name: fintech_explanation
+                  type: TEXT
+                  remarks: "AI explanation for the FinTech classification decision"
+              - column:
+                  name: fintech_confidence_score
+                  type: DECIMAL(5,2)
+                  remarks: "Confidence score (0-100) for the FinTech classification"

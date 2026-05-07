@@ -1,0 +1,212 @@
+databaseChangeLog:
+- changeSet:
+    id: 1710377612705-1
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: portfolio_member_access_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: access
+            type: VARCHAR(255)
+        - column:
+            name: status
+            type: VARCHAR(255)
+        - column:
+            name: member_id
+            type: BIGINT
+        - column:
+            name: portfolio_id
+            type: BIGINT
+        tableName: portfolio_member_access
+- changeSet:
+    id: 1710377612705-2
+    author: andrewkoziulia (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: venture_member_access_pkey
+            name: id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: created_by
+            type: BIGINT
+        - column:
+            name: last_modified_at
+            type: TIMESTAMP WITHOUT TIME ZONE
+        - column:
+            name: last_modified_by
+            type: BIGINT
+        - column:
+            name: access
+            type: VARCHAR(255)
+        - column:
+            name: status
+            type: VARCHAR(255)
+        - column:
+            name: member_id
+            type: BIGINT
+        - column:
+            name: venture_id
+            type: BIGINT
+        tableName: venture_member_access
+- changeSet:
+    id: 1710377612705-3
+    author: andrewkoziulia (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: member_id, portfolio_id
+        constraintName: uklgpiaobhv6hssox3hgtfmu47g
+        tableName: portfolio_member_access
+- changeSet:
+    id: 1710377612705-4
+    author: andrewkoziulia (generated)
+    changes:
+    - addUniqueConstraint:
+        columnNames: member_id, venture_id
+        constraintName: ukm2e66k8wu4rbyknt2dxilai4u
+        tableName: venture_member_access
+- changeSet:
+    id: 1710377612705-5
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: member_id
+        baseTableName: venture_member_access
+        constraintName: fk9w66iv5nql9lshbnmumvoc8vu
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1710377612705-6
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: member_id
+        baseTableName: portfolio_member_access
+        constraintName: fkajvlpnk7jnb1x3of6enxm9bib
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1710377612705-7
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: portfolio_id
+        baseTableName: portfolio_member_access
+        constraintName: fkf2anktk64kwr3wshhc0d0tpiw
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: portfolios
+        validate: true
+- changeSet:
+    id: 1710377612705-8
+    author: andrewkoziulia (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: venture_id
+        baseTableName: venture_member_access
+        constraintName: fkq6fmsqprepxtch7h4tqp1ubkh
+        deferrable: false
+        initiallyDeferred: false
+        onDelete: NO ACTION
+        onUpdate: NO ACTION
+        referencedColumnNames: id
+        referencedTableName: ventures
+        validate: true
+- changeSet:
+    id: 1710377612705-9
+    author: akoziulia
+    comment: "Migrate data from venture_members to venture_member_access"
+    changes:
+    - sql:
+        sql: |
+          INSERT INTO venture_member_access (created_at, venture_id, member_id, status, access)
+          SELECT CURRENT_TIMESTAMP, venture_id, user_id, 'ACCEPTED', 'EDIT'
+          FROM venture_members;
+- changeSet:
+    id: 1710377612705-10
+    author: akoziulia
+    comment: "Migrate data from member_invitations to venture_member_access"
+    changes:
+    - sql:
+        sql: |
+          INSERT INTO venture_member_access (created_at, venture_id, member_id, status, access)
+          SELECT CURRENT_TIMESTAMP, venture_id, user_id, 'INVITED', 'EDIT'
+          FROM member_invitations;
+- changeSet:
+    id: 1710377612705-11
+    author: akoziulia
+    comment: "Migrate data from portfolio_members to portfolio_member_access"
+    changes:
+    - sql:
+        sql: |
+          INSERT INTO portfolio_member_access (created_at, portfolio_id, member_id, status, access)
+          SELECT CURRENT_TIMESTAMP, portfolio_id, user_id, 'ACCEPTED', 'EDIT'
+          FROM portfolio_members;
+- changeSet:
+    id: 1710377612705-12
+    author: akoziulia
+    comment: "Migrate data from member_invitations to portfolio_member_access"
+    changes:
+    - sql:
+        sql: |
+          INSERT INTO portfolio_member_access (created_at, portfolio_id, member_id, status, access)
+          SELECT CURRENT_TIMESTAMP, portfolio_id, user_id, 'INVITED', 'EDIT'
+          FROM portfolio_invitations;
+- changeSet:
+    id: 1710377612705-12
+    author: your-name
+    comment: "Drop old venture_members, member_invitations, portfolio_members, portfolio_invitations tables"
+    changes:
+    - dropTable:
+        tableName: venture_members
+    - dropTable:
+        tableName: member_invitations
+    - dropTable:
+        tableName: portfolio_members
+    - dropTable:
+        tableName: portfolio_invitations

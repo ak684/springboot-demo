@@ -1,0 +1,12 @@
+databaseChangeLog:
+- changeSet:
+    id: 1703550959949-1
+    author: andrewkoziulia (generated)
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: public_view
+            type: varchar(255)
+        tableName: impact_indicators
+

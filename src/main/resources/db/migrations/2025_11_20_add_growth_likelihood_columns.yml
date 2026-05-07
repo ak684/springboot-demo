@@ -1,0 +1,30 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_11_20_add_growth_likelihood_columns
+      author: alona
+      comment: "Add growth likelihood scoring fields to company_extraction_data"
+      changes:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: growth_media_reach_score
+                  type: DECIMAL(5,2)
+              - column:
+                  name: growth_sentiment_score
+                  type: DECIMAL(5,2)
+              - column:
+                  name: growth_innovation_visibility_score
+                  type: DECIMAL(5,2)
+              - column:
+                  name: growth_team_strength_score
+                  type: DECIMAL(5,2)
+              - column:
+                  name: growth_funding_velocity_score
+                  type: DECIMAL(5,2)
+              - column:
+                  name: growth_company_age_score
+                  type: DECIMAL(5,2)
+              - column:
+                  name: growth_composite_score
+                  type: DECIMAL(5,2)

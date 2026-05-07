@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_29_08_drop_deprecated_number_of_patents_column
+      author: alona
+      comment: "Drop deprecated number_of_patents column - replaced by total_patents, granted_patents, and patent_applications"
+      changes:
+        - dropColumn:
+            tableName: company_extraction_data
+            columnName: number_of_patents
+      
+      rollback:
+        - addColumn:
+            tableName: company_extraction_data
+            columns:
+              - column:
+                  name: number_of_patents
+                  type: VARCHAR(50)
+                  remarks: "Deprecated field for EU patents - replaced by total_patents"

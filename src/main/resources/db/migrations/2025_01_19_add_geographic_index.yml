@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2025_01_19_add_geographic_index
+      author: alona
+      comment: "Add geographic index for efficient bounds-based queries on company locations"
+      changes:
+        - createIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_data_geo
+            columns:
+              - column:
+                  name: latitude
+              - column:
+                  name: longitude
+        - createIndex:
+            tableName: company_extraction_data
+            indexName: idx_company_extraction_data_portfolio_geo
+            columns:
+              - column:
+                  name: portfolio_id
+              - column:
+                  name: latitude
+              - column:
+                  name: longitude
