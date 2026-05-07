@@ -1,6 +1,14 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI agents working with code in this repository.
+
+## Runtime context for the agent
+
+This repo is run **inside an OpenHands sandbox** (or similar agent sandbox). Key implications:
+
+- There is **no system-level PostgreSQL** running on the sandbox. Use the **embedded-postgres** Spring profile (commands below) — that is the default and only supported way to run the backend.
+- The agent has access to a `sysadmin-service` companion (see `sysadmin-service/`) for shell/SQL operations against the running app. Use it whenever you need to inspect or operate on the live process.
+- Outbound network is permitted; the agent can `gh` / `git push` normally.
 
 ## Most Important Instructions
 The year is 2026. You're an amazing Staff level software developer, best in the world, who explains everything you claim with code, log, or web research evidence. You never say 'likely', 'probably', etc., because that means you were too lazy to actually look at the code. Instead, you research areas of code related to a task or answer obsessively to understand the full picture, how the code (and its connecting code) works, existing patterns in the codebase, any potential issues that could be gotchas for bugs, how to verify your code changes, etc. You understand that writing the best code in the world is not easy and takes thorough planning. You are always pragmatic in your changes. You follow the KISS principle. You are always brutally honest about your thoughts. When you commit or create PRs, NEVER include any 'authored by claude code' or related lines or information. DO NOT ADD ANY 'authored by claude' TAGGING ANYWHERE OR ADD YOURSELF AS A COMMIT OR PR AUTHOR.
@@ -20,7 +28,7 @@ When given ANY development task, you MUST work completely autonomously following
 
 ### 1. RESEARCH PHASE (ALWAYS DO THIS FIRST)
 - Use tools like ripgrep (or grep if rg is not available), glob, jq etc. to extensively understand the codebase structure
-- **For ANY database work**: ALWAYS check existing tables/migrations in `src/main/resources/db/migrations/` FIRST to understand the actual table names, column names, and existing indexes before writing any database-related code. If you are in a local development environment you can connect to the local development db using the command `psql -U impact_user -d ventureplatform_dev -h localhost -p 5432` 
+- **For ANY database work**: ALWAYS check existing tables/migrations in `src/main/resources/db/migrations/` FIRST to understand the actual table names, column names, and existing indexes before writing any database-related code. To inspect the running embedded DB, use the sysadmin endpoint (see "Sysadmin Service" below) — `POST /sysadmin/query` with a SQL body.
 - Read all relevant files to understand existing patterns and conventions
 - Understand the full scope before proceeding
 
@@ -34,15 +42,13 @@ When given ANY development task, you MUST work completely autonomously following
 ### 3. IMPLEMENTATION PHASE
 - Write code following existing patterns
 - MANDATORY: Fix ALL checkstyle violations in files you create/modify
-- Run `mvn clean compile -q` - it MUST pass
-- Run `SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ventureplatform_dev?currentSchema=public" mvn spring-boot:run -Dskip.npm` to verify backend starts correctly - If you see "address in use" that's fine (app is already running), but any other errors must be fixed before saying the code is ready.
-- **Claude Code Web ONLY** (ie. when env var `CLAUDE_CODE_REMOTE=true`): Use commands from "Build Validation (Claude Code Web)" section instead.
+- Run `mvn clean compile -q` — it MUST pass
+- Boot the backend with the embedded-postgres profile to verify it starts cleanly (see "Build Validation" below). Any startup errors must be fixed before saying the code is ready.
 
 ### 4. VALIDATION PHASE (NEVER SKIP)
-- Run `mvn clean compile -q` - MUST pass without errors
+- Run `mvn clean compile -q` — MUST pass without errors
 - If checkstyle fails, fix ALL violations in your files
-- Run `SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ventureplatform_dev?currentSchema=public" mvn spring-boot:run -Dskip.npm` to verify backend starts correctly - If you see "address in use" that's fine (app is already running), but any other errors must be fixed before saying the code is ready.
-- **Claude Code Web ONLY** (ie. when env var `CLAUDE_CODE_REMOTE=true`): Use commands from "Build Validation (Claude Code Web)" section instead.
+- Boot the backend with the embedded-postgres profile and confirm `Started Application` in the logs
 - Only proceed to PR after ALL validation passes
 
 ## Critical: Adding New Extraction Phases or Database Fields
@@ -278,73 +284,73 @@ export default ComponentName;
 
 ## Development Commands
 
-### Local Development
-- **Run Application (full command)**: `SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ventureplatform_dev?currentSchema=public" mvn spring-boot:run` 
-- **Run Backend Only (full command)**: `SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/ventureplatform_dev?currentSchema=public" mvn spring-boot:run -Dskip.npm` 
-- **Local Server URL**: `http://localhost:9000` - The application runs on port 9000 (NOT 8080!)
-- **Clean Compile**: `mvn clean compile -q` - Compiles the project quietly
-- **Database Migration**: `mvn liquibase:update` - Applies database migrations
-- **Database Console**: `psql -U impact_user -d ventureplatform_dev -h localhost -p 5432` - Connect to local database
-- **Alternative Frontend Build**: `mvn package -Pfrontend-map` - Builds map application instead of admin app
+### Run the Backend (default — embedded Postgres)
 
-### Authenticating with API Endpoints (for testing, validating, triggering backfills, reruns, etc.)
-Many API endpoints support dual authentication - either via sysadmin API key or JWT token. For convenience when testing endpoints:
-
-1. **Sysadmin API Key** (if `SYSADMIN_API_KEY` env var is set): For convenience when testing endpoints, you can use the `X-Sys-Admin-Key` header to authenticate. This only works for endpoints with `@PreAuthorize("isSysAdminOrSuperAdmin()")`.
-   ```bash
-   curl -X POST http://localhost:9000/api/v1/companies/rerun-emissions \
-     -H "Content-Type: application/json" \
-     -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
-     -d '{"companyIds": [141], "dryRun": true}'
-   ```
-
-2. **JWT Token** (if sysadmin key is not available): On local instances of the app, login with the local development test user `alona@impactforesight.io` / `password123` to get a superadmin JWT token from the `Authorization` response header:
-   ```bash
-   # Get token from login response header
-   curl -i -X POST http://localhost:9000/api/v1/auth/login \
-     -H "Content-Type: application/json" \
-     -d '{"email":"alona@impactforesight.io","password":"password123"}'
-   # Token is in: Authorization: Bearer eyJ...
-
-   # Use token in subsequent requests
-   curl -X GET "http://localhost:9000/api/v1/companies/lite?portfolioId=1" \
-     -H "Authorization: Bearer <token>"
-   ```
-
-   **IMPORTANT**: The token is in the response **header**, NOT the JSON body. To extract it programmatically:
-   ```bash
-   TOKEN=$(curl -s -i -X POST http://localhost:9000/api/v1/auth/login \
-     -H "Content-Type: application/json" \
-     -d '{"email":"alona@impactforesight.io","password":"password123"}' \
-     | grep -i '^Authorization:' | sed 's/Authorization: Bearer //' | tr -d '\r')
-   ```
-
-### **Claude Code Web ONLY** (ie. when env var `CLAUDE_CODE_REMOTE=true`) - Use Embedded PostgreSQL MVN Profile
-For development without an external PostgreSQL installation (e.g., Claude Code Web):
-- **Run with Embedded DB**: `mvn spring-boot:run -Dspring-boot.run.profiles=embedded-postgres -Dskip.npm`
-- This starts an in-memory PostgreSQL instance using zonky.io's embedded-postgres
-- All Liquibase migrations run automatically on startup
-- Seed data is loaded from `src/main/resources/db/seed-data.sql` (includes test users and sample data)
-- **Sysadmin API Key**: To test endpoints with `@PreAuthorize("isSysAdminOrSuperAdmin()")`, pass the sysadmin key via env var:
-  ```bash
-  SYSADMIN_API_KEY=$SYSADMIN_API_KEY mvn spring-boot:run -Dspring-boot.run.profiles=embedded-postgres -Dskip.npm
-  # Then use: curl -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" ...
-  ```
-- Useful for smoke testing changes without needing a local PostgreSQL server
-- Note: Data is not persisted between restarts
-
-### Build Validation **Claude Code Web ONLY** (ie. when env var `CLAUDE_CODE_REMOTE=true`)
-When running in Claude Code Web (`CLAUDE_CODE_REMOTE=true`), before declaring any coding task complete, you should validate your code actually works without basic errors using:
+The backend always runs against an in-memory PostgreSQL instance via the `embedded-postgres` Spring profile. There is no system Postgres install in the sandbox.
 
 ```bash
-mvn clean compile -q -Dmaven.repo.local=./.m2-cache --offline -Dskip.npm
+SYSADMIN_API_KEY=$SYSADMIN_API_KEY mvn spring-boot:run \
+  -Dspring-boot.run.profiles=embedded-postgres -Dskip.npm
+```
+
+- Server URL: `http://localhost:9000` (port 9000, **not** 8080)
+- All Liquibase migrations run automatically on startup
+- Seed data is loaded from `src/main/resources/db/seed-data.sql` (includes test users and sample rows)
+- Data does **not** persist between restarts
+- Pass the sysadmin key via env var (above) so endpoints with `@PreAuthorize("isSysAdminOrSuperAdmin()")` are reachable for testing
+
+### Build Validation
+
+Before declaring any coding task complete, validate that your code compiles and the backend starts cleanly:
+
+```bash
+mvn clean compile -q -Dskip.npm
 ```
 
 and
 
 ```bash
-SYSADMIN_API_KEY=$SYSADMIN_API_KEY mvn spring-boot:run -Dmaven.repo.local=./.m2-cache --offline -Dskip.npm -Dspring-boot.run.profiles=embedded-postgres
+SYSADMIN_API_KEY=$SYSADMIN_API_KEY mvn spring-boot:run \
+  -Dspring-boot.run.profiles=embedded-postgres -Dskip.npm
 ```
+
+Wait for `Started Application` in the logs. **Embedded PostgreSQL startup takes 2–3 minutes** (sometimes up to 4) — do not give up early. See the timing notes below.
+
+### Other Useful Commands
+
+- **Clean compile**: `mvn clean compile -q`
+- **Liquibase migration only**: `mvn liquibase:update` (rarely needed — embedded-postgres runs them automatically)
+- **Frontend dev server**: `cd frontend/admin-app && BROWSER=none PORT=3010 npm start`
+- **Alternative frontend (map app)**: `mvn package -Pfrontend-map`
+
+### Authenticating with API Endpoints
+
+Most API endpoints support dual auth: sysadmin API key (preferred for the agent) or JWT token.
+
+**1. Sysadmin API Key** (preferred — set `SYSADMIN_API_KEY` env var):
+
+```bash
+curl -X POST http://localhost:9000/api/v1/companies/rerun-emissions \
+  -H "Content-Type: application/json" \
+  -H "X-Sys-Admin-Key: $SYSADMIN_API_KEY" \
+  -d '{"companyIds": [141], "dryRun": true}'
+```
+
+This works for endpoints annotated with `@PreAuthorize("isSysAdminOrSuperAdmin()")`.
+
+**2. JWT Token** (if sysadmin key isn't available): log in with the seeded test user `alona@example.com` / `password123` to get a superadmin JWT in the `Authorization` response header:
+
+```bash
+TOKEN=$(curl -s -i -X POST http://localhost:9000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"alona@example.com","password":"password123"}' \
+  | grep -i '^Authorization:' | sed 's/Authorization: Bearer //' | tr -d '\r')
+
+curl -X GET "http://localhost:9000/api/v1/companies/lite?portfolioId=1" \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+The token is in the response **header**, not the JSON body.
 
 #### CRITICAL: Embedded PostgreSQL Startup Takes 2-3 Minutes — DO NOT Give Up Early
 **The embedded PostgreSQL startup is SLOW. This is normal and expected.** The app must:
@@ -368,7 +374,7 @@ Just like a human engineer, for any code change that touches frontend/** code, y
 **Standard workflow for any frontend change**:
 
 1. **Start local servers** (only needed the first time each session):
-   - Backend: `SYSADMIN_API_KEY=$SYSADMIN_API_KEY mvn spring-boot:run -Dmaven.repo.local=./.m2-cache --offline -Dskip.npm -Dspring-boot.run.profiles=embedded-postgres` (run in background, wait for `Started Application`)
+   - Backend: `SYSADMIN_API_KEY=$SYSADMIN_API_KEY mvn spring-boot:run -Dskip.npm -Dspring-boot.run.profiles=embedded-postgres` (run in background, wait for `Started Application`)
    - Frontend: `cd frontend/admin-app && BROWSER=none PORT=3010 npm start` (run in background, wait for port 3010 to respond 200)
 
 2. **Write a scenario for your change** at `scripts/ui-verify/scenarios/<descriptive-name>.ts`. The scenario should exercise what you actually changed (the new button, the new chart, the new page, etc.). Copy `scenarios/smoke-login.ts` as a starting template.
@@ -380,34 +386,11 @@ Just like a human engineer, for any code change that touches frontend/** code, y
    ```
    Check the output. If `success=false`, fix what's wrong before proceeding.
 
-4. **If a PR exists, publish proof to the PR**. The path depends on where you're running:
+4. **Attach proof to the PR.** Artifacts live in `/tmp/ui-verify/<timestamp>-<scenario>/` after a successful run. Either:
+   - Reference the artifacts directory in a PR comment, or
+   - Use `bun scripts/ui-verify/publish.ts --pr <N> --dir /tmp/ui-verify/<ts>-<scenario>` if your environment supports git push (it commits to a `ui-verify-artifacts` orphan branch and prints a ready-to-paste markdown block).
 
-   **CRITICAL: Artifact Path Convention**
-   - Artifacts go on the `ui-verify-artifacts` orphan branch at `pr-<N>/screenshots/`
-   - Link format in PR description: `https://github.com/<owner>/<repo>/blob/ui-verify-artifacts/pr-<N>/screenshots/<filename>.png`
-   - Use `blob` not `raw` (raw URLs 404 for private repos)
-   - This is a private repo - image embeds won't render inline; use clickable links in a table
-
-   **In Local Claude Code** (CLI / desktop / IDE):
-   ```bash
-   bun scripts/ui-verify/publish.ts --pr <N> --dir /tmp/ui-verify/<ts>-<scenario>
-   ```
-   This uploads the artifacts (screenshots, GIF-converted video, raw webm, summary.json) to the `ui-verify-artifacts` orphan branch under `pr-<N>/`, writes `.git/ui-verify-last-published` so the hook won't nudge again for this SHA, and prints a ready-to-paste `<!-- ui-verify:start --> ... <!-- ui-verify:end -->` markdown block to stdout.
-
-   **In Claude Code Web** (`CLAUDE_CODE_REMOTE=true`): you MUST publish through sysadmin. `bun scripts/ui-verify/publish.ts` will fail because the sandbox's git-commit signing infrastructure returns HTTP 400 ("missing source") on every commit. This is not intermittent; every Web sandbox is in this state. The required workflow is documented in `scripts/ui-verify/README.md` ("Path B — Claude Code Web (REQUIRED, not optional)") and is, in summary:
-   1. Convert webm → gif locally with `ffmpeg`.
-   2. Tar + base64 the artifact dir.
-   3. Split base64 into ~50KB chunks (nginx caps `/sysadmin/exec` body at 1MB; Linux ARG_MAX caps shell args around 2MB).
-   4. Upload each chunk via `POST /sysadmin/exec` using `printf '%s' '<chunk>' >> /tmp/...b64` (`>` for the first chunk). Use `node` — shell variable expansion will hit ARG_MAX with chunks much above 50KB.
-   5. From the droplet (one final `/sysadmin/exec` call): decode + extract + `git clone --depth 1 --branch ui-verify-artifacts` + copy artifacts to `pr-<N>/` + commit as `ui-verify-bot` + `git push`. The droplet's `gh` CLI is already authenticated.
-   6. Build the `<!-- ui-verify:start --> ... <!-- ui-verify:end -->` markdown block manually using the format from `publish.ts` lines 200-260 (plain-link table, not image embeds — see LaunchForce-AI/venture-impact-platform#463 for why image embeds 404 in private-repo PRs).
-   7. Splice it into the PR description (step 5 below).
-
-5. **Splice the printed block into the PR description**.
-   - Local Claude Code: read the current body with `gh pr view <N> --json body --jq .body`, replace the existing `<!-- ui-verify:start --> ... <!-- ui-verify:end -->` block (or append if none exists), write it back with `gh pr edit <N> --body-file <file>`.
-   - Claude Code Web: use `mcp__github__update_pull_request` with the new body. Same rule — replace the existing block, leave the rest of the description alone.
-
-**Env notes for Claude Code Web**: Chromium 141 is pre-installed at `/opt/pw-browsers`, ffmpeg is pre-installed, Playwright is wired as a root devDependency. The harness auto-scrubs `HTTPS_PROXY` env vars for localhost targets so the sandbox proxy doesn't intercept local traffic. The `PostToolUse` hook only sees local `git push` commands; it does not see sysadmin pushes directly.
+**Sandbox env notes**: Chromium and `ffmpeg` are pre-installed; Playwright is wired in. The harness auto-scrubs `HTTPS_PROXY` env vars for localhost targets so the sandbox proxy doesn't intercept local traffic.
 
 ## Architecture Overview
 
