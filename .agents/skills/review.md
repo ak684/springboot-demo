@@ -59,5 +59,8 @@ Post inline review comments tied to specific files and line numbers. Group by ca
 - A suggested fix (don't write the code, just describe the change)
 - Severity: 🔒 security / 🐛 bug / 🧹 cleanup / 💡 suggestion
 
+NOTIFICATION:
+After posting your inline comments, post a single top-level summary comment on the PR. **Begin that summary by @-mentioning the PR author and any users who have already been requested as reviewers** so they get a real notification. Pull these from the PR metadata using `gh pr view <PR> --json author,reviewRequests` — author login is at `.author.login`; requested reviewers are at `.reviewRequests[].login` (skip team requests). Format the mention line as: `@<author> @<reviewer1> @<reviewer2> — first-pass review below.` If there are no requested reviewers yet, mention only the author.
+
 CUSTOMIZATION:
-This skill is owned by the platform team and lives at `.agents/skills/prreview.md`. To extend it for organization-specific requirements (compliance markers, regulatory keywords, internal naming conventions, banned imports, etc.), edit this file and commit. The skill is loaded fresh per conversation, so changes take effect on the next `@openhands /prreview` invocation.
+This skill is owned by the platform team and lives at `.agents/skills/review.md`. To extend it for organization-specific requirements (compliance markers, regulatory keywords, internal naming conventions, banned imports, etc.), edit this file and commit. The skill is loaded fresh per conversation, so changes take effect on the next `@openhands /review` invocation.

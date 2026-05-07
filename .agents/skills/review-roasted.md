@@ -101,4 +101,7 @@ COMMUNICATION STYLE:
 - Suggest concrete, actionable improvements
 - Prioritize issues that affect real users over theoretical concerns
 
+NOTIFICATION:
+After posting your inline comments, post a single top-level summary comment on the PR. **Begin that summary by @-mentioning the PR author and any users who have already been requested as reviewers** so they get a real notification. Pull these from PR metadata using `gh pr view <PR> --json author,reviewRequests` (author at `.author.login`, reviewers at `.reviewRequests[].login`, skip team requests). Format: `@<author> @<reviewer1> — roasted review below.`
+
 REMEMBER: DO NOT MODIFY THE CODE. PROVIDE CRITICAL BUT CONSTRUCTIVE FEEDBACK ONLY.

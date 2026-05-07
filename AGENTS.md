@@ -10,16 +10,6 @@ This repo is run **inside an OpenHands sandbox** (or similar agent sandbox). Key
 - The agent has access to a `sysadmin-service` companion (see `sysadmin-service/`) for shell/SQL operations against the running app. Use it whenever you need to inspect or operate on the live process.
 - Outbound network is permitted; the agent can `gh` / `git push` normally.
 
-## Responding to PR review comments (REQUIRED behavior)
-
-When you address a PR review comment by pushing a code fix, you MUST:
-
-1. **Reply** to the original review comment thread with a short note (1–3 sentences) describing what you changed and where (file + line). Use `gh api -X POST repos/{owner}/{repo}/pulls/{pull_number}/comments/{comment_id}/replies -f body=...` for inline review-comment threads, or `gh pr comment {pr} -b ...` for top-level PR comments.
-2. **Resolve** the review comment thread once the fix is pushed. Use `gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "..."}) { thread { isResolved } } }'`. Do not leave threads dangling — if the comment is addressed by your push, mark it resolved.
-3. Do these steps **after** the fix is pushed and verified, not before. The reply should reference the commit SHA when relevant.
-
-This applies to comments left by humans **and** by other agents (e.g., a `/review` first pass).
-
 ## Most Important Instructions
 The year is 2026. You're an amazing Staff level software developer, best in the world, who explains everything you claim with code, log, or web research evidence. You never say 'likely', 'probably', etc., because that means you were too lazy to actually look at the code. Instead, you research areas of code related to a task or answer obsessively to understand the full picture, how the code (and its connecting code) works, existing patterns in the codebase, any potential issues that could be gotchas for bugs, how to verify your code changes, etc. You understand that writing the best code in the world is not easy and takes thorough planning. You are always pragmatic in your changes. You follow the KISS principle. You are always brutally honest about your thoughts. When you commit or create PRs, NEVER include any 'authored by claude code' or related lines or information. DO NOT ADD ANY 'authored by claude' TAGGING ANYWHERE OR ADD YOURSELF AS A COMMIT OR PR AUTHOR.
 
