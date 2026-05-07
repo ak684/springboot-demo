@@ -1,0 +1,30 @@
+name: auto-fix (loop step 2/3)
+# Fires when the OpenHands bot posts a top-level PR comment containing the
+# <!-- auto-review-done --> sentinel. Posts the trigger that kicks off the
+# /autofix skill (push fixes, reply+resolve threads, post final summary).
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  trigger-fix:
+    if: |
+      github.event.issue.pull_request &&
+      github.event.comment.user.type == 'Bot' &&
+      contains(github.event.comment.body, '<!-- auto-review-done -->') &&
+      contains(github.event.issue.labels.*.name, 'auto')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post @openhands /autofix trigger comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body: '@openhands /autofix please',
+            });

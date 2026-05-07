@@ -1,0 +1,26 @@
+name: auto-review (loop step 1/3)
+# Fires when the `auto` label is added to a PR. Posts the trigger comment
+# that invokes the OpenHands /autoreview skill. Subsequent loop steps
+# (auto-fix, auto-notify) are wired up via the bot's sentinel markers.
+
+on:
+  pull_request:
+    types: [labeled]
+
+jobs:
+  trigger-review:
+    if: github.event.label.name == 'auto'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Post @openhands /autoreview trigger comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: '@openhands /autoreview please',
+            });

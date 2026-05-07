@@ -1,0 +1,46 @@
+name: auto-notify (loop step 3/3)
+# Fires when the OpenHands bot posts a top-level PR comment containing the
+# <!-- auto-fix-done --> sentinel. Posts a final notification @-mentioning
+# the PR author + any requested reviewers, marking the automated loop as
+# complete and ready for human approval.
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  trigger-notify:
+    if: |
+      github.event.issue.pull_request &&
+      github.event.comment.user.type == 'Bot' &&
+      contains(github.event.comment.body, '<!-- auto-fix-done -->') &&
+      contains(github.event.issue.labels.*.name, 'auto')
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Build mention list and post notification
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.issue.number,
+            });
+            const author = pr.data.user.login;
+            const reviewers = (pr.data.requested_reviewers || []).map(u => `@${u.login}`);
+            const mentions = [`@${author}`, ...reviewers].join(' ');
+
+            const body = [
+              `${mentions} — automated review loop complete.`,
+              '',
+              'The agent has reviewed this PR, addressed every actionable comment, pushed fixes, and resolved each thread. Please do a final pass and merge when ready.',
+            ].join('\n');
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.issue.number,
+              body,
+            });
