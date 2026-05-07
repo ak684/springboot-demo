@@ -27,12 +27,9 @@ WORKFLOW:
    - GitHub: `gh api graphql -f query='mutation { resolveReviewThread(input: {threadId: "<id>"}) { thread { isResolved } } }'`
    - BBDC: PUT the comment thread state to `RESOLVED`.
 
-6. **Post the final summary comment.** Begin by @-mentioning the PR author plus any individual reviewers (look up via `gh pr view <PR> --json author,reviewRequests`):
+6. **Post a summary comment.** **Do NOT @-mention any users in this comment** — a downstream GitHub Actions workflow will post the single ping to humans (PR author + reviewers) once the automation loop completes. Pinging here would notify them twice.
 
-   - If reviewers exist: `@<author> @<reviewer1> — fixes pushed, all addressable threads resolved.`
-   - If no reviewers: `@<author> — fixes pushed, all addressable threads resolved.`
-
-   Below the mention line, briefly summarize what changed (1–4 bullets, file + line + the issue addressed).
+   Open with a neutral header line — e.g., `Fixes pushed, all addressable threads resolved.` — followed by a short bulleted summary (1–4 lines: file + line + the issue addressed).
 
 **REQUIRED — automation marker:** end the summary comment with this literal HTML comment on its own line:
 

@@ -57,10 +57,9 @@ OUTPUT FORMAT:
 - A suggested fix (don't write the code, just describe the change)
 - Severity: 🔒 security / 🐛 bug / 🧹 cleanup / 💡 suggestion
 
-**Summary comment:** post one top-level summary comment on the PR. Begin it by @-mentioning the PR author plus any individual users requested as reviewers (skip teams). Look up via `gh pr view <PR> --json author,reviewRequests` (`.author.login`, `.reviewRequests[].login`).
+**Summary comment:** post one top-level summary comment on the PR. **Do NOT @-mention any users in this comment** — the automation loop will send a single notification to humans at the very end of the loop (after fixes are pushed and threads resolved). Pinging here would notify them twice.
 
-- If reviewers exist: `@<author> @<reviewer1> — first-pass review below.`
-- If no reviewers: `@<author> — first-pass review below.`
+Open the comment with a brief, neutral header line — e.g., `First-pass review below.` — followed by a short summary of what categories of issues the agent found.
 
 **REQUIRED — automation marker:** end the summary comment with this literal HTML comment on its own line:
 
