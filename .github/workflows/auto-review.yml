@@ -6,7 +6,11 @@ name: auto-review (loop step 1/3)
 # a Keycloak identity. The default github-actions[bot] cannot do this.
 
 on:
-  pull_request:
+  # Use pull_request_target so the workflow file from the BASE branch (main)
+  # is used. Otherwise PRs opened from older branches still see the old
+  # workflow (no PAT, includes "please" in body, etc.). Safe here because
+  # the workflow doesn't check out PR content — it only posts a comment.
+  pull_request_target:
     types: [labeled]
 
 jobs:
