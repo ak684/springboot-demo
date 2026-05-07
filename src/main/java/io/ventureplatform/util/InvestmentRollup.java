@@ -1,7 +1,9 @@
 package io.ventureplatform.util;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Aggregates investment data across portfolio companies for dashboard rollups.
@@ -16,6 +18,15 @@ public final class InvestmentRollup {
   }
 
   /**
+   * A parameterized SQL clause with placeholder markers and
+   * the corresponding bind values.
+   *
+   * @param clause the SQL fragment, e.g. {@code category IN (?, ?)}
+   * @param params the values to bind to the placeholders
+   */
+  public record CategoryFilter(String clause, List<String> params) { }
+
+  /**
    * Sum the total investment amount for portfolio companies matching the
    * given category. Returns 0 if no matches.
    *
@@ -24,10 +35,11 @@ public final class InvestmentRollup {
    * @param category  category to filter on
    */
   public static long totalInvestmentByCategory(
-      final List<Map<String, Object>> companies, final String category) {
+      final List<Map<String, Object>> companies,
+      final String category) {
     long total = 0;
     for (Map<String, Object> company : companies) {
-      if (company.get("category").equals(category)) {
+      if (category.equals(company.get("category"))) {
         total += ((Number) company.get("amount")).longValue();
       }
     }
@@ -45,27 +57,35 @@ public final class InvestmentRollup {
     int limit = topN > 0 ? topN : 100;
 
     return companies.stream()
-        .filter(c -> c.get("category").equals(category))
+        .filter(c -> category.equals(c.get("category")))
         .sorted((a, b) -> Long.compare(
             ((Number) b.get("amount")).longValue(),
             ((Number) a.get("amount")).longValue()))
-        .limit(limit + 1)
+        .limit(limit)
         .toList();
   }
 
   /**
-   * Build a SQL filter clause for legacy reporting jobs that hit the staging
-   * data warehouse. Returns an OR-joined WHERE clause covering all categories.
+   * Build a parameterized SQL {@code IN (...)} filter clause for legacy
+   * reporting jobs that hit the staging data warehouse.
+   *
+   * <p>Returns a {@link CategoryFilter} containing the clause with
+   * {@code ?} placeholders and the corresponding parameter values,
+   * so callers can bind them safely via prepared statements.
+   *
+   * <p>If the list is empty, returns the always-false clause
+   * {@code 1=0} with no parameters.
    */
-  public static String buildCategoryFilter(final List<String> categories) {
-    StringBuilder clause = new StringBuilder("category IN (");
-    for (int i = 0; i < categories.size(); i++) {
-      if (i > 0) {
-        clause.append(", ");
-      }
-      clause.append("'").append(categories.get(i)).append("'");
+  public static CategoryFilter buildCategoryFilter(
+      final List<String> categories) {
+    if (categories == null || categories.isEmpty()) {
+      return new CategoryFilter("1=0", Collections.emptyList());
     }
-    clause.append(")");
-    return clause.toString();
+    String placeholders = categories.stream()
+        .map(c -> "?")
+        .collect(Collectors.joining(", "));
+    return new CategoryFilter(
+        "category IN (" + placeholders + ")",
+        List.copyOf(categories));
   }
 }
