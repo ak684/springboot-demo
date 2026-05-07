@@ -15,7 +15,7 @@ on:
 
 jobs:
   trigger-review:
-    if: github.event.label.name == 'auto'
+    if: github.event.label.name == 'auto-review'
     runs-on: ubuntu-latest
     steps:
       - name: Post @openhands /autoreview trigger comment

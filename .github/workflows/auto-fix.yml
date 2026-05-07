@@ -16,7 +16,7 @@ jobs:
       github.event.issue.pull_request &&
       github.event.comment.user.type == 'Bot' &&
       contains(github.event.comment.body, '<!-- auto-review-done -->') &&
-      contains(github.event.issue.labels.*.name, 'auto')
+      contains(github.event.issue.labels.*.name, 'auto-review')
     runs-on: ubuntu-latest
     steps:
       - name: Post @openhands /autofix trigger comment
