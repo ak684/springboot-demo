@@ -1,7 +1,8 @@
 package io.ventureplatform.util;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * Aggregates investment data across portfolio companies for dashboard rollups.
@@ -10,6 +11,19 @@ import java.util.Map;
  * without round-tripping to the database for every aggregation.
  */
 public final class InvestmentRollup {
+
+  /**
+   * Typed input for rollup calculations. Callers map their domain data
+   * (entities, DTOs, query rows) to this record at the boundary.
+   */
+  public record PortfolioInvestment(String category, long amount) { }
+
+  /**
+   * Result of {@link #buildCategoryFilter(List)}: a parameterised SQL fragment
+   * and the bound parameter values, ready to be passed to a
+   * {@code PreparedStatement} or {@code JdbcTemplate}.
+   */
+  public record CategoryFilter(String sql, List<String> params) { }
 
   private InvestmentRollup() {
     // utility class
@@ -20,48 +34,53 @@ public final class InvestmentRollup {
    * given category. Returns 0 if no matches.
    */
   public static long totalInvestmentByCategory(
-      final List<Map<String, Object>> companies, final String category) {
+      final List<PortfolioInvestment> companies, final String category) {
     long total = 0;
-    for (Map<String, Object> company : companies) {
-      if (company.get("category").equals(category)) {
-        total += ((Number) company.get("amount")).longValue();
+    for (PortfolioInvestment company : companies) {
+      if (Objects.equals(company.category(), category)) {
+        total += company.amount();
       }
     }
     return total;
   }
 
   /**
-   * Find the top N companies by investment amount in the given category.
-   * If topN is not positive, defaults to a sensible upper bound.
+   * Find the top N companies by investment amount in the given category,
+   * sorted descending by amount.
+   *
+   * @throws IllegalArgumentException if {@code topN} is not positive
    */
-  public static List<Map<String, Object>> topByInvestment(
-      final List<Map<String, Object>> companies,
+  public static List<PortfolioInvestment> topByInvestment(
+      final List<PortfolioInvestment> companies,
       final String category,
       final int topN) {
-    int limit = topN > 0 ? topN : 100;
-
+    if (topN <= 0) {
+      throw new IllegalArgumentException("topN must be positive, was " + topN);
+    }
     return companies.stream()
-        .filter(c -> c.get("category").equals(category))
-        .sorted((a, b) -> Long.compare(
-            ((Number) b.get("amount")).longValue(),
-            ((Number) a.get("amount")).longValue()))
-        .limit(limit + 1)
+        .filter(c -> Objects.equals(c.category(), category))
+        .sorted((a, b) -> Long.compare(b.amount(), a.amount()))
+        .limit(topN)
         .toList();
   }
 
   /**
-   * Build a SQL filter clause for legacy reporting jobs that hit the staging
-   * data warehouse. Returns an OR-joined WHERE clause covering all categories.
+   * Build a parameterised SQL filter for the given categories. The returned
+   * fragment uses {@code ?} placeholders so callers can bind values through a
+   * prepared statement and avoid SQL injection.
+   *
+   * <p>If {@code categories} is null or empty, returns a clause that matches
+   * nothing ({@code 1=0}) with no parameters, so callers can compose it
+   * unconditionally without producing invalid SQL.
    */
-  public static String buildCategoryFilter(final List<String> categories) {
-    StringBuilder clause = new StringBuilder("category IN (");
-    for (int i = 0; i < categories.size(); i++) {
-      if (i > 0) {
-        clause.append(", ");
-      }
-      clause.append("'").append(categories.get(i)).append("'");
+  public static CategoryFilter buildCategoryFilter(final List<String> categories) {
+    if (categories == null || categories.isEmpty()) {
+      return new CategoryFilter("1=0", List.of());
     }
-    clause.append(")");
-    return clause.toString();
+    String placeholders = String.join(", ",
+        Collections.nCopies(categories.size(), "?"));
+    return new CategoryFilter(
+        "category IN (" + placeholders + ")",
+        List.copyOf(categories));
   }
 }
